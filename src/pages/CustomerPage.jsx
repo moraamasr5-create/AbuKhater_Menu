@@ -277,17 +277,17 @@ const CustomerPage = () => {
     };
 
     return (
-        <div className="min-h-screen pb-32 bg-dark-950">
+        <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
 
-            <div className="max-w-xl mx-auto p-4 pt-8 space-y-8 animate-in fade-in duration-500">
-                <header className="text-center space-y-2">
-                    <h2 className="text-3xl font-black text-white">إكمال البيانات</h2>
-                    <p className="text-slate-500 text-sm">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
+            <div className="max-w-md mx-auto w-full px-4 pt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <header className="text-center space-y-1">
+                    <h2 className="text-2xl font-black text-white display-font">إكمال البيانات</h2>
+                    <p className="text-slate-400 text-xs font-bold">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
                 </header>
 
                 {/* Section 1: Personal Info */}
-                <div className="glass-card p-6 rounded-3xl space-y-6">
+                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
                     <div className="flex items-center gap-3 border-b border-white/5 pb-4">
                         <User className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">البيانات الشخصية</h3>
@@ -339,7 +339,7 @@ const CustomerPage = () => {
 
                 {/* Section 2: Delivery Control */}
                 {orderType === 'delivery' && (
-                    <div className="glass-card p-6 rounded-3xl space-y-6">
+                    <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
                         <div className="flex items-center gap-3 border-b border-white/5 pb-4">
                             <MapPin className="text-primary" size={20} />
                             <h3 className="font-bold text-white uppercase tracking-wider text-xs">عنوان التوصيل</h3>
@@ -477,7 +477,7 @@ const CustomerPage = () => {
                 )}
 
                 {/* Section 3: Payment Method */}
-                <div className="glass-card p-6 rounded-3xl space-y-6">
+                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
                     <div className="flex items-center gap-3 border-b border-white/5 pb-4">
                         <Lock className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">طريقة الدفع للمطعم</h3>
@@ -503,22 +503,25 @@ const CustomerPage = () => {
                     </div>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="flex gap-4 pt-4">
+            </div>
+
+            {/* Fixed Bottom Action Bar for Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 bg-dark-950/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+                <div className="max-w-md mx-auto flex gap-3">
                     <button
                         onClick={() => navigate('/review')}
-                        className="flex-1 py-5 rounded-2xl font-black text-slate-400 border border-white/5 hover:bg-dark-800 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 h-14 rounded-2xl font-bold border border-white/10 bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
                     >
-                        <ArrowRight size={20} />
-                        <span>رجوع</span>
+                        <ArrowRight size={18} />
+                        <span className="text-sm">رجوع</span>
                     </button>
                     <button
                         onClick={handleNext}
                         disabled={!isFormValid()}
-                        className="flex-[2] bg-primary text-white py-5 rounded-2xl font-black shadow-xl shadow-primary/20 hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed"
+                        className="flex-[2] h-14 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-95 transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                     >
-                        <span>تأكيد البيانات</span>
-                        <ArrowLeft size={20} className="rtl:rotate-180" />
+                        <span className="text-[15px]">تأكيد البيانات</span>
+                        <ArrowLeft size={18} className="rtl:rotate-180" />
                     </button>
                 </div>
             </div>

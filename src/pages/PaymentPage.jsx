@@ -290,13 +290,13 @@ const PaymentPage = () => {
     const paymentNumber = paymentMethod === 'instapay' ? 'abu_khatar@instapay' : '01144423700';
 
     return (
-        <div className="min-h-screen pb-32 bg-dark-950">
+        <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
 
-            <div className="max-w-xl mx-auto p-4 pt-8 space-y-8 animate-in fade-in zoom-in-95 duration-500">
-                <header className="text-center space-y-2">
-                    <h2 className="text-3xl font-black text-white">تأكيد الدفع</h2>
-                    <p className="text-slate-500 text-sm">راجع تفاصيل الحساب وقم بالتحويل لإتمام الطلب</p>
+            <div className="max-w-md mx-auto w-full px-4 pt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <header className="text-center space-y-1">
+                    <h2 className="text-2xl font-black text-white display-font">تأكيد الدفع</h2>
+                    <p className="text-slate-400 text-xs font-bold">راجع تفاصيل الحساب وقم بالتحويل لإتمام الطلب</p>
                 </header>
 
                 {/* Success Overlay */}
@@ -308,181 +308,171 @@ const PaymentPage = () => {
                     />
                 )}
 
-                {/* Main Card */}
-                <div className="glass-card rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/40">
-                    {/* Amount Header */}
-                    <div className="bg-primary p-8 text-center text-white relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-16 -translate-y-16 blur-2xl"></div>
-                        <CheckCircle size={40} className="mx-auto mb-4 opacity-80" />
-                        <h3 className="text-xs font-black uppercase tracking-widest opacity-80 mb-2">
+                {/* Amount Card */}
+                <div className="rounded-[1.5rem] overflow-hidden bg-gradient-to-br from-primary to-orange-600 p-6 text-center text-white relative shadow-lg shadow-primary/20">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 -translate-y-12 blur-2xl"></div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -translate-x-8 translate-y-8 blur-xl"></div>
+
+                    <div className="relative z-10 flex flex-col items-center gap-1.5">
+                        <CheckCircle size={32} className="opacity-90 mb-1" />
+                        <h3 className="text-[11px] font-black uppercase tracking-widest opacity-90">
                             {(isCash && orderType === 'delivery') ? 'المبلغ المطلوب عند التوصيل' : 'المبلغ المطلوب دفعه الآن'}
                         </h3>
-                        <div className="text-5xl font-black">{formatCurrency(paidNow)}</div>
+                        <div className="text-4xl font-black display-font tracking-tight">{formatCurrency(paidNow)}</div>
                         {remaining > 0 && (
-                            <p className="mt-2 text-xs font-bold opacity-80">المتبقي عند الاستلام: {formatCurrency(remaining)}</p>
+                            <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full backdrop-blur-sm">
+                                <span className="text-[10px] font-bold opacity-90">المتبقي عند الاستلام: {formatCurrency(remaining)}</span>
+                            </div>
                         )}
                     </div>
+                </div>
 
-                    <div className="p-8 space-y-8">
-                        {/* Status Message */}
-                        {(!isCash || (isCash && isPickup)) ? (
-                            <div className="space-y-4">
-                                <div className="flex items-start gap-4 p-5 bg-dark-800/50 rounded-3xl border border-white/5">
-                                    <div className="w-12 h-12 shrink-0 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                                        <CreditCard size={24} />
+                {/* Payment Action Section */}
+                {(!isCash || (isCash && isPickup)) ? (
+                    <div className="space-y-4">
+                        {/* Bank Account Details */}
+                        <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-4 shadow-sm">
+                            <div className="flex gap-4 items-center">
+                                <div className="w-12 h-12 shrink-0 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                    <CreditCard size={24} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[10px] text-slate-400 font-bold mb-1">رقم الحساب للتحويل</p>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-lg font-mono font-bold text-white ltr truncate">{paymentNumber}</span>
+                                        <button
+                                            onClick={() => copyToClipboard(paymentNumber)}
+                                            className="p-2.5 bg-dark-800 text-slate-300 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95 shrink-0"
+                                        >
+                                            <Copy size={16} />
+                                        </button>
                                     </div>
-                                    <div className="flex-1 space-y-1">
-                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">حول المبلغ كعربون لضمان الطلب</p>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xl font-mono font-black text-white ltr">{paymentNumber}</span>
-                                            <button
-                                                onClick={() => copyToClipboard(paymentNumber)}
-                                                className="p-2.5 bg-primary/20 text-primary rounded-xl hover:bg-primary hover:text-white transition-all active:scale-90"
-                                            >
-                                                <Copy size={18} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10 flex items-center gap-3 text-primary text-[10px] font-bold">
-                                    <Info size={14} />
-                                    <span>يرجى إرسال لقطة شاشة (Screenshot) للتحويل للمتابعة.</span>
-                                </div>
-
-                                {/* Screenshot Upload Section */}
-                                <div className="space-y-3">
-                                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-2">إثبات التحويل</h4>
-
-                                    {!screenshot ? (
-                                        <label className="relative flex flex-col items-center justify-center gap-3 p-8 border-2 border-dashed border-white/10 rounded-[2rem] bg-dark-800/30 hover:bg-dark-800/50 hover:border-primary/50 transition-all cursor-pointer group">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                className="hidden"
-                                                onChange={handleFileChange}
-                                                disabled={isProcessingFile}
-                                            />
-                                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                                                {isProcessingFile ? (
-                                                    <LoadingSpinner size={20} color="text-primary" />
-                                                ) : (
-                                                    <Upload size={24} />
-                                                )}
-                                            </div>
-                                            <div className="text-center">
-                                                <p className="text-sm font-bold text-white">اضغط هنا لرفع الصورة</p>
-                                                <p className="text-[10px] text-slate-500 mt-1">PNG, JPG أو JPEG (الحد الأقصى 5 ميجابايت)</p>
-                                            </div>
-                                        </label>
-                                    ) : (
-                                        <div className="relative group rounded-[2rem] overflow-hidden border border-white/10 bg-dark-800/50 p-2">
-                                            <img
-                                                src={screenshot}
-                                                alt="Payment Screenshot"
-                                                className="w-full h-48 object-cover rounded-[1.5rem]"
-                                            />
-                                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
-                                                <button
-                                                    onClick={removeScreenshot}
-                                                    className="w-12 h-12 bg-red-500 text-white rounded-2xl flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
-                                                    title="حذف الصورة"
-                                                >
-                                                    <X size={20} />
-                                                </button>
-                                                <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg">
-                                                    <ImageIcon size={20} />
-                                                </div>
-                                            </div>
-                                            <div className="absolute bottom-4 right-4 bg-emerald-500 text-white p-2 rounded-xl shadow-lg flex items-center gap-2">
-                                                <CheckCircle size={14} />
-                                                <span className="text-[10px] font-black">تم اختيار الصورة</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/10 flex flex-col items-center text-center gap-3">
-                                <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500">
-                                    <Receipt size={24} />
-                                </div>
-                                <div>
-                                    <h4 className="text-white font-bold text-sm">الدفع كاش عند الباب</h4>
-                                    <p className="text-[10px] text-slate-500">يرجى تجهيز المبلغ المطلوب للمندوب عند الاستلام</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Order Details Breakdown */}
-                        <div className="space-y-4 pt-4 border-t border-white/5">
-                            <div className="flex items-center gap-2 mb-2">
-                                <Receipt size={16} className="text-slate-500" />
-                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">تفاصيل الحساب</h4>
-                            </div>
-                            <div className="space-y-3">
-                                <div className="flex justify-between text-sm font-bold">
-                                    <span className="text-slate-400">سعر المنتجات</span>
-                                    <span className="text-white">{formatCurrency(subtotal)}</span>
-                                </div>
-                                {orderType === 'delivery' && (
-                                    <div className="flex justify-between text-sm font-bold">
-                                        <span className="text-slate-400">خدمة التوصيل</span>
-                                        <span className="text-white">{formatCurrency(deliveryFee)}</span>
-                                    </div>
-                                )}
-                                {serviceFee > 0 && (
-                                    <div className="flex justify-between text-sm font-bold">
-                                        <span className="text-slate-400">رسوم السيرفر / الدفع</span>
-                                        <span className="text-white">{formatCurrency(serviceFee)}</span>
-                                    </div>
-                                )}
-                                <div className="flex justify-between text-lg font-black pt-3 border-t border-white/5">
-                                    <span className="text-white">الإجمالي الكلي</span>
-                                    <span className="text-primary">{formatCurrency(finalTotal)}</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Delivery Time Info */}
-                        <div className="p-4 bg-dark-800/30 rounded-2xl flex items-center justify-between border border-white/5 shadow-inner">
-                            <div className="flex items-center gap-3">
-                                <Clock size={16} className="text-slate-500" />
-                                <span className="text-[10px] font-bold text-slate-400">وقت التحضير المتوقع:</span>
+                        {/* Upload Section */}
+                        <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-4 shadow-sm">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Info size={14} className="text-primary" />
+                                <span className="text-[11px] font-bold text-slate-300">إثبات التحويل (Screenshot)</span>
                             </div>
-                            <span className="text-sm font-black text-white">{estimatedTime}</span>
+
+                            {!screenshot ? (
+                                <label className="flex flex-col items-center justify-center gap-3 p-6 border-2 border-dashed border-dark-700/50 rounded-[1.25rem] bg-dark-950/50 hover:bg-dark-800 hover:border-primary/50 transition-all cursor-pointer active:scale-[0.98]">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleFileChange}
+                                        disabled={isProcessingFile}
+                                    />
+                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                        {isProcessingFile ? <LoadingSpinner size={20} /> : <Upload size={20} />}
+                                    </div>
+                                    <div className="text-center space-y-1">
+                                        <p className="text-sm font-bold text-white">اضغط لرفع الصورة</p>
+                                        <p className="text-[10px] text-slate-500 font-bold">JPG, PNG (الحد الأقصى 5MB)</p>
+                                    </div>
+                                </label>
+                            ) : (
+                                <div className="relative group rounded-[1.25rem] overflow-hidden border border-white/10 bg-dark-950">
+                                    <img src={screenshot} alt="Screenshot" className="w-full h-40 object-cover opacity-90" />
+                                    <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                                        <button onClick={removeScreenshot} className="p-3 bg-red-500/90 hover:bg-red-500 text-white rounded-xl shadow-lg active:scale-90 transition-transform flex items-center gap-2">
+                                            <X size={16} />
+                                            <span className="text-xs font-bold">حذف للصورة</span>
+                                        </button>
+                                    </div>
+                                    <div className="absolute bottom-3 right-3 bg-emerald-500/90 backdrop-blur-sm text-white px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
+                                        <CheckCircle size={12} />
+                                        <span className="text-[10px] font-bold">تم الرفع</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-5 rounded-[1.5rem] flex items-center gap-4 shadow-sm">
+                        <div className="w-12 h-12 shrink-0 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500">
+                            <Receipt size={24} />
+                        </div>
+                        <div>
+                            <h4 className="text-emerald-500 font-bold text-sm mb-0.5">الدفع كاش عند الباب</h4>
+                            <p className="text-[10px] text-slate-400 font-bold">يرجى تجهيز المبلغ للمندوب عند الاستلام</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Order Details & Summary List */}
+                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-4">
+                    <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <Receipt size={14} /> تفاصيل الحساب
+                    </h4>
+                    <div className="space-y-3">
+                        <div className="flex justify-between items-center text-xs font-bold">
+                            <span className="text-slate-400">سعر المنتجات</span>
+                            <span className="text-white">{formatCurrency(subtotal)}</span>
+                        </div>
+                        {orderType === 'delivery' && (
+                            <div className="flex justify-between items-center text-xs font-bold">
+                                <span className="text-slate-400">خدمة التوصيل</span>
+                                <span className="text-white">{formatCurrency(deliveryFee)}</span>
+                            </div>
+                        )}
+                        {serviceFee > 0 && (
+                            <div className="flex justify-between items-center text-xs font-bold">
+                                <span className="text-slate-400">رسوم السيرفر</span>
+                                <span className="text-white">{formatCurrency(serviceFee)}</span>
+                            </div>
+                        )}
+
+                        <div className="pt-3 border-t border-white/5 flex justify-between items-center">
+                            <span className="text-sm font-black text-white">الإجمالي الكلي</span>
+                            <span className="text-lg font-black text-primary display-font">{formatCurrency(finalTotal)}</span>
+                        </div>
+
+                        <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-slate-400">
+                                <Clock size={14} />
+                                <span className="text-[10px] font-bold">وقت التحضير المتوقع:</span>
+                            </div>
+                            <span className="text-xs font-black text-white">{estimatedTime}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Error Banner */}
                 {submitError && (
-                    <div className="bg-red-500/10 border border-red-500/20 p-5 rounded-[2rem] flex items-center gap-4 text-red-500 text-sm animate-in shake duration-300">
-                        <AlertCircle size={24} className="shrink-0" />
-                        <p className="font-bold leading-relaxed">{submitError}</p>
+                    <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-start gap-3 text-red-500 animate-in shake duration-300">
+                        <AlertCircle size={20} className="shrink-0 mt-0.5" />
+                        <p className="font-bold text-xs leading-relaxed">{submitError}</p>
                     </div>
                 )}
+            </div>
 
-                {/* Sticky Controls for Payment */}
-                <div className="flex gap-4">
+            {/* Fixed Bottom Action Bar for Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 bg-dark-950/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+                <div className="max-w-md mx-auto flex gap-3">
                     <button
                         onClick={() => navigate('/customer')}
                         disabled={isSubmitting}
-                        className="flex-1 py-5 rounded-3xl font-black text-slate-400 border border-white/10 hover:bg-dark-800 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 h-14 rounded-2xl font-bold border border-white/10 bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
                     >
-                        <ArrowRight size={20} />
-                        <span>تعديل</span>
+                        <ArrowRight size={18} />
+                        <span className="text-sm">تعديل</span>
                     </button>
                     <button
                         onClick={handleConfirmPayment}
                         disabled={isSubmitting}
-                        className="flex-[2] bg-primary text-white py-5 rounded-3xl font-black shadow-2xl shadow-primary/30 hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-30 disabled:grayscale"
+                        className="flex-[2] h-14 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-95 transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
                     >
                         {isSubmitting ? (
-                            <LoadingSpinner size={24} color="text-white" />
+                            <LoadingSpinner size={22} color="text-white" />
                         ) : (
                             <>
-                                <span>{(isCash && orderType === 'delivery') ? 'تأكيد الطلب' : 'تأكيد التحويل الآن'}</span>
-                                <CheckCircle size={20} />
+                                <span className="text-[15px]">{(isCash && orderType === 'delivery') ? 'تأكيد الطلب' : 'إتمام الدفع'}</span>
+                                <CheckCircle size={18} className="opacity-80" />
                             </>
                         )}
                     </button>
