@@ -1,0 +1,712 @@
+{
+  "name": "order get",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "submit-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        0
+      ],
+      "id": "fa5207aa-4090-4459-a85c-4a192561b0cc",
+      "name": "Webhook",
+      "webhookId": "805060ee-7c25-4729-8953-f4193d525d71"
+    },
+    {
+      "parameters": {
+        "jsCode": "// استخراج البيانات الأساسية\nconst orderData = $input.first().json.body;\n\n// إنشاء ملخص المنتجات\nconst itemsSummary = orderData.items.map(item => {\n  return `${item.quantity} × ${item.name} - ${item.total} جنيهاً`;\n}).join('\\\\n');\n\n// إنشاء نص العنوان\nlet addressText = '';\nif (orderData.order_type === 'delivery' && orderData.customer.delivery_info) {\n  const delivery = orderData.customer.delivery_info;\n  addressText = `\n  العنوان: ${delivery.address}\n  المنطقة: ${delivery.area_id}\n  المسافة: ${delivery.distance_km} كم\n  رسوم التوصيل: ${delivery.delivery_fee} جنيهاً\n  التوقيت المتوقع: ${delivery.estimated_time}\n  `;\n} else {\n  addressText = 'استلام من المطعم';\n}\n\n// تجهيز البيانات للجوجل شيت\nconst sheetData = {\n  order_id: orderData.order_id,\n  timestamp: orderData.timestamp,\n  restaurant: orderData.restaurant,\n  order_type: orderData.order_type === 'delivery' ? 'توصيل' : 'استلام',\n  \n  customer_name: orderData.customer.full_name,\n  phone_1: orderData.customer.phone_1,\n  phone_2: orderData.customer.phone_2 || '',\n  payment_method: orderData.customer.payment_method,\n  \n  address: orderData.order_type === 'delivery' ? \n           orderData.customer.delivery_info.address : 'استلام من المطعم',\n  area_id: orderData.order_type === 'delivery' ? \n           orderData.customer.delivery_info.area_id : '',\n  \n  items_summary: itemsSummary,\n  items_count: orderData.items.reduce((sum, item) => sum + item.quantity, 0),\n  \n  subtotal: orderData.totals.subtotal,\n  delivery_fee: orderData.totals.delivery_fee,\n  service_fee: orderData.totals.service_fee,\n  total_amount: orderData.totals.total,\n  \n  paid_now: orderData.payment.paid_now,\n  remaining: orderData.payment.remaining,\n  payment_deadline: orderData.payment.deadline,\n  \n  screenshot_attached: orderData.payment.screenshot ? 'نعم' : 'لا',\n  order_status: 'جديد'\n};\n\n// تخزين البيانات للعقد التالية\nreturn [\n  {\n    json: {\n      ...orderData,\n      sheetData,\n      itemsSummary,\n      addressText,\n      telegramMessage: null // سيتم ملؤه في العقدة التالية\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "486f1fb4-5fa8-4e8a-b847-99ec06e5148d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node لتحويل البيانات قبل إرسالها لـ Google Sheets\nconst order = $('Webhook').first().json.body; // ← نستخدم body مباشرة\n\n// تحويل مصفوفة العناصر إلى نص، لو موجودة\nconst itemsSummary = order.items?.map(item => \n  `${item.quantity} × ${item.name}`\n).join(', ') || 'لا يوجد عناصر';\n\n// تجهيز البيانات بشكل كامل ومتوافق مع Google Sheets\nreturn [{\n  json: {\n    'Order ID': order.order_id,\n    'Timestamp': order.timestamp,\n    'Restaurant': order.restaurant || 'مطعم أبو خاطر',\n    'Order Type': order.order_type === 'delivery' ? 'توصيل' : 'استلام',\n    \n    'Customer Name': order.customer.full_name,\n    'Phone 1': order.customer.phone_1,\n    'Phone 2': order.customer.phone_2 || '',\n    \n    'Address': order.customer.delivery_info?.address || 'استلام من المطعم',\n    'Area': order.customer.delivery_info?.area_id || '',\n    'Distance (KM)': order.customer.delivery_info?.distance_km || '',\n    'Estimated Time': order.customer.delivery_info?.estimated_time || '',\n    \n    'Payment Method': order.customer.payment_method,\n    'Total Amount': order.payment.total_amount,\n    'Paid Now': order.payment.paid_now,\n    'Remaining': order.payment.remaining,\n    'Payment Deadline': order.payment.deadline,\n    'Screenshot Attached': order.payment.screenshot ? 'نعم' : 'لا',\n    \n    'Items': itemsSummary,\n    'Subtotal': order.totals.subtotal,\n    'Delivery Fee': order.totals.delivery_fee,\n    'Service Fee': order.totals.service_fee,\n    'Final Total': order.totals.total,\n    \n    'Status': 'تم الاستلام'\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "541af95d-b05f-4903-9bba-c24324eebc62",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"order_id\": \"{{ $json.order_id }}\",\n  \"status\": \"received\",\n  \"message\": \"تم استلام الطلب بنجاح\"\n}\n",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "GET, POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1184,
+        16
+      ],
+      "id": "7000ed28-ce19-457e-bece-e211a7a79b9f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e8405314-bbfb-4482-ab78-c0c0613a0bcc",
+              "name": "Restaurant",
+              "value": "={{ $json.Restaurant }}",
+              "type": "string"
+            },
+            {
+              "id": "a3c63dec-d88b-4c8a-8088-b6624932a6d0",
+              "name": "Order ID",
+              "value": "={{ $json[\"Order ID\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a76fbe2d-b956-4a2c-987c-b176a0f63e30",
+              "name": "Timestamp",
+              "value": "={{ $json.Timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "034763ce-4e39-4c01-821f-00dbd2b3c592",
+              "name": "Order Type",
+              "value": "={{ $json[\"Order Type\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "82e346fd-e7fe-4805-9484-b35fe1db1b45",
+              "name": "Customer Name",
+              "value": "={{ $json[\"Customer Name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b7ae48e0-01d8-40bb-a59e-718e5c7e2917",
+              "name": "Phone 1",
+              "value": "={{ $json[\"Phone 1\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "addc447d-4eb5-4663-a405-6eaffc5d67f5",
+              "name": "Phone 2",
+              "value": "={{ $json[\"Phone 2\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "7e125fea-788c-41c5-a80f-336d41f809ca",
+              "name": "Address",
+              "value": "={{ $json.Address }}",
+              "type": "string"
+            },
+            {
+              "id": "ea20a2ca-5061-4924-a3cd-aa1162f41c7c",
+              "name": "Distance (KM)",
+              "value": "={{ $json[\"Distance (KM)\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "6cd58673-d42f-4ee2-897c-256d85f722c9",
+              "name": "Estimated Time",
+              "value": "={{ $json[\"Estimated Time\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b0632800-8c1b-40ad-a7d6-80bda4e90d85",
+              "name": "Payment Method",
+              "value": "={{ $json[\"Payment Method\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "29868a77-4580-4c8c-acc9-aa97fb1eddb3",
+              "name": "Subtotal",
+              "value": "={{ $json.Subtotal }}",
+              "type": "number"
+            },
+            {
+              "id": "9655ff27-d413-47e1-888c-0e6c92d5b7c5",
+              "name": "Total Amount",
+              "value": "={{ $json[\"Total Amount\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "7b24b3cd-c6c2-4320-a4f7-7e0249e26ae1",
+              "name": "Delivery Fee",
+              "value": "={{ $json[\"Delivery Fee\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "c5ab5c2c-d2fa-4c0b-af9b-9f62c4055c45",
+              "name": "Service Fee",
+              "value": "={{ $json[\"Service Fee\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "c4abb875-c026-41fe-b285-aedc244be52d",
+              "name": "=Status",
+              "value": "=يرجي التأكيد",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        16
+      ],
+      "id": "612e31dd-9aab-49ff-871f-80a82d56dba2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1024,
+        176
+      ],
+      "id": "7acf2d15-730d-47da-b9ef-8488ac08db79",
+      "name": "Send a text message",
+      "webhookId": "a85fdb66-2870-4a0b-a91e-6701939714b8",
+      "credentials": {
+        "telegramApi": {
+          "id": "BnapyygOjBSJyy9C",
+          "name": "Telegram account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "abfc0ab4-4d6c-4452-91f2-fdf6b96164fe",
+              "leftValue": "={{ $json.order_type }}",
+              "rightValue": "delivery",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "abc41037-3ed0-4ebf-adbe-89106f9061e1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU",
+          "mode": "list",
+          "cachedResultName": "NewOrder",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 980635210,
+          "mode": "list",
+          "cachedResultName": "Pickup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU/edit#gid=980635210"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_id": "={{ $json.order_id }}",
+            "timestamp": "={{ new Date($json.sheetData.payment_deadline).toLocaleString('ar-EG', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) }}",
+            "customer_name": "={{ $json.customer.full_name }}",
+            "customer_phone": "={{ $json.customer.phone_1 }}",
+            "customer_phone2": "={{ $json.customer.phone_2 }}",
+            "payment_method": "={{ $json.customer.payment_method }}= {{ $json.payment.service_fee }}",
+            "image": "={{ !!$json.payment?.screenshot }}",
+            "items_summary": "={{ $json.sheetData.items_summary }}",
+            "order": "={{ $json.addressText }}",
+            "مدفوع": "={{ $json.payment.paid_now }}",
+            "المتبقي": "={{ $json.payment.remaining }}",
+            "الاجمالي": "={{ $json.payment.total_amount }}"
+          },
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "order_id",
+              "displayName": "order_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_phone",
+              "displayName": "customer_phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_phone2",
+              "displayName": "customer_phone2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "order",
+              "displayName": "order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "items_summary",
+              "displayName": "items_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "مدفوع",
+              "displayName": "مدفوع",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "المتبقي",
+              "displayName": "المتبقي",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "الاجمالي",
+              "displayName": "الاجمالي",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        160
+      ],
+      "id": "04029508-b7d3-43f2-963f-5045f84e0597",
+      "name": "SavePiackupOrder",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lrgHfPNgMEYgUHTb",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU",
+          "mode": "list",
+          "cachedResultName": "NewOrder",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1y5N-Rlms1AcrcKobfdTG3wvoqkmjl5vVaH4nBBp7btU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_id": "={{ $json.order_id }}",
+            "timestamp": "={{ $json.timestamp }}",
+            "customer_name": "={{ $json.customer.full_name }}",
+            "customer_phone": "={{ $json.customer.phone_1 }}",
+            "customer_phone2": "={{ $json.customer.phone_2 }}",
+            "payment": "={{ $json.customer.payment_method }}/{{ $json.payment.service_fee }}ج.م",
+            "totalOrder": "={{ $json.payment.total_amount }}",
+            "time_rev": "={{ $json.customer.delivery_info.estimated_time }}",
+            "let": "={{ $json.customer.delivery_info.coordinates.lat }}",
+            "whe": "={{ $json.customer.delivery_info.coordinates.lon }}",
+            "status": "review_CallCenter",
+            "delv_fee": "={{ $json.customer.delivery_info.delivery_fee }}",
+            "addres": "={{ $json.customer.delivery_info.address }}",
+            "total_items": "={{ $json.totals.subtotal }}"
+          },
+          "matchingColumns": [
+            "order_id"
+          ],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "order_id",
+              "displayName": "order_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_phone",
+              "displayName": "customer_phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "customer_phone2",
+              "displayName": "customer_phone2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "addres",
+              "displayName": "addres",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delv_fee",
+              "displayName": "delv_fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "let",
+              "displayName": "let",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whe",
+              "displayName": "whe",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_items",
+              "displayName": "total_items",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "time_rev",
+              "displayName": "time_rev",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment",
+              "displayName": "payment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "totalOrder",
+              "displayName": "totalOrder",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        -112
+      ],
+      "id": "11b09090-0319-449f-9f8f-d30de14ef377",
+      "name": "SaveDeliveryOrder",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lrgHfPNgMEYgUHTb",
+          "name": "Google Sheets account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "SaveDeliveryOrder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SavePiackupOrder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SavePiackupOrder": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SaveDeliveryOrder": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "6da3093d-8bed-48fe-904d-8f0672ed26e0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "727e63621fc046904c0783a83b5cdf5eb9ea11ee8580a922bf0106be0a5d6d90"
+  },
+  "id": "YrAD7mPqcmc7JHRGNv1_q",
+  "tags": []
+}

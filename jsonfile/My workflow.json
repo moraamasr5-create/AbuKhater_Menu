@@ -1,0 +1,185 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "OrderReceiver",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        16
+      ],
+      "id": "6e474493-9651-403b-89c1-6b68d067f6d9",
+      "name": "Webhook",
+      "webhookId": "19a135c1-2775-49c7-b2de-ffe1480fd54d"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        400,
+        0
+      ],
+      "id": "b3fb2a32-21bd-4640-9b27-338e3d190eac",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "564a6b61-3812-43c5-b569-56cc363fcca3",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        16
+      ],
+      "id": "33c9b965-7862-416f-8dea-4e9c6cfa05fe",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.body.payload.paymentProof; // مسار الصورة\n\nif (!raw || !raw.includes(',')) return [$json];\n\nconst base64Data = raw.split(',')[1].trim();\n\nreturn [\n  {\n    json: $json,\n    binary: {\n      paymentProof: {\n        data: base64Data,\n        mimeType: 'image/jpeg',\n        fileName: `payment_${$json.body.payload.id}.jpg`\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        224
+      ],
+      "id": "e2e3695b-defd-41d0-872c-24c4b36c6fd6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "-5016704133",
+        "text": "=🛎️ *طلب جديد مكتمل*\n\n📦 رقم الطلب: *{{ $json.body.payload.id }}*\n👤 العميل: {{ $json.body.payload.customerName }}\n📞 هاتف: {{ $json.body.payload.phone }}\n\n📍 المنطقة: {{ $json.body.payload.area }}\n\n💰 الإجمالي: {{ $json.body.payload.total }} EGP  \n🚚 دليفري: {{ $json.body.payload.deliveryFee }} EGP\n\n💳 طريقة الدفع: *{{ $json.body.payload.paymentMethod }}*\n\n⏰ ⏰ {{ new Date($json.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }}\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        -80
+      ],
+      "id": "e1e11712-0c3c-48d5-892e-a535a27f70d1",
+      "name": "Send a text message",
+      "webhookId": "c3a779c3-3bed-491c-8f52-877993068cd1",
+      "credentials": {
+        "telegramApi": {
+          "id": "e39xtBN3ETLVVdZJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "=-5016704133",
+        "binaryData": true,
+        "binaryPropertyName": "paymentProof",
+        "additionalFields": {
+          "caption": "={{ $json.body.type }}\n{{ $json.body.payload.id }}\n{{ $json.body.payload.type }}\n{{ $json.body.payload.customerName }}\n{{ $json.body.payload.phone }}\n{{ $json.body.payload.total }}\n{{ $json.body.payload.paymentMethod }} Vodaphone Cash\n{{ $json.body.payload.deliveryFee }}",
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        224
+      ],
+      "id": "a5c0231a-117a-4f05-9358-6aebe5bfe5ad",
+      "name": "Send a photo message",
+      "webhookId": "7bcdb91f-a925-42cf-b318-02b660508720",
+      "credentials": {
+        "telegramApi": {
+          "id": "e39xtBN3ETLVVdZJ",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0e017fcc-ef89-472d-8463-059fa4e1a3f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0498bb4bb017a3e51ce4ca282d924b48ec10d02a6c7cc26cf04b1031b5e1252e"
+  },
+  "id": "G-kFuCfxIO9U4VQaxBqLG",
+  "tags": []
+}

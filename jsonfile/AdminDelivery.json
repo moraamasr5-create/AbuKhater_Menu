@@ -1,0 +1,332 @@
+{
+  "name": "AdminDelivery",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "OrderReceiver",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "6e474493-9651-403b-89c1-6b68d067f6d9",
+      "name": "Webhook",
+      "webhookId": "19a135c1-2775-49c7-b2de-ffe1480fd54d"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        640,
+        -80
+      ],
+      "id": "b3fb2a32-21bd-4640-9b27-338e3d190eac",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "564a6b61-3812-43c5-b569-56cc363fcca3",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        16
+      ],
+      "id": "33c9b965-7862-416f-8dea-4e9c6cfa05fe",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XfSvFexMQIG6dhhp",
+          "mode": "list",
+          "cachedResultName": "تحويلات فودافون كاش",
+          "cachedResultUrl": "/projects/lFi9wldFcvAxrczS/datatables/XfSvFexMQIG6dhhp"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "image": "={{ $json.body.payload.paymentProof }}",
+            "hameOfCastmer": "={{ $json.body.payload.customerName }}",
+            "Transper": "=",
+            "totaOrder": "={{ $json.body.payload.total + $json.body.payload.deliveryFee }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "image",
+              "displayName": "image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "hameOfCastmer",
+              "displayName": "hameOfCastmer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Transper",
+              "displayName": "Transper",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "totaOrder",
+              "displayName": "totaOrder",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        -272
+      ],
+      "id": "f7e9a99d-8310-49be-b456-239f715487af",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1571546-745e-4302-a40e-078decd247a1",
+              "leftValue": "={{ $json.body.payload.paymentProof }}",
+              "rightValue": "'null'",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        32
+      ],
+      "id": "f5841f4a-0499-4123-b7ff-ad68898315be",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "-5016704133",
+        "text": "=🛎️ *طلب جديد مكتمل*\n\n📦 رقم الطلب: *{{ $json.body.payload.id }}*\n👤 العميل: {{ $json.body.payload.customerName }}\n📞 هاتف: {{ $json.body.payload.phone }}\n\n📍 المنطقة: {{ $json.body.payload.area }}\n\n💰 الإجمالي: {{ $json.body.payload.total }} EGP  \n🚚 دليفري: {{ $json.body.payload.deliveryFee }} EGP\n\n💳 طريقة الدفع: *{{ $json.body.payload.paymentMethod }}*\n\n⏰ ⏰ {{ new Date($json.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }}\n\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        80
+      ],
+      "id": "e1e11712-0c3c-48d5-892e-a535a27f70d1",
+      "name": "Send a text message Chasher",
+      "webhookId": "c3a779c3-3bed-491c-8f52-877993068cd1",
+      "credentials": {
+        "telegramApi": {
+          "id": "e39xtBN3ETLVVdZJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "=-5016704133",
+        "binaryData": true,
+        "binaryPropertyName": "paymentProof",
+        "additionalFields": {
+          "caption": "={{ $json.body.payload.paymentMethod }}",
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -112
+      ],
+      "id": "a5c0231a-117a-4f05-9358-6aebe5bfe5ad",
+      "name": "Send a ScreenToAdmin",
+      "webhookId": "7bcdb91f-a925-42cf-b318-02b660508720",
+      "credentials": {
+        "telegramApi": {
+          "id": "e39xtBN3ETLVVdZJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.body.payload.paymentProof; // مسار الصورة\n\nif (!raw || !raw.includes(',')) return [$json];\n\nconst base64Data = raw.split(',')[1].trim();\n\nreturn [\n  {\n    json: $json,\n    binary: {\n      paymentProof: {\n        data: base64Data,\n        mimeType: 'image/jpeg',\n        fileName: `payment_${$json.body.payload.id}.jpg`\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        -96
+      ],
+      "id": "e2e3695b-defd-41d0-872c-24c4b36c6fd6",
+      "name": "potojs"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "potojs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message Chasher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message Chasher": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a ScreenToAdmin": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "potojs": {
+      "main": [
+        [
+          {
+            "node": "Send a ScreenToAdmin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c508143a-faae-4858-b0a9-b79341e45056",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0498bb4bb017a3e51ce4ca282d924b48ec10d02a6c7cc26cf04b1031b5e1252e"
+  },
+  "id": "G-kFuCfxIO9U4VQaxBqLG",
+  "tags": []
+}
