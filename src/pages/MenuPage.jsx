@@ -102,13 +102,13 @@ const MenuPage = () => {
             <ProgressSteps />
 
             {/* Banner Section */}
-            <div className="relative h-64 md:h-80 overflow-hidden">
-                <div className="absolute top-65 right-6 z-30">
+            <div className="relative h-70 md:h-95 overflow-hidden">
+                <div className="absolute top-40 right-10 z-30">
                     <button
                         onClick={() => setShowReservation(true)}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-full font-black text-sm shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition-all hover:scale-110 active:scale-100 border border-emerald-400/30"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-full font-black text-sm shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition-all hover:scale-110 active:scale-100 border border-emerald-400/30"
                     >
-                        <Calendar size={25} className="animate-pulse" />
+                        <Calendar size={22} className="animate-pulse" />
                         <span>أحجز  : مطعم أو كافية </span>
                     </button>
                 </div>
