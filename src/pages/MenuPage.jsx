@@ -106,7 +106,7 @@ const MenuPage = () => {
                 <div className="absolute top-6 right-6 z-30">
                     <button
                         onClick={() => setShowReservation(true)}
-                        className="bg-primary hover:bg-green-600 text-white px-9 py-3 rounded-full font-black text-sm shadow-xl shadow-primary/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-white/20"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white px-9 py-3 rounded-full font-black text-sm shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-emerald-400/30"
                     >
                         <Calendar size={18} className="animate-pulse" />
                         <span>أحجز الآن : مطعم / كافية </span>
@@ -158,7 +158,7 @@ const MenuPage = () => {
 
                         <button
                             onClick={() => setShowReservation(true)}
-                            className="bg-primary/10 p-2.5 rounded-2xl border border-primary/20 text-primary hover:bg-primary hover:text-white transition-all active:scale-90 flex items-center gap-2"
+                            className="bg-emerald-600/10 p-2.5 rounded-2xl border border-emerald-500/20 text-emerald-500 hover:bg-emerald-600 hover:text-white transition-all active:scale-90 flex items-center gap-2"
                             title="حجز طاولة"
                         >
                             <Calendar size={18} />
