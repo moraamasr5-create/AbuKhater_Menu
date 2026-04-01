@@ -5,9 +5,13 @@ import { RESTAURANT_LOCATION, FIXED_AREAS, DEFAULT_DELIVERY_FEE, MAX_DELIVERY_DI
 
 export const CartContext = createContext(null);
 
+/**
+ * 🔴 مزود البيانات (Provider) لإدارة السلة وكل ما يتعلق بالطلب
+ * بيتحكم في حالة المنتجات، الموقع، وطريقة الدفع في كل صفحات التطبيق
+ */
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useLocalStorage('restaurant-cart', []);
-    const [orderType, setOrderType] = useState('delivery'); // 'delivery', 'pickup'
+    const [orderType, setOrderType] = useState('delivery'); // 'delivery' للتوصيل أو 'pickup' للاستلام من الفرع
     const [location, setLocation] = useState(null);
     const [locationMethod, setLocationMethod] = useState('gps'); // 'gps', 'fixed', 'map'
     const [selectedAreaId, setSelectedAreaId] = useState('');
@@ -24,7 +28,8 @@ export const CartProvider = ({ children }) => {
     });
     const [paymentMethod, setPaymentMethod] = useState('instapay');
 
-    // Recalculate fee and distance when location/method changes
+    // 🔴 مراقبة أي تغيير في الموقع أو طريقة الاستلام عشان نحسب التوصيل فوراً
+    // الحسبة دي بتتم في الخلفية وبتحمي السيستم من الأخطاء في مناطق التغطية
     useEffect(() => {
         if (orderType !== 'delivery') {
             setDeliveryFee(0);
@@ -57,7 +62,8 @@ export const CartProvider = ({ children }) => {
     }, [location, locationMethod, selectedAreaId, orderType]);
 
     const addToCart = (item) => {
-        // User requested to NOT open cart automatically
+        if (!item || !item.id) return; // 🛡️ حماية من إضافة عناصر غير صالحة
+        // العميل طلب إن السلة متفتحش أوتوماتيك أول ما يضيف صنف
         setCart((prev) => {
             const existing = prev.find((i) => i.id === item.id);
             if (existing) {

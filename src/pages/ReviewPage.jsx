@@ -9,10 +9,14 @@ import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils
 import { formatCurrency } from '../utils/formatters';
 
 const ReviewPage = () => {
+    /**
+     * 🔴 الدالة المسؤولة عن حساب إجمالي الطلب ومراجعته قبل الدفع
+     * بتتأكد إن السلة مش فاضية وبتحسب فرق السعر بين التوصيل والاستلام
+     */
     const { cart, orderType, setOrderType, deliveryFee, clearCart } = useCart();
     const navigate = useNavigate();
 
-    if (cart.length === 0) {
+    if (cart.length === 0) { // 🛡️ حماية لو العميل دخل الصفحة دي والسلة فاضية
         navigate('/');
         return null;
     }
@@ -42,6 +46,7 @@ const ReviewPage = () => {
     const remaining = pickupSubtotalHalf;
     const paidNow = requiredDeposit + serviceFee;
 
+    // 🔴 تحديد المبلغ الإجمالي بناءً على نوع الطلب (توصيل أو استلام)
     const total = orderType === 'delivery' ? (subtotal + deliveryFee) : pickupTotal;
 
     return (

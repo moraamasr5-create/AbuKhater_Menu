@@ -99,6 +99,10 @@ const CartDrawer = () => {
         return null;
     };
 
+    /**
+     * 🔴 الدالة المسؤولة عن معالجة طلب العميل من السلة (Cart)
+     * بتجمع البيانات وبتبعتها فوراً لـ n8n كطلب جديد (pending)
+     */
     const handleCreateOrder = async (e) => {
         e.preventDefault();
         setErrors({ gps: null, form: null });
@@ -113,35 +117,47 @@ const CartDrawer = () => {
 
         setIsSubmitting(true);
 
-        // Prepare n8n Payload with Arabic Keys
+        // جلب آخر رقم طلب من التخزين المحلي لضمان التتابع التصاعدي (#1, #2, #3)
+        const lastCount = parseInt(localStorage.getItem('order_sequence_num') || '0');
+        const nextCount = lastCount + 1;
+        const order_id = `#${nextCount}`;
+
+        // 🎯 EXACT Required Payload Format
         const payload = {
-            العميل: {
-                الاسم_الكامل: formData.name,
-                الهاتف_1: formData.phone1,
-                الهاتف_2: formData.phone2,
-                طريقة_الدفع: orderType === 'pickup' ? paymentMethod : 'cash_on_delivery',
-                العنوان: orderType === 'delivery' ? formData.address : 'استلام من المطعم'
+            order_id: order_id,
+            status: "pending",
+            customer: {
+                name: formData.name || "Unknown",
+                phone: formData.phone1 || "Unknown",
+                address: orderType === 'delivery' ? formData.address : 'استلام من المطعم'
             },
-            الطلب: {
-                السعر_الإجمالي: total,
-                المبلغ_المدفوع: orderType === 'pickup' ? requiredDeposit : 0,
-                الباقي: orderType === 'pickup' ? remainingDate : total,
-                رسوم_الخدمة: serviceFee,
-                نوع_الطلب: orderType,
-                مدة_التجهيز: "30 دقيقة", // Default estimation
-                تاريخ_الطلب: new Date().toISOString(),
-                العناصر: cart.map(item => ({
-                    اسم_المنتج: item.name,
-                    الكمية: item.quantity,
-                    السعر: item.price,
-                    الإجمالي: item.price * item.quantity
-                }))
+            items: cart.map(item => ({
+                name: item.name,
+                quantity: item.quantity
+            })),
+            totals: {
+                total: total,
+                delivery_fee: orderType === 'delivery' ? deliveryFee : 0
             },
-            location: location
+            created_at: new Date().toISOString()
         };
 
         try {
-            await n8nService.submitOrder(payload);
+            const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // Advance sequence on success
+            localStorage.setItem('order_sequence_num', nextCount.toString());
+
             // Success UX
             alert(orderType === 'pickup'
                 ? `تم تسجيل الطلب! يرجى تحويل مبلغ ${requiredDeposit} جنيه عبر ${paymentMethod === 'instapay' ? 'إنستا باي' : 'فودافون كاش'} خلال ${formatTime(timeLeft)}`
@@ -188,7 +204,12 @@ const CartDrawer = () => {
                             <div className="space-y-3">
                                 {cart.map(item => (
                                     <div key={item.id} className="bg-dark-900 p-3 rounded-[1.25rem] border border-white/5 flex gap-4 shadow-sm">
-                                        <img src={item.image} alt={item.name} className="w-[4.5rem] h-[4.5rem] rounded-[1rem] object-cover bg-dark-800" />
+                                        <img 
+                                            src={item.image || '/logo.jpg'} 
+                                            alt={item.name} 
+                                            className="w-[4.5rem] h-[4.5rem] rounded-[1rem] object-cover bg-dark-800"
+                                            onError={(e) => e.target.src = '/logo.jpg'} 
+                                        />
                                         <div className="flex-1 flex flex-col justify-between py-0.5">
                                             <div className="flex justify-between items-start">
                                                 <h4 className="font-bold text-slate-200 text-sm leading-tight pr-2">{item.name}</h4>

@@ -101,6 +101,10 @@ const PaymentPage = () => {
 
     const estimatedTime = getEstimatedTime();
 
+    /**
+     * 🔴 الدالة المسؤولة عن معالجة صورة إثبات الدفع (Screenshot)
+     * بتتأكد إن الحجم مناسب وبتحولها لـ Base64 عشان نقدر نعرضها أو نبعتها
+     */
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -127,7 +131,13 @@ const PaymentPage = () => {
         setScreenshot(null);
     };
 
+    /**
+     * 🔴 الدالة الأساسية لتأكيد الطلب وإرساله لـ n8n
+     * بتجمع بيانات العميل، الأصناف، وصورة الدفع وبتبعتهم في طلب واحد
+     */
     const handleConfirmPayment = async () => {
+        if (isSubmitting) return; // حماية ضد الضغط المتكرر
+
         if ((!isCash || (isCash && isPickup)) && !screenshot) {
             setSubmitError('يرجى رفع صورة إيصال التحويل (Screenshot) للمتابعة.');
             return;
@@ -135,11 +145,44 @@ const PaymentPage = () => {
 
         setIsSubmitting(true);
 
-        // جلب آخر رقم طلب من التخزين المحلي لضمان التتابع التصاعدي (#1, #2, #3)
+        // 🔴 جلب رقم الطلب التسلسلي (#1, #2...) من الذاكرة المحلية
         const lastCount = parseInt(localStorage.getItem('order_sequence_num') || '0');
         const nextCount = lastCount + 1;
         const orderId = `#${nextCount}`;
 
+        // 🎯 بناء هيكل البيانات المطلوب تماماً لـ n8n ولشيت جوجل
+        // نأكد على إرسال الـ items كمصفوفة JSON صحيحة، مع إدراج طريقة الدفع وصورة الإيصال
+        const orderPayload = {
+            order_id: orderId,
+            status: "pending",
+            order_type: orderType,
+            created_at: new Date().toISOString(),
+            customer: {
+                name: customerData.name || "Unknown",
+                phone_primary: customerData.phone1 || "Unknown",
+                phone_secondary: customerData.phone2 || "",
+                address: customerData.address || (isPickup ? "استلام من الفرع" : "لم يتم تحديد العنوان"),
+                coordinates: location ? {
+                    lat: location.lat,
+                    lon: location.lon
+                } : null
+            },
+            payment: {
+                method: paymentMethod,
+                amount_total: finalTotal,
+                amount_paid: paidNow,
+                amount_remaining: remaining,
+                delivery_fee: deliveryFee || 0,
+                screenshot: screenshot // 🖼️ إرسال صورة إثبات الدفع (Base64)
+            },
+            items: cart.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+            }))
+        };
+
+        // Existing orderData for local state and legacy support
         const orderData = {
             restaurant: "مطعم أبو خاطر",
             order_id: orderId,
@@ -188,58 +231,54 @@ const PaymentPage = () => {
             console.log('🎯 بدء تأكيد الطلب...');
             setSubmitError(null);
 
-            const health = await n8nService.checkHealth();
-            if (!health.healthy) {
-                console.warn('⚠️ اتصال n8n ضعيف:', health);
-            }
-
-            let attempts = 0;
-            let result;
-
-            while (attempts < 3) {
-                attempts++;
-                console.log(`🔄 المحاولة ${attempts} من 3`);
-
-                try {
-                    result = await n8nService.submitOrder(orderData);
-                    if (result && (result.success || result.order_id || result.status)) {
-                        console.log('✅ تأكيد ناجح:', result);
-                        break;
-                    }
-                } catch (error) {
-                    console.error(`❌ فشلت المحاولة ${attempts}:`, error);
-                    if (attempts < 3) {
-                        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
-                    } else {
-                        throw error;
-                    }
-                }
-            }
-
-            if (result) {
-                setSuccessData({
-                    orderId: result.order_id || orderId,
-                    orderNumber: result.order_number || orderId,
-                    customerName: customerData.name,
-                    totalAmount: finalTotal,
-                    estimatedTime: estimatedTime,
-                    itemsCount: cart.reduce((s, i) => s + i.quantity, 0),
-                    status: 'success',
-                    timestamp: new Date().toISOString()
+            // 🚀 Send production payload to webhook as requested
+            try {
+                const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(orderPayload)
                 });
 
-                try {
-                    localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
-                        order: orderData,
-                        response: result,
-                        timestamp: new Date().toISOString()
-                    }));
-                } catch (e) {
-                    console.error('Failed to save to localStorage', e);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                console.log('✅ Structured order payload sent to n8n');
+            } catch (error) {
+                console.error('⚠️ n8n webhook error:', error);
+                throw new Error('فشل إرسال الطلب. يرجى التحقق من الاتصال والمحاولة مرة أخرى.'); // Fail gracefully and show error banner
+            }
 
-                setIsSuccess(true);
-                localStorage.setItem('order_sequence_num', nextCount.toString());
+            // Record success data immediately since we succeeded
+            setSuccessData({
+                orderId: orderId,
+                orderNumber: orderId,
+                customerName: customerData.name,
+                totalAmount: finalTotal,
+                estimatedTime: estimatedTime,
+                itemsCount: cart.reduce((s, i) => s + i.quantity, 0),
+                items: [...cart],
+                paymentMethod: paymentMethod,
+                paymentNumber: paymentNumber,
+                status: 'success',
+                timestamp: new Date().toISOString()
+            });
+
+            setIsSuccess(true);
+            localStorage.setItem('order_sequence_num', nextCount.toString());
+
+            // Try legacy sync in background just in case, but don't block
+            n8nService.submitOrder(orderData).catch(e => console.log('Legacy sync skipped/failed', e));
+
+            try {
+                localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
+                    order: orderData,
+                    timestamp: new Date().toISOString()
+                }));
+            } catch (e) {
+                console.error('Failed to save to localStorage', e);
             }
         } catch (error) {
             console.error('💀 خطأ نهائي في تأكيد الدفع:', error);
@@ -287,7 +326,9 @@ const PaymentPage = () => {
         }
     }, [successData]);
 
-    const paymentNumber = paymentMethod === 'instapay' ? 'abu_khatar@instapay' : '01144423700';
+    const paymentNumber = paymentMethod === 'instapay'
+        ? 'abu_khatar@instapay'
+        : (paymentMethod === 'vodafone_cash' ? '01144423700' : '');
 
     return (
         <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">

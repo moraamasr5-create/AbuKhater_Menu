@@ -3,6 +3,7 @@ import { n8nService } from '../services/api';
 import useCart from '../hooks/useCart';
 import StickyCartBar from '../components/cart/StickyCartBar';
 import ProgressSteps from '../components/checkout/ProgressSteps';
+import ReservationModal from '../components/reservation/ReservationModal';
 import {
     UtensilsCrossed,
     Search,
@@ -12,7 +13,8 @@ import {
     Inbox,
     ChevronDown,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Calendar
 } from 'lucide-react';
 import restaurantLogo from '../assets/logo.jpg';
 import restaurantBanner from '../assets/banner.jpg';
@@ -26,6 +28,7 @@ const MenuPage = () => {
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
+    const [showReservation, setShowReservation] = useState(false);
 
     // Monitoring scroll for header effects
     useEffect(() => {
@@ -43,15 +46,12 @@ const MenuPage = () => {
             if (!items || items.length === 0) throw new Error('لا توجد عناصر حالياً');
 
             setMenuItems(items);
-            const uniqueCategories = ['all', ...new Set(items.map(item => item.category))];
-            setCategories(uniqueCategories);
             setError(null);
         } catch (err) {
             console.error('Fetch error:', err);
             setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
             const fallback = n8nService.getFallbackMenu();
             setMenuItems(fallback);
-            setCategories(['all', ...new Set(fallback.map(item => item.category))]);
         } finally {
             setLoading(false);
         }
@@ -61,9 +61,25 @@ const MenuPage = () => {
         loadMenu();
     }, []);
 
+    /**
+     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على البيانات
+     */
+    useEffect(() => {
+        if (menuItems.length > 0) {
+            const uniqueCategories = ['all', ...new Set(menuItems.map(item => item.category).filter(Boolean))];
+            setCategories(uniqueCategories);
+        }
+    }, [menuItems]);
+
+    /**
+     * 🔴 تصفية المنتجات بناءً على التصنيف المختار (Categories) 
+     * أو بناءً على كلمة البحث (الاسم والوصف)
+     */
     const filteredItems = menuItems.filter(item => {
         const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
-        const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = 
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesCategory && matchesSearch;
     });
 
@@ -87,6 +103,16 @@ const MenuPage = () => {
 
             {/* Banner Section */}
             <div className="relative h-64 md:h-80 overflow-hidden">
+                <div className="absolute top-6 right-6 z-30">
+                    <button
+                        onClick={() => setShowReservation(true)}
+                        className="bg-primary hover:bg-green-600 text-white px-9 py-3 rounded-full font-black text-sm shadow-xl shadow-primary/25 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-white/20"
+                    >
+                        <Calendar size={18} className="animate-pulse" />
+                        <span>أحجز الآن : مطعم / كافية </span>
+                    </button>
+                </div>
+
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-dark-950 z-10"></div>
                 <img
                     src={restaurantBanner}
@@ -129,9 +155,17 @@ const MenuPage = () => {
                         >
                             <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} />
                         </button>
+
+                        <button
+                            onClick={() => setShowReservation(true)}
+                            className="bg-primary/10 p-2.5 rounded-2xl border border-primary/20 text-primary hover:bg-primary hover:text-white transition-all active:scale-90 flex items-center gap-2"
+                            title="حجز طاولة"
+                        >
+                            <Calendar size={18} />
+                            <span className="text-xs font-black hidden sm:block">حجز</span>
+                        </button>
                     </div>
 
-                    {/* Categories Scrollable Bar */}
                     {/* Categories Scrollable Bar with Navigation */}
                     <div className="relative flex items-center gap-1">
                         <button
@@ -144,9 +178,13 @@ const MenuPage = () => {
                             <ChevronRight size={16} />
                         </button>
 
-                        <div id="categories-scroll" className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mask-fade pr-1 flex-1 scroll-smooth">
+                        <div id="categories-scroll" className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mask-fade pr-1 flex-1 scroll-smooth" dir="rtl">
                             {categories.map((catId) => {
                                 const data = categoryData[catId] || { label: catId, icon: '🍽️' };
+                                const count = catId === 'all' 
+                                    ? menuItems.length 
+                                    : menuItems.filter(i => i.category === catId).length;
+
                                 return (
                                     <button
                                         key={catId}
@@ -157,11 +195,9 @@ const MenuPage = () => {
                                     >
                                         <span>{data.icon}</span>
                                         <span>{data.label}</span>
-                                        {catId !== 'all' && (
-                                            <span className={`text-[8px] px-1 rounded-md ${activeCategory === catId ? 'bg-white/20' : 'bg-dark-700/50'}`}>
-                                                {menuItems.filter(i => i.category === catId).length}
-                                            </span>
-                                        )}
+                                        <span className={`text-[8px] px-1 rounded-md ${activeCategory === catId ? 'bg-white/20' : 'bg-dark-700/50'}`}>
+                                            {count}
+                                        </span>
                                     </button>
                                 );
                             })}
@@ -190,7 +226,7 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* Menu Grid */}
+            {/* Products Grid */}
             <main className="max-w-6xl mx-auto px-4 mt-8">
                 {loading && menuItems.length === 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -199,7 +235,7 @@ const MenuPage = () => {
                         ))}
                     </div>
                 ) : filteredItems.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredItems.map((item) => {
                             const cartItem = cart.find(i => i.id === item.id);
                             const qty = cartItem ? cartItem.quantity : 0;
@@ -213,10 +249,10 @@ const MenuPage = () => {
                                     {/* Image Section */}
                                     <div className="relative h-56 overflow-hidden">
                                         <img
-                                            src={item.image || 'https://via.placeholder.com/400x300?text=Abu+Khatar'}
+                                            src={item.image || restaurantLogo}
                                             alt={item.name}
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            onError={(e) => e.target.src = 'https://via.placeholder.com/400x300?text=Food'}
+                                            onError={(e) => e.target.src = restaurantLogo}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60"></div>
 
@@ -295,27 +331,21 @@ const MenuPage = () => {
                 )}
             </main>
 
-            {/* Professional Footer */}
+            {/* Footer */}
             <footer className="max-w-6xl mx-auto px-4 mt-20 pb-20 border-t border-white/5">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-12">
                     <div className="text-center md:text-right">
-                        <h4 className="text-white font-black mb-4" > للتواصل </h4>
+                        <h4 className="text-white font-black mb-4"> للتواصل </h4>
                         <p className="text-slate-400 text-sm">اتصل بنا: 01080804069</p>
                         <p className="text-slate-400 text-sm">واتساب: 01144423700</p>
-                        <h4 className="text-white font-black mb-4" >رقم الشكاوي والمقترحات</h4>
+                        <h4 className="text-white font-black mb-4">رقم الشكاوي والمقترحات</h4>
                         <p className="text-slate-400 text-sm">اتصل بنا: 01140449940</p>
                     </div>
                     <div className="text-center">
                         <h4 className="text-white font-black mb-4">ساعات العمل</h4>
-                        <p className="text-slate-400 text-sm">خدمة التوصيل  : كل يوم من 8 صباحآ حتا 4 فجرآ
-                        </p>
-                        <p>
-                        </p>
+                        <p className="text-slate-400 text-sm">خدمة التوصيل : كل يوم من 8 صباحآ حتا 4 فجرآ</p>
                         <div className="inline-block mt-4 bg-emerald-500/10 text-emerald-400 px-4 py-1 rounded-full text-xs font-bold border border-emerald-500/20">
-                            نحن نعمل الآن :
-                            <br />
-                            المطعم يعمل علي مدار 24 ساعة
-
+                            نحن نعمل الآن : المطعم يعمل علي مدار 24 ساعة
                         </div>
                     </div>
                     <div className="text-center md:text-left">
@@ -335,6 +365,11 @@ const MenuPage = () => {
             </footer>
 
             <StickyCartBar />
+
+            <ReservationModal 
+                isOpen={showReservation} 
+                onClose={() => setShowReservation(false)} 
+            />
         </div>
     );
 };

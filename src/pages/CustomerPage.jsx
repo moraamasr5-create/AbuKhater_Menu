@@ -18,6 +18,10 @@ import ProgressSteps from '../components/checkout/ProgressSteps';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const CustomerPage = () => {
+    /**
+     * 🔴 الصفحة المسؤولة عن جمع بيانات العميل (الاسم، الهاتف، والعنوان)
+     * بتستخدم الـ GPS أو الخريطة لتحديد المكان بدقة لضمان سرعة التوصيل
+     */
     const navigate = useNavigate();
     const {
         orderType, customerData, setCustomerData,
@@ -282,8 +286,8 @@ const CustomerPage = () => {
 
             <div className="max-w-md mx-auto w-full px-4 pt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <header className="text-center space-y-1">
-                    <h2 className="text-2xl font-black text-white display-font">إكمال البيانات</h2>
-                    <p className="text-slate-400 text-xs font-bold">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
+                    <h2 className="text-2xl md:text-3xl font-black text-white display-font">إكمال البيانات</h2>
+                    <p className="text-slate-400 text-xs md:text-sm font-bold">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
                 </header>
 
                 {/* Section 1: Personal Info */}
@@ -485,9 +489,9 @@ const CustomerPage = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {[
-                            { id: 'instapay', label: 'InstaPay' },
-                            { id: 'vodafone_cash', label: 'Etisalat' },
-                            { id: 'cash', label: 'كاش' }
+                            { id: 'cash', label: 'نقدي' },
+                            { id: 'vodafone_cash', label: 'فودافون كاش' },
+                            { id: 'instapay', label: 'انستاباي' }
                         ].map(method => (
                             <button
                                 key={method.id}
