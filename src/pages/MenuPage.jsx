@@ -77,7 +77,7 @@ const MenuPage = () => {
      */
     const filteredItems = menuItems.filter(item => {
         const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
-        const matchesSearch = 
+        const matchesSearch =
             item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesCategory && matchesSearch;
@@ -103,13 +103,13 @@ const MenuPage = () => {
 
             {/* Banner Section */}
             <div className="relative h-64 md:h-80 overflow-hidden">
-                <div className="absolute top-6 right-6 z-30">
+                <div className="absolute top-65 right-6 z-30">
                     <button
                         onClick={() => setShowReservation(true)}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white px-9 py-3 rounded-full font-black text-sm shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-emerald-400/30"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-full font-black text-sm shadow-xl shadow-emerald-600/30 flex items-center gap-2 transition-all hover:scale-110 active:scale-100 border border-emerald-400/30"
                     >
-                        <Calendar size={18} className="animate-pulse" />
-                        <span>أحجز الآن : مطعم / كافية </span>
+                        <Calendar size={25} className="animate-pulse" />
+                        <span>أحجز  : مطعم أو كافية </span>
                     </button>
                 </div>
 
@@ -181,8 +181,8 @@ const MenuPage = () => {
                         <div id="categories-scroll" className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mask-fade pr-1 flex-1 scroll-smooth" dir="rtl">
                             {categories.map((catId) => {
                                 const data = categoryData[catId] || { label: catId, icon: '🍽️' };
-                                const count = catId === 'all' 
-                                    ? menuItems.length 
+                                const count = catId === 'all'
+                                    ? menuItems.length
                                     : menuItems.filter(i => i.category === catId).length;
 
                                 return (
@@ -366,9 +366,9 @@ const MenuPage = () => {
 
             <StickyCartBar />
 
-            <ReservationModal 
-                isOpen={showReservation} 
-                onClose={() => setShowReservation(false)} 
+            <ReservationModal
+                isOpen={showReservation}
+                onClose={() => setShowReservation(false)}
             />
         </div>
     );
