@@ -8,7 +8,8 @@ const N8N_BASE_URL = 'https://restaurant1abukhater.app.n8n.cloud/webhook-test';
  */
 export const n8nService = {
     /**
-     * Fetch menu with robust error handling and structure detection
+     * 🔴 الدالة المسؤولة عن تحميل المنيو (القائمة) من n8n
+     * بتقوم بسحب البيانات وتحويلها لشكل يفهمه التطبيق، مع نظام حماية "Fallback"
      */
     async fetchMenu() {
         console.group('🌐 جاري تحميل القائمة من n8n');
@@ -37,7 +38,7 @@ export const n8nService = {
                 ok: response.ok
             });
 
-            // قراءة النص الخام أولاً
+            // 🛡️ قراءة الاستجابة كـ Text أولاً لتجنب الـ Crash في حالة وجود خطأ
             const rawText = await response.text();
             console.log('📝 الاستجابة الخام:', rawText.substring(0, 200));
 
@@ -160,7 +161,8 @@ export const n8nService = {
     },
 
     /**
-     * Submit Order with detailed logging and error reporting
+     * 🔴 إرسال الطلب النهائي لـ n8n ولشيت جوجل
+     * بتجرب تبعت الطلب أكتر من مرة في حالة فشل الشبكة، وبتحول البيانات لمصفوفة JSON سليمة
      */
     async submitOrder(payload) {
         console.group('🚀 إرسال الطلب إلى n8n');
@@ -383,6 +385,52 @@ export const n8nService = {
             return result;
         } catch (error) {
             console.error('❌ فشل الاختبار:', error);
+            console.groupEnd();
+            throw error;
+        }
+    },
+
+    /**
+     * 🟣 إرسال طلب حجز طاولة إلى n8n
+     * يتم إرسال بيانات العميل، موعد الحجز، وصورة إثبات الدفع (العربون)
+     */
+    async submitReservation(payload) {
+        console.group('📅 إرسال طلب حجز طاولة');
+        try {
+            console.log('📤 بيانات الحجز:', payload);
+
+            const response = await fetch(`${N8N_BASE_URL}/reservation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Request-Source': 'restaurant-web-app'
+                },
+                body: JSON.stringify({
+                    ...payload,
+                    type: 'reservation',
+                    timestamp: new Date().toISOString()
+                }),
+            });
+
+            const rawText = await response.text();
+            let result;
+            try {
+                result = rawText ? JSON.parse(rawText) : {};
+                if (Array.isArray(result)) result = result[0];
+            } catch (e) {
+                result = { success: false, error: 'Invalid response from server' };
+            }
+
+            if (!response.ok) {
+                throw new Error(result.message || result.error || `خطأ ${response.status}`);
+            }
+
+            console.log('✅ تم استلام الحجز:', result);
+            console.groupEnd();
+            return result;
+        } catch (error) {
+            console.error('❌ فشل إرسال الحجز:', error);
             console.groupEnd();
             throw error;
         }

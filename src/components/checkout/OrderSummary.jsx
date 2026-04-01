@@ -7,31 +7,43 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
     const { updateQuantity } = useCart();
 
     return (
-        <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden mb-6">
-            <div className="p-4 border-b border-slate-700">
-                <h3 className="font-bold text-slate-100 mb-4">ملخص الطلب</h3>
+        <div className="bg-dark-950 rounded-2xl flex flex-col mb-1.5">
+            <div className="p-4 border-b border-white/5 space-y-4">
+                <div className="flex justify-between items-center text-slate-300">
+                    <h3 className="text-[13px] font-black uppercase tracking-widest">ملخص الطلب</h3>
+                    <span className="text-[10px] font-bold bg-dark-800 px-2 py-1 rounded-md">{cart.length} أصناف</span>
+                </div>
+                
                 <div className="space-y-4">
                     {cart.map(item => (
-                        <div key={item.id} className="flex justify-between items-center text-sm group">
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1 bg-slate-900 border border-slate-700 rounded-lg p-0.5">
+                        <div key={item.id} className="flex justify-between items-start gap-4 group">
+                            <div className="flex flex-1 items-start gap-3">
+                                {/* Quantity Toggles */}
+                                <div className="flex items-center bg-dark-900 border border-white/5 rounded-xl p-1 shrink-0 shadow-sm">
                                     <button
                                         onClick={() => updateQuantity(item.id, 1)}
-                                        className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary rounded-md transition-all active:scale-90"
+                                        className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary/20 rounded-lg transition-all active:scale-90"
                                     >
-                                        <Plus size={10} />
+                                        <Plus size={14} />
                                     </button>
-                                    <span className="min-w-[1.25rem] text-center font-bold text-white text-xs">{item.quantity}</span>
+                                    <span className="min-w-[1.5rem] text-center font-bold text-white text-sm">{item.quantity}</span>
                                     <button
                                         onClick={() => updateQuantity(item.id, -1)}
-                                        className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-800 rounded-md transition-all active:scale-90"
+                                        className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all active:scale-90"
                                     >
-                                        <Minus size={10} />
+                                        <Minus size={14} />
                                     </button>
                                 </div>
-                                <span className="text-slate-300 font-medium whitespace-nowrap">{item.name}</span>
+                                
+                                {/* Item Details */}
+                                <div className="pt-1.5">
+                                    <p className="text-sm font-bold text-slate-200 leading-tight">{item.name}</p>
+                                    <p className="text-[11px] text-slate-500 font-bold mt-0.5">{formatCurrency(item.price)}</p>
+                                </div>
                             </div>
-                            <span className="text-slate-100 font-bold font-mono">
+                            
+                            {/* Line Total */}
+                            <span className="text-sm font-black text-white pt-1.5">
                                 {formatCurrency(item.price * item.quantity)}
                             </span>
                         </div>
@@ -39,44 +51,44 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
                 </div>
             </div>
 
-            <div className="p-4 bg-slate-900/50 space-y-2 text-sm">
-                <div className="flex justify-between text-slate-400">
+            <div className="p-4 bg-dark-900/50 space-y-3">
+                <div className="flex justify-between items-center text-xs font-bold text-slate-400">
                     <span>المجموع الفرعي</span>
-                    <span>{formatCurrency(subtotal)}</span>
+                    <span className="text-slate-300">{formatCurrency(subtotal)}</span>
                 </div>
 
                 {orderType === 'delivery' && (
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between items-center text-xs font-bold text-slate-400">
                         <span>رسوم التوصيل</span>
-                        <span>{formatCurrency(deliveryFee)}</span>
+                        <span className="text-slate-300">{formatCurrency(deliveryFee)}</span>
                     </div>
                 )}
 
                 {orderType === 'pickup' && (
-                    <div className="flex justify-between text-slate-400">
+                    <div className="flex justify-between items-center text-xs font-bold text-slate-400">
                         <span>رسوم الخدمة</span>
-                        <span>{formatCurrency(serviceFee)}</span>
+                        <span className="text-slate-300">{formatCurrency(serviceFee)}</span>
                     </div>
                 )}
 
-                <div className="my-2 border-t border-slate-700"></div>
-
-                <div className="flex justify-between text-slate-100 font-bold text-lg">
-                    <span>الإجمالي</span>
-                    <span>{formatCurrency(total)}</span>
+                <div className="pt-2 border-t border-white/5">
+                    <div className="flex justify-between items-center text-white">
+                        <span className="text-sm font-black">الإجمالي</span>
+                        <span className="text-lg font-black display-font text-primary">{formatCurrency(total)}</span>
+                    </div>
                 </div>
 
                 {orderType === 'pickup' && (
-                    <>
-                        <div className="flex justify-between text-emerald-400 font-bold mt-2 bg-emerald-400/10 p-2 rounded">
-                            <span>المطلوب دفعه الآن (شامل الرسوم)</span>
-                            <span>{formatCurrency(paidNow)}</span>
+                    <div className="mt-3 flex flex-col gap-1.5 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20">
+                        <div className="flex justify-between items-center">
+                            <span className="text-[11px] font-black text-emerald-400 uppercase tracking-widest">المطلوب دفعه الآن</span>
+                            <span className="font-black text-emerald-400">{formatCurrency(paidNow)}</span>
                         </div>
-                        <div className="flex justify-between text-slate-500 text-xs px-2">
-                            <span>المتبقي عند الاستلام</span>
-                            <span>{formatCurrency(remaining)}</span>
+                        <div className="flex justify-between items-center opacity-80">
+                            <span className="text-[10px] font-bold text-slate-400">المتبقي عند الاستلام</span>
+                            <span className="text-[10px] font-bold text-slate-400">{formatCurrency(remaining)}</span>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </div>

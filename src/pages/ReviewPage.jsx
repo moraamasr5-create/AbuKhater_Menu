@@ -9,10 +9,14 @@ import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils
 import { formatCurrency } from '../utils/formatters';
 
 const ReviewPage = () => {
+    /**
+     * 🔴 الدالة المسؤولة عن حساب إجمالي الطلب ومراجعته قبل الدفع
+     * بتتأكد إن السلة مش فاضية وبتحسب فرق السعر بين التوصيل والاستلام
+     */
     const { cart, orderType, setOrderType, deliveryFee, clearCart } = useCart();
     const navigate = useNavigate();
 
-    if (cart.length === 0) {
+    if (cart.length === 0) { // 🛡️ حماية لو العميل دخل الصفحة دي والسلة فاضية
         navigate('/');
         return null;
     }
@@ -42,70 +46,83 @@ const ReviewPage = () => {
     const remaining = pickupSubtotalHalf;
     const paidNow = requiredDeposit + serviceFee;
 
+    // 🔴 تحديد المبلغ الإجمالي بناءً على نوع الطلب (توصيل أو استلام)
     const total = orderType === 'delivery' ? (subtotal + deliveryFee) : pickupTotal;
 
     return (
-        <div className="min-h-screen pb-24 bg-slate-950">
+        <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
 
-            <div className="max-w-md mx-auto p-4 pt-6">
-                <h2 className="text-2xl font-bold text-slate-100 mb-6">مراجعة الطلب</h2>
+            <div className="max-w-md mx-auto w-full p-4 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+                <header className="text-center space-y-1">
+                    <h2 className="text-2xl font-black text-white display-font">مراجعة الطلب</h2>
+                    <p className="text-slate-400 text-xs font-bold">تأكد من طلبك واختر طريقة الاستلام</p>
+                </header>
 
-                <OrderSummary
-                    cart={cart}
-                    subtotal={subtotal}
-                    deliveryFee={deliveryFee}
-                    serviceFee={serviceFee}
-                    total={total}
-                    orderType={orderType}
-                    paidNow={paidNow}
-                    remaining={remaining}
-                />
+                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-1 overflow-hidden shadow-sm">
+                    <OrderSummary
+                        cart={cart}
+                        subtotal={subtotal}
+                        deliveryFee={deliveryFee}
+                        serviceFee={serviceFee}
+                        total={total}
+                        orderType={orderType}
+                        paidNow={paidNow}
+                        remaining={remaining}
+                    />
+                </div>
 
                 <div className="space-y-4">
-                    <h3 className="font-bold text-slate-200">طريقة الاستلام</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <h3 className="text-[13px] font-black text-slate-300 px-2 uppercase tracking-widest flex items-center gap-2">
+                        <Store size={16} className="text-primary" /> طريقة الاستلام
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 px-1">
                         <button
                             onClick={() => setOrderType('delivery')}
-                            className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-3 ${orderType === 'delivery'
-                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
-                                : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
-                                }`}
+                            className={`p-5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center gap-3 active:scale-95 ${
+                                orderType === 'delivery'
+                                    ? 'bg-gradient-to-br from-primary to-orange-500 border-transparent text-white shadow-lg shadow-primary/20'
+                                    : 'bg-dark-900 border-dark-800 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                            }`}
                         >
-                            <Bike size={32} />
-                            <span className="font-bold">توصيل للمنزل</span>
+                            <Bike size={32} className={orderType === 'delivery' ? 'opacity-100' : 'opacity-70'} />
+                            <span className="font-bold text-sm">توصيل للمنزل</span>
                         </button>
 
                         <button
                             onClick={() => setOrderType('pickup')}
-                            className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-3 ${orderType === 'pickup'
-                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
-                                : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
-                                }`}
+                            className={`p-5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center gap-3 active:scale-95 ${
+                                orderType === 'pickup'
+                                    ? 'bg-gradient-to-br from-primary to-orange-500 border-transparent text-white shadow-lg shadow-primary/20'
+                                    : 'bg-dark-900 border-dark-800 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                            }`}
                         >
-                            <Store size={32} />
-                            <div className="text-center">
-                                <span className="block font-bold">استلام من المطعم</span>
-                                <span className="text-xs opacity-75">دفع 50% </span>
+                            <Store size={32} className={orderType === 'pickup' ? 'opacity-100' : 'opacity-70'} />
+                            <div className="text-center space-y-0.5">
+                                <span className="block font-bold text-sm">استلام من المطعم</span>
+                                <span className={`text-[10px] ${orderType === 'pickup' ? 'text-white/80' : 'text-slate-500'}`}>دفع 50%</span>
                             </div>
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <div className="mt-8 flex gap-3">
+            {/* Fixed Bottom Action Bar for Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 bg-dark-950/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+                <div className="max-w-md mx-auto flex gap-3">
                     <button
                         onClick={() => navigate('/')}
-                        className="flex-1 py-4 rounded-xl font-bold text-slate-400 border border-slate-700 hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 h-14 rounded-2xl font-bold border border-white/10 bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
                     >
-                        <ArrowRight size={20} />
-                        <span>عودة</span>
+                        <ArrowRight size={18} />
+                        <span className="text-sm">عودة</span>
                     </button>
                     <button
                         onClick={() => navigate('/customer')}
-                        className="flex-[2] bg-primary text-white py-4 rounded-xl font-bold shadow-lg hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="flex-[2] h-14 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
                     >
-                        <span>المتابعة</span>
-                        <ArrowLeft size={20} className="rtl:rotate-180" />
+                        <span className="text-[15px]">المتابعة</span>
+                        <ArrowLeft size={18} className="rtl:rotate-180" />
                     </button>
                 </div>
             </div>
