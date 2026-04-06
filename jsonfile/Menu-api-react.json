@@ -3,25 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 9
-            }
-          ]
-        }
-      },
-      "id": "d2983809-6697-451d-90a0-d12037fedaeb",
-      "name": "Schedule Menu Broadcast",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -288,
-        240
-      ]
-    },
-    {
-      "parameters": {
         "documentId": {
           "__rl": true,
           "value": "16t99AWWDaGfev_JLa-HhiCM4VR2GQ04UvYjjMar5g5c",
@@ -112,17 +93,6 @@
   ],
   "pinData": {},
   "connections": {
-    "Schedule Menu Broadcast": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get row(s) in sheet": {
       "main": [
         [

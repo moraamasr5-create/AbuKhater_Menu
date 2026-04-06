@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { X, MapPin, Bike, Store, Trash2, AlertCircle } from 'lucide-react';
+import { X, MapPin, Bike, Store, Trash2, AlertCircle, Minus, Plus } from 'lucide-react';
 import useCart from '../../hooks/useCart';
 import { formatCurrency } from '../../utils/formatters';
-import { n8nService } from '../../services/api';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const CartDrawer = () => {
@@ -173,14 +172,14 @@ const CartDrawer = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/75 backdrop-blur-md animate-in fade-in duration-300">
             <div
-                className="bg-dark-950 w-full max-w-lg h-[95vh] sm:h-[85vh] rounded-t-[2rem] sm:rounded-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border border-white/10 flex flex-col overflow-hidden animate-in slide-in-from-bottom-full duration-500"
+                className="bg-dark-950 w-full max-w-lg h-[92dvh] sm:h-[85vh] max-h-[720px] rounded-t-[1.75rem] sm:rounded-[2rem] shadow-[0_-12px_48px_rgba(0,0,0,0.45)] border border-white/[0.08] flex flex-col overflow-hidden animate-in slide-in-from-bottom-full duration-500"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="bg-dark-950/90 backdrop-blur-xl p-5 border-b border-white/5 flex items-center justify-between sticky top-0 z-20">
-                    <h2 className="text-xl font-black text-white display-font">سلة الطلبات</h2>
+                <div className="bg-dark-950/92 backdrop-blur-xl px-4 py-4 sm:p-5 border-b border-white/[0.06] flex items-center justify-between sticky top-0 z-20">
+                    <h2 className="text-lg sm:text-xl font-black text-white display-font tracking-tight">سلة الطلبات</h2>
                     <button
                         onClick={() => setIsCartOpen(false)}
                         className="p-2.5 bg-dark-800 hover:bg-dark-700 text-slate-400 hover:text-white rounded-full transition-all active:scale-90"
@@ -190,7 +189,7 @@ const CartDrawer = () => {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-hide">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 sm:space-y-6 scrollbar-hide">
                     {cart.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-[50vh] text-slate-500 space-y-4">
                             <div className="w-20 h-20 bg-dark-900 rounded-full flex items-center justify-center">

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useMemo } from 'react';
+import { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { calculateDistance, getDeliveryFee } from '../utils/calculations';
 import { RESTAURANT_LOCATION, FIXED_AREAS, DEFAULT_DELIVERY_FEE, MAX_DELIVERY_DISTANCE } from '../utils/constants';
@@ -61,7 +61,7 @@ export const CartProvider = ({ children }) => {
         }
     }, [location, locationMethod, selectedAreaId, orderType]);
 
-    const addToCart = (item) => {
+    const addToCart = useCallback((item) => {
         if (!item || !item.id) return; // 🛡️ حماية من إضافة عناصر غير صالحة
         // العميل طلب إن السلة متفتحش أوتوماتيك أول ما يضيف صنف
         setCart((prev) => {
@@ -73,13 +73,13 @@ export const CartProvider = ({ children }) => {
             }
             return [...prev, { ...item, quantity: 1 }];
         });
-    };
+    }, [setCart]);
 
-    const removeFromCart = (itemId) => {
+    const removeFromCart = useCallback((itemId) => {
         setCart((prev) => prev.filter((i) => i.id !== itemId));
-    };
+    }, [setCart]);
 
-    const updateQuantity = (itemId, delta) => {
+    const updateQuantity = useCallback((itemId, delta) => {
         setCart((prev) => {
             return prev.map((item) => {
                 if (item.id === itemId) {
@@ -90,9 +90,9 @@ export const CartProvider = ({ children }) => {
                 return item;
             }).filter(Boolean);
         });
-    };
+    }, [setCart]);
 
-    const clearCart = () => setCart([]);
+    const clearCart = useCallback(() => setCart([]), [setCart]);
 
     const value = useMemo(() => ({
         cart,
@@ -116,7 +116,7 @@ export const CartProvider = ({ children }) => {
         setCustomerData,
         paymentMethod,
         setPaymentMethod
-    }), [cart, orderType, location, locationMethod, selectedAreaId, distanceKm, deliveryFee, isCartOpen, customerData, paymentMethod]);
+    }), [cart, orderType, location, locationMethod, selectedAreaId, distanceKm, deliveryFee, isCartOpen, customerData, paymentMethod, addToCart, removeFromCart, updateQuantity, clearCart]);
 
     return (
         <CartContext.Provider value={value}>

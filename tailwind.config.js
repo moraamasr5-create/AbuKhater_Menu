@@ -10,8 +10,8 @@ export default {
         sans: ['Cairo', 'sans-serif'],
       },
       colors: {
-        primary: '#f97316', // orange-500
-        dark: '#1e293b',    // slate-800
+        primary: '#ea580c',
+        dark: '#27272a',
       }
     },
   },

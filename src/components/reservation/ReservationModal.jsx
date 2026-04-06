@@ -199,8 +199,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     if (success) {
         return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-dark-900 border border-white/10 rounded-[2.5rem] p-8 w-full max-w-md text-center shadow-2xl">
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
+                <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.5rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl">
                     <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle className="text-emerald-500 w-10 h-10" />
                     </div>
@@ -220,10 +220,10 @@ const ReservationModal = ({ isOpen, onClose }) => {
     }
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-            <div className="bg-dark-900 border border-white/10 rounded-[2.5rem] w-full max-w-xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
+            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.5rem] w-full max-w-xl max-h-[min(90dvh,720px)] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-300">
                 {/* Header */}
-                <div className="p-6 border-b border-white/5 flex items-center justify-between bg-dark-800/20">
+                <div className="px-4 py-4 sm:p-6 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/25">
                     <button
                         onClick={onClose}
                         className="p-2.5 bg-dark-700/50 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-xl transition-all"

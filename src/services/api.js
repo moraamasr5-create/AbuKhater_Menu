@@ -1,4 +1,6 @@
 import { menuItems } from '../utils/data';
+import { normalizeGoogleDriveImageUrl } from '../utils/googleDrive';
+import { describeFetchError } from '../utils/errors';
 
 // Configuration for n8n Webhooks
 const N8N_BASE_URL = 'https://restaurant1abukhater.app.n8n.cloud/webhook-test';
@@ -10,6 +12,9 @@ export const n8nService = {
     /**
      * 🔴 الدالة المسؤولة عن تحميل المنيو (القائمة) من n8n
      * بتقوم بسحب البيانات وتحويلها لشكل يفهمه التطبيق، مع نظام حماية "Fallback"
+     */
+    /**
+     * @returns {{ items: Array, usedFallback: boolean, error: string | null }}
      */
     async fetchMenu() {
         console.group('🌐 جاري تحميل القائمة من n8n');
@@ -64,19 +69,19 @@ export const n8nService = {
                 const transformed = this.transformMenuData(data.menu);
                 console.log(`✅ تم تحويل ${transformed.length} عنصر`);
                 console.groupEnd();
-                return transformed;
+                return { items: transformed, usedFallback: false, error: null };
             } else if (Array.isArray(data)) {
                 const mapped = data.map(item => this.mapSingleItem(item, 'general'));
                 console.log(`✅ تم تحويل ${mapped.length} عنصر (مباشر)`);
                 console.groupEnd();
-                return mapped;
+                return { items: mapped, usedFallback: false, error: null };
             } else if (data.items || data.products) {
                 // هيكل بديل
                 const items = data.items || data.products || [];
                 const mapped = items.map(item => this.mapSingleItem(item, item.category || 'general'));
                 console.log(`✅ تم تحويل ${mapped.length} عنصر (بديل)`);
                 console.groupEnd();
-                return mapped;
+                return { items: mapped, usedFallback: false, error: null };
             } else {
                 console.warn('⚠️ تنسيق غير متوقع من n8n:', data);
                 console.groupEnd();
@@ -87,7 +92,12 @@ export const n8nService = {
             console.error('❌ فشل في تحميل القائمة من n8n:', error);
             console.log('🔄 استخدام البيانات المحلية كاحتياطي');
             console.groupEnd();
-            return this.getFallbackMenu();
+            const msg = describeFetchError(error);
+            return {
+                items: this.getFallbackMenu(),
+                usedFallback: true,
+                error: msg
+            };
         }
     },
 
@@ -95,21 +105,15 @@ export const n8nService = {
      * Map a single item from n8n to app structure
      */
     mapSingleItem(item, category) {
-        // Improve image link (Google Drive support)
         let imageUrl = item.image_url || item.image || item.img_url || '';
-        if (imageUrl.includes('drive.google.com')) {
-            const match = imageUrl.match(/\/d\/([^\/]+)/);
-            if (match && match[1]) {
-                imageUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
-            }
-        }
+        imageUrl = normalizeGoogleDriveImageUrl(imageUrl);
 
         return {
             id: item.id || item.item_id || `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             name: item.name || 'عنصر جديد',
             price: parseFloat(item.base_price || item.price || item.unit_price) || 0,
             description: item.comment || item.description || item.desc || '',
-            image: imageUrl || 'https://via.placeholder.com/300x200',
+            image: imageUrl || '/logo.jpg',
             category: category,
             category_id: item.category_id || category,
             unit_type: item.unit_type || 'qty',
@@ -151,13 +155,18 @@ export const n8nService = {
      */
     getFallbackMenu() {
         console.log('🔄 استخدام القائمة المحلية الاحتياطية');
-        return menuItems.map(item => ({
-            ...item,
-            category_id: item.category,
-            unit_type: 'qty',
-            base_qty: 1,
-            status: 'available'
-        }));
+        return menuItems.map(item => {
+            const raw = item.image || '';
+            const normalized = normalizeGoogleDriveImageUrl(raw);
+            return {
+                ...item,
+                image: normalized || raw || '/logo.jpg',
+                category_id: item.category,
+                unit_type: 'qty',
+                base_qty: 1,
+                status: 'available'
+            };
+        });
     },
 
     /**
@@ -260,7 +269,7 @@ export const n8nService = {
             console.groupEnd();
 
             // إعادة رمي الخطأ مع معلومات إضافية
-            const enhancedError = new Error(`فشل إرسال الطلب: ${error.message}`);
+            const enhancedError = new Error(`فشل إرسال الطلب: ${describeFetchError(error)}`);
             enhancedError.name = 'OrderSubmissionError';
             enhancedError.orderId = payload.order_id;
             enhancedError.originalError = error;
@@ -432,7 +441,9 @@ export const n8nService = {
         } catch (error) {
             console.error('❌ فشل إرسال الحجز:', error);
             console.groupEnd();
-            throw error;
+            const wrapped = new Error(describeFetchError(error));
+            wrapped.originalError = error;
+            throw wrapped;
         }
     }
 };

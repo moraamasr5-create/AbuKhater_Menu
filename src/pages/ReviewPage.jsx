@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bike, Store, ArrowRight, ArrowLeft } from 'lucide-react';
 import useCart from '../hooks/useCart';
 import ProgressSteps from '../components/checkout/ProgressSteps';
 import StickyCartBar from '../components/cart/StickyCartBar';
 import OrderSummary from '../components/checkout/OrderSummary';
-import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils/calculations';
-import { formatCurrency } from '../utils/formatters';
+import { calculateServiceFee } from '../utils/calculations';
 
 const ReviewPage = () => {
     /**
      * 🔴 الدالة المسؤولة عن حساب إجمالي الطلب ومراجعته قبل الدفع
      * بتتأكد إن السلة مش فاضية وبتحسب فرق السعر بين التوصيل والاستلام
      */
-    const { cart, orderType, setOrderType, deliveryFee, clearCart } = useCart();
+    const { cart, orderType, setOrderType, deliveryFee } = useCart();
     const navigate = useNavigate();
 
-    if (cart.length === 0) { // 🛡️ حماية لو العميل دخل الصفحة دي والسلة فاضية
-        navigate('/');
+    useEffect(() => {
+        if (cart.length === 0) {
+            navigate('/');
+        }
+    }, [cart.length, navigate]);
+
+    if (cart.length === 0) {
         return null;
     }
 
@@ -50,16 +54,16 @@ const ReviewPage = () => {
     const total = orderType === 'delivery' ? (subtotal + deliveryFee) : pickupTotal;
 
     return (
-        <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">
+        <div className="min-h-[100dvh] bg-dark-950 pb-[max(9rem,env(safe-area-inset-bottom,0px))] sm:pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
 
-            <div className="max-w-md mx-auto w-full p-4 pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
-                <header className="text-center space-y-1">
-                    <h2 className="text-2xl font-black text-white display-font">مراجعة الطلب</h2>
-                    <p className="text-slate-400 text-xs font-bold">تأكد من طلبك واختر طريقة الاستلام</p>
+            <div className="max-w-md mx-auto w-full px-3 sm:px-4 pt-5 sm:pt-6 animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6 sm:space-y-8">
+                <header className="text-center space-y-2">
+                    <h2 className="text-[1.35rem] sm:text-2xl font-black text-white display-font tracking-tight">مراجعة الطلب</h2>
+                    <p className="text-slate-400/95 text-[13px] sm:text-xs font-semibold leading-relaxed px-1">تأكد من طلبك واختر طريقة الاستلام</p>
                 </header>
 
-                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-1 overflow-hidden shadow-sm">
+                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-1 overflow-hidden shadow-md">
                     <OrderSummary
                         cart={cart}
                         subtotal={subtotal}
@@ -72,35 +76,35 @@ const ReviewPage = () => {
                     />
                 </div>
 
-                <div className="space-y-4">
-                    <h3 className="text-[13px] font-black text-slate-300 px-2 uppercase tracking-widest flex items-center gap-2">
-                        <Store size={16} className="text-primary" /> طريقة الاستلام
+                <div className="space-y-3 sm:space-y-4">
+                    <h3 className="text-[12px] sm:text-[13px] font-black text-slate-300 px-1 sm:px-2 uppercase tracking-wider flex items-center gap-2">
+                        <Store size={16} className="text-primary shrink-0" /> طريقة الاستلام
                     </h3>
-                    <div className="grid grid-cols-2 gap-3 px-1">
+                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 px-0.5 sm:px-1">
                         <button
                             onClick={() => setOrderType('delivery')}
-                            className={`p-5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center gap-3 active:scale-95 ${
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${
                                 orderType === 'delivery'
-                                    ? 'bg-gradient-to-br from-primary to-orange-500 border-transparent text-white shadow-lg shadow-primary/20'
-                                    : 'bg-dark-900 border-dark-800 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                    ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
+                                    : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
                             }`}
                         >
-                            <Bike size={32} className={orderType === 'delivery' ? 'opacity-100' : 'opacity-70'} />
-                            <span className="font-bold text-sm">توصيل للمنزل</span>
+                            <Bike size={28} className={`sm:w-8 sm:h-8 ${orderType === 'delivery' ? 'opacity-100' : 'opacity-70'}`} />
+                            <span className="font-bold text-[13px] sm:text-sm text-center leading-snug">توصيل للمنزل</span>
                         </button>
 
                         <button
                             onClick={() => setOrderType('pickup')}
-                            className={`p-5 rounded-[1.25rem] border-2 transition-all flex flex-col items-center gap-3 active:scale-95 ${
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${
                                 orderType === 'pickup'
-                                    ? 'bg-gradient-to-br from-primary to-orange-500 border-transparent text-white shadow-lg shadow-primary/20'
-                                    : 'bg-dark-900 border-dark-800 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                    ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
+                                    : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
                             }`}
                         >
-                            <Store size={32} className={orderType === 'pickup' ? 'opacity-100' : 'opacity-70'} />
+                            <Store size={28} className={`sm:w-8 sm:h-8 ${orderType === 'pickup' ? 'opacity-100' : 'opacity-70'}`} />
                             <div className="text-center space-y-0.5">
-                                <span className="block font-bold text-sm">استلام من المطعم</span>
-                                <span className={`text-[10px] ${orderType === 'pickup' ? 'text-white/80' : 'text-slate-500'}`}>دفع 50%</span>
+                                <span className="block font-bold text-[13px] sm:text-sm leading-snug">استلام من المطعم</span>
+                                <span className={`text-[10px] ${orderType === 'pickup' ? 'text-white/85' : 'text-slate-500'}`}>دفع 50%</span>
                             </div>
                         </button>
                     </div>
@@ -108,21 +112,25 @@ const ReviewPage = () => {
             </div>
 
             {/* Fixed Bottom Action Bar for Mobile */}
-            <div className="fixed bottom-0 left-0 right-0 bg-dark-950/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-                <div className="max-w-md mx-auto flex gap-3">
+            <div className="checkout-bottom-bar">
+                <div className="max-w-md mx-auto flex gap-2 sm:gap-3">
                     <button
+                        type="button"
                         onClick={() => navigate('/')}
-                        className="flex-1 h-14 rounded-2xl font-bold border border-white/10 bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
+                        className="flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold border border-white/[0.08] bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
+                        aria-label="العودة إلى قائمة الطعام لإضافة المزيد"
                     >
-                        <ArrowRight size={18} />
-                        <span className="text-sm">عودة</span>
+                        <ArrowRight size={18} aria-hidden />
+                        <span>عودة للمنيو</span>
                     </button>
                     <button
+                        type="button"
                         onClick={() => navigate('/customer')}
-                        className="flex-[2] h-14 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
+                        className="flex-[2] min-h-[52px] sm:h-14 bg-gradient-to-r from-primary to-orange-600 text-white rounded-xl sm:rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2"
+                        aria-label="المتابعة لإدخال بيانات التوصيل والدفع"
                     >
-                        <span className="text-[15px]">المتابعة</span>
-                        <ArrowLeft size={18} className="rtl:rotate-180" />
+                        <span className="text-[15px] sm:text-[15px]">المتابعة للبيانات</span>
+                        <ArrowLeft size={18} className="rtl:rotate-180" aria-hidden />
                     </button>
                 </div>
             </div>

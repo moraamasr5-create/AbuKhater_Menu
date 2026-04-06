@@ -13,10 +13,11 @@ const MenuCard = memo(({ item }) => {
         <div className={`bg-slate-900 rounded-xl shadow-sm border border-slate-800 overflow-hidden flex flex-col h-full transform transition-all duration-200 ${!isAvailable ? 'grayscale opacity-75' : 'hover:shadow-lg hover:shadow-primary/5 hover:border-primary/50'}`}>
             <div className="relative h-40 overflow-hidden">
                 <img
-                    src={item.image}
+                    src={item.image || '/logo.jpg'}
                     alt={item.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onError={(e) => { e.currentTarget.src = '/logo.jpg'; }}
                 />
                 {!isAvailable && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

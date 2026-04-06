@@ -194,7 +194,7 @@ const CustomerPage = () => {
     // Helper for Input Class
     const getInputClass = (field) => {
         const hasError = touched[field] && errors[field];
-        const base = "w-full p-4 rounded-2xl border text-white placeholder-slate-600 outline-none transition-all";
+        const base = "w-full px-4 py-3.5 sm:p-4 rounded-xl sm:rounded-2xl border text-white placeholder-slate-600 outline-none transition-all text-[15px] sm:text-base leading-normal";
         if (hasError) return `${base} bg-red-500/5 border-red-500/50 focus:border-red-500`;
         return `${base} bg-dark-800/50 border-white/5 focus:border-primary`;
     };
@@ -281,18 +281,18 @@ const CustomerPage = () => {
     };
 
     return (
-        <div className="min-h-[100dvh] bg-dark-950 pb-36 relative scroll-smooth overflow-x-hidden">
+        <div className="min-h-[100dvh] bg-dark-950 pb-[max(9rem,env(safe-area-inset-bottom,0px))] sm:pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
 
-            <div className="max-w-md mx-auto w-full px-4 pt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <header className="text-center space-y-1">
-                    <h2 className="text-2xl md:text-3xl font-black text-white display-font">إكمال البيانات</h2>
-                    <p className="text-slate-400 text-xs md:text-sm font-bold">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
+            <div className="max-w-md mx-auto w-full px-3 sm:px-4 pt-5 sm:pt-6 space-y-5 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <header className="text-center space-y-2">
+                    <h2 className="text-[1.35rem] sm:text-2xl md:text-3xl font-black text-white display-font tracking-tight">إكمال البيانات</h2>
+                    <p className="text-slate-400/95 text-[13px] sm:text-sm font-semibold leading-relaxed px-1">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
                 </header>
 
                 {/* Section 1: Personal Info */}
-                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
-                    <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                    <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                         <User className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">البيانات الشخصية</h3>
                     </div>
@@ -343,14 +343,14 @@ const CustomerPage = () => {
 
                 {/* Section 2: Delivery Control */}
                 {orderType === 'delivery' && (
-                    <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
-                        <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+                    <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                        <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                             <MapPin className="text-primary" size={20} />
                             <h3 className="font-bold text-white uppercase tracking-wider text-xs">عنوان التوصيل</h3>
                         </div>
 
                         {/* Location Methods Tabs */}
-                        <div className="flex bg-dark-800/50 p-1.5 rounded-2xl border border-white/5">
+                        <div className="flex bg-dark-800/55 p-1.5 rounded-xl sm:rounded-2xl border border-white/[0.06] gap-0.5">
                             {[
                                 { id: 'gps', icon: Compass, label: 'GPS' },
                                 { id: 'map', icon: Map, label: 'الخريطة' },
@@ -359,8 +359,8 @@ const CustomerPage = () => {
                                 <button
                                     key={method.id}
                                     onClick={() => setLocationMethod(method.id)}
-                                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl transition-all font-bold text-xs ${locationMethod === method.id
-                                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                    className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-3 min-h-[44px] rounded-lg sm:rounded-xl transition-all font-bold text-[11px] sm:text-xs ${locationMethod === method.id
+                                        ? 'bg-primary text-white shadow-md shadow-primary/25'
                                         : 'text-slate-500 hover:text-slate-300'
                                         }`}
                                 >
@@ -397,7 +397,7 @@ const CustomerPage = () => {
 
                             {locationMethod === 'map' && (
                                 <div className="w-full space-y-4">
-                                    <div ref={mapRef} className="w-full h-64 rounded-2xl border border-white/10 overflow-hidden shadow-inner grayscale-[0.5] hover:grayscale-0 transition-all z-0" />
+                                    <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner grayscale-[0.5] hover:grayscale-0 transition-all z-0" />
                                     <p className="text-[10px] text-slate-500 text-center italic">اسحب الخريطة وانقر لتحديد نقطة التوصيل الدقيقة</p>
                                 </div>
                             )}
@@ -481,13 +481,13 @@ const CustomerPage = () => {
                 )}
 
                 {/* Section 3: Payment Method */}
-                <div className="bg-dark-900 rounded-[1.5rem] border border-white/5 p-5 shadow-sm space-y-5">
-                    <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                    <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                         <Lock className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">طريقة الدفع للمطعم</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                         {[
                             { id: 'cash', label: 'نقدي' },
                             { id: 'vodafone_cash', label: 'فودافون كاش' },
@@ -496,9 +496,9 @@ const CustomerPage = () => {
                             <button
                                 key={method.id}
                                 onClick={() => setPaymentMethod(method.id)}
-                                className={`py-4 rounded-2xl border-2 transition-all font-black text-sm ${paymentMethod === method.id
-                                    ? 'border-primary bg-primary/10 text-primary'
-                                    : 'border-white/5 bg-dark-800/50 text-slate-500 hover:border-white/20'
+                                className={`py-3.5 sm:py-4 min-h-[48px] rounded-xl sm:rounded-2xl border-2 transition-all font-black text-sm ${paymentMethod === method.id
+                                    ? 'border-primary bg-primary/12 text-primary'
+                                    : 'border-white/[0.06] bg-dark-800/55 text-slate-500 hover:border-white/15'
                                     }`}
                             >
                                 {method.label}
@@ -510,22 +510,26 @@ const CustomerPage = () => {
             </div>
 
             {/* Fixed Bottom Action Bar for Mobile */}
-            <div className="fixed bottom-0 left-0 right-0 bg-dark-950/90 backdrop-blur-xl border-t border-white/5 p-4 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-                <div className="max-w-md mx-auto flex gap-3">
+            <div className="checkout-bottom-bar">
+                <div className="max-w-md mx-auto flex gap-2 sm:gap-3">
                     <button
+                        type="button"
                         onClick={() => navigate('/review')}
-                        className="flex-1 h-14 rounded-2xl font-bold border border-white/10 bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-95 transition-all w-full flex items-center justify-center gap-2"
+                        className="flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold border border-white/[0.08] bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
+                        aria-label="الرجوع لمراجعة السلة"
                     >
-                        <ArrowRight size={18} />
-                        <span className="text-sm">رجوع</span>
+                        <ArrowRight size={18} aria-hidden />
+                        <span>رجوع للسلة</span>
                     </button>
                     <button
+                        type="button"
                         onClick={handleNext}
                         disabled={!isFormValid()}
-                        className="flex-[2] h-14 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-95 transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                        className="flex-[2] min-h-[52px] sm:h-14 bg-gradient-to-r from-primary to-orange-600 text-white rounded-xl sm:rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                        aria-label={isFormValid() ? 'المتابعة إلى صفحة الدفع' : 'أكمل الحقول المطلوبة للمتابعة'}
                     >
-                        <span className="text-[15px]">تأكيد البيانات</span>
-                        <ArrowLeft size={18} className="rtl:rotate-180" />
+                        <span className="text-[15px]">تأكيد والمتابعة للدفع</span>
+                        <ArrowLeft size={18} className="rtl:rotate-180" aria-hidden />
                     </button>
                 </div>
             </div>

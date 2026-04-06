@@ -7,14 +7,14 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
     const { updateQuantity } = useCart();
 
     return (
-        <div className="bg-dark-950 rounded-2xl flex flex-col mb-1.5">
-            <div className="p-4 border-b border-white/5 space-y-4">
-                <div className="flex justify-between items-center text-slate-300">
-                    <h3 className="text-[13px] font-black uppercase tracking-widest">ملخص الطلب</h3>
-                    <span className="text-[10px] font-bold bg-dark-800 px-2 py-1 rounded-md">{cart.length} أصناف</span>
+        <div className="bg-dark-950 rounded-xl sm:rounded-2xl flex flex-col mb-1.5">
+            <div className="p-3.5 sm:p-4 border-b border-white/[0.06] space-y-3 sm:space-y-4">
+                <div className="flex justify-between items-center text-slate-300 gap-2">
+                    <h3 className="text-[12px] sm:text-[13px] font-black uppercase tracking-wider">ملخص الطلب</h3>
+                    <span className="text-[10px] font-bold bg-dark-800/90 px-2 py-1 rounded-lg border border-white/[0.05] tabular-nums">{cart.length} أصناف</span>
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                     {cart.map(item => (
                         <div key={item.id} className="flex justify-between items-start gap-4 group">
                             <div className="flex flex-1 items-start gap-3">
@@ -51,7 +51,7 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
                 </div>
             </div>
 
-            <div className="p-4 bg-dark-900/50 space-y-3">
+            <div className="p-3.5 sm:p-4 bg-dark-900/55 space-y-2.5 sm:space-y-3">
                 <div className="flex justify-between items-center text-xs font-bold text-slate-400">
                     <span>المجموع الفرعي</span>
                     <span className="text-slate-300">{formatCurrency(subtotal)}</span>
