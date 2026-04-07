@@ -1,6 +1,7 @@
 import { menuItems } from '../utils/data';
 import { normalizeGoogleDriveImageUrl } from '../utils/googleDrive';
 import { describeFetchError } from '../utils/errors';
+import { isValidRawMenuItem, resolveItemCategory, normalizeCategoryKey } from '../utils/menuItem';
 
 // Configuration for n8n Webhooks
 const N8N_BASE_URL = 'https://restaurant1abukhater.app.n8n.cloud/webhook-test';
@@ -71,14 +72,18 @@ export const n8nService = {
                 console.groupEnd();
                 return { items: transformed, usedFallback: false, error: null };
             } else if (Array.isArray(data)) {
-                const mapped = data.map(item => this.mapSingleItem(item, 'general'));
+                const mapped = data
+                    .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
+                    .filter(Boolean);
                 console.log(`✅ تم تحويل ${mapped.length} عنصر (مباشر)`);
                 console.groupEnd();
                 return { items: mapped, usedFallback: false, error: null };
             } else if (data.items || data.products) {
                 // هيكل بديل
                 const items = data.items || data.products || [];
-                const mapped = items.map(item => this.mapSingleItem(item, item.category || 'general'));
+                const mapped = items
+                    .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
+                    .filter(Boolean);
                 console.log(`✅ تم تحويل ${mapped.length} عنصر (بديل)`);
                 console.groupEnd();
                 return { items: mapped, usedFallback: false, error: null };
@@ -104,18 +109,23 @@ export const n8nService = {
     /**
      * Map a single item from n8n to app structure
      */
-    mapSingleItem(item, category) {
+    mapSingleItem(item, bucketCategory) {
+        if (!isValidRawMenuItem(item)) return null;
+
         let imageUrl = item.image_url || item.image || item.img_url || '';
         imageUrl = normalizeGoogleDriveImageUrl(imageUrl);
 
+        const resolvedCategory = resolveItemCategory(item, bucketCategory);
+        const rawId = item.id ?? item.item_id;
+
         return {
-            id: item.id || item.item_id || `item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            name: item.name || 'عنصر جديد',
+            id: rawId,
+            name: String(item.name).trim(),
             price: parseFloat(item.base_price || item.price || item.unit_price) || 0,
             description: item.comment || item.description || item.desc || '',
             image: imageUrl || '/logo.jpg',
-            category: category,
-            category_id: item.category_id || category,
+            category: resolvedCategory,
+            category_id: resolvedCategory,
             unit_type: item.unit_type || 'qty',
             base_qty: parseInt(item.base_qty) || 1,
             status: (item.status || 'available').toString().toLowerCase(),
@@ -131,18 +141,19 @@ export const n8nService = {
 
         // Check if n8nMenu is an object with categories
         if (typeof n8nMenu === 'object' && !Array.isArray(n8nMenu)) {
-            Object.keys(n8nMenu).forEach(category => {
-                const categoryItems = n8nMenu[category];
-                if (Array.isArray(categoryItems)) {
-                    categoryItems.forEach(item => {
-                        allItems.push(this.mapSingleItem(item, category));
-                    });
-                }
+            Object.keys(n8nMenu).forEach((bucketKey) => {
+                const categoryItems = n8nMenu[bucketKey];
+                if (!Array.isArray(categoryItems)) return;
+                categoryItems.forEach((item) => {
+                    const mapped = this.mapSingleItem(item, bucketKey);
+                    if (mapped) allItems.push(mapped);
+                });
             });
         } else if (Array.isArray(n8nMenu)) {
-            // Direct array
-            n8nMenu.forEach(item => {
-                allItems.push(this.mapSingleItem(item, item.category || 'general'));
+            n8nMenu.forEach((item) => {
+                const bucket = item.category || item.category_id || 'general';
+                const mapped = this.mapSingleItem(item, bucket);
+                if (mapped) allItems.push(mapped);
             });
         }
 
@@ -155,18 +166,22 @@ export const n8nService = {
      */
     getFallbackMenu() {
         console.log('🔄 استخدام القائمة المحلية الاحتياطية');
-        return menuItems.map(item => {
-            const raw = item.image || '';
-            const normalized = normalizeGoogleDriveImageUrl(raw);
-            return {
-                ...item,
-                image: normalized || raw || '/logo.jpg',
-                category_id: item.category,
-                unit_type: 'qty',
-                base_qty: 1,
-                status: 'available'
-            };
-        });
+        return menuItems
+            .filter(isValidRawMenuItem)
+            .map((item) => {
+                const raw = item.image || '';
+                const normalized = normalizeGoogleDriveImageUrl(raw);
+                const cat = normalizeCategoryKey(item.category);
+                return {
+                    ...item,
+                    image: normalized || raw || '/logo.jpg',
+                    category: cat,
+                    category_id: cat,
+                    unit_type: 'qty',
+                    base_qty: 1,
+                    status: 'available'
+                };
+            });
     },
 
     /**
