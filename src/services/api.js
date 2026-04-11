@@ -2,9 +2,10 @@ import { menuItems } from '../utils/data';
 import { normalizeGoogleDriveImageUrl } from '../utils/googleDrive';
 import { describeFetchError } from '../utils/errors';
 import { isValidRawMenuItem, resolveItemCategory, normalizeCategoryKey } from '../utils/menuItem';
+import { generateOnlineOrderId } from '../utils/orderId';
 
 // Configuration for n8n Webhooks
-const N8N_BASE_URL = 'https://restaurant1abukhater.app.n8n.cloud/webhook-test';
+export const N8N_BASE_URL = 'https://abu-khater-pro.app.n8n.cloud/webhook-test';
 
 /**
  * Robust Service to interact with n8n Webhooks
@@ -18,7 +19,7 @@ export const n8nService = {
      * @returns {{ items: Array, usedFallback: boolean, error: string | null }}
      */
     async fetchMenu() {
-        console.group('🌐 جاري تحميل القائمة من n8n');
+        console.group('🌐 جاري تحميل ا8لقائمة من n8n');
         try {
             const payload = {
                 request_type: 'menu',
@@ -191,10 +192,16 @@ export const n8nService = {
     async submitOrder(payload) {
         console.group('🚀 إرسال الطلب إلى n8n');
 
+        const order_id =
+            payload && typeof payload.order_id === 'string' && payload.order_id.trim() !== ''
+                ? payload.order_id.trim()
+                : generateOnlineOrderId();
+        const body = { ...payload, order_id };
+
         try {
-            console.log('📤 بيانات الطلب المرسلة:', JSON.stringify(payload, null, 2));
-            console.log('🔢 عدد العناصر:', payload.items?.length || 0);
-            console.log('💰 المبلغ الإجمالي:', payload.payment?.total_amount || 0);
+            console.log('📤 بيانات الطلب المرسلة:', JSON.stringify(body, null, 2));
+            console.log('🔢 عدد العناصر:', body.items?.length || 0);
+            console.log('💰 المبلغ الإجمالي:', body.payment?.total_amount || 0);
 
             const startTime = Date.now();
             const response = await fetch(`${N8N_BASE_URL}/submit-order`, {
@@ -203,9 +210,9 @@ export const n8nService = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-Request-Source': 'restaurant-web-app',
-                    'X-Order-ID': payload.order_id || 'unknown'
+                    'X-Order-ID': order_id
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(body),
                 // Note: AbortSignal.timeout is relatively new, fallback for older browsers might be needed in production
                 signal: AbortSignal.timeout ? AbortSignal.timeout(30000) : undefined
             });
@@ -240,7 +247,7 @@ export const n8nService = {
                     success: false,
                     error: 'استجابة غير صالحة من الخادم',
                     raw_response: rawText.substring(0, 200),
-                    order_id: payload.order_id,
+                    order_id: order_id,
                     timestamp: new Date().toISOString()
                 };
             }
@@ -265,12 +272,12 @@ export const n8nService = {
                 result = {
                     success: true,
                     warning: 'الخادم رد باستجابة فارغة، تم تعويضها',
-                    order_id: payload.order_id,
-                    restaurant: payload.restaurant,
+                    order_id: order_id,
+                    restaurant: body.restaurant,
                     status: 'received',
                     timestamp: new Date().toISOString(),
-                    items_received: payload.items?.length || 0,
-                    total_amount: payload.payment?.total_amount || 0
+                    items_received: body.items?.length || 0,
+                    total_amount: body.payment?.total_amount || 0
                 };
             }
 
@@ -286,7 +293,7 @@ export const n8nService = {
             // إعادة رمي الخطأ مع معلومات إضافية
             const enhancedError = new Error(`فشل إرسال الطلب: ${describeFetchError(error)}`);
             enhancedError.name = 'OrderSubmissionError';
-            enhancedError.orderId = payload.order_id;
+            enhancedError.orderId = order_id;
             enhancedError.originalError = error;
 
             throw enhancedError;
@@ -365,7 +372,7 @@ export const n8nService = {
 
         const testOrder = {
             restaurant: 'مطعم أبو خاطر',
-            order_id: `TEST-${Date.now()}`,
+            order_id: generateOnlineOrderId(),
             timestamp: new Date().toISOString(),
             order_type: 'delivery',
             customer: {

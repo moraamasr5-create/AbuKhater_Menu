@@ -17,7 +17,8 @@ import useCart from '../hooks/useCart';
 import ProgressSteps from '../components/checkout/ProgressSteps';
 import { formatCurrency } from '../utils/formatters';
 import { calculateServiceFee } from '../utils/calculations';
-import { n8nService } from '../services/api';
+import { n8nService, N8N_BASE_URL } from '../services/api';
+import { generateOnlineOrderId } from '../utils/orderId';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import OrderConfirmation from '../components/checkout/OrderConfirmation';
 
@@ -145,10 +146,7 @@ const PaymentPage = () => {
 
         setIsSubmitting(true);
 
-        // 🔴 جلب رقم الطلب التسلسلي (#1, #2...) من الذاكرة المحلية
-        const lastCount = parseInt(localStorage.getItem('order_sequence_num') || '0');
-        const nextCount = lastCount + 1;
-        const orderId = `#${nextCount}`;
+        const orderId = generateOnlineOrderId();
 
         // 🎯 بناء هيكل البيانات المطلوب تماماً لـ n8n ولشيت جوجل
         // نأكد على إرسال الـ items كمصفوفة JSON صحيحة، مع إدراج طريقة الدفع وصورة الإيصال
@@ -233,11 +231,12 @@ const PaymentPage = () => {
 
             // 🚀 Send production payload to webhook as requested
             try {
-                const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
+                const response = await fetch(`${N8N_BASE_URL}/submit-order`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Order-ID': orderId
                     },
                     body: JSON.stringify(orderPayload)
                 });
@@ -267,7 +266,6 @@ const PaymentPage = () => {
             });
 
             setIsSuccess(true);
-            localStorage.setItem('order_sequence_num', nextCount.toString());
 
             // Try legacy sync in background just in case, but don't block
             n8nService.submitOrder(orderData).catch(e => console.log('Legacy sync skipped/failed', e));
