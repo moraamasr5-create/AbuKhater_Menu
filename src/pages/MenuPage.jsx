@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import restaurantLogo from '../assets/logo.jpg';
 import restaurantBanner from '../assets/banner.jpg';
-import { normalizeCategoryKey } from '../utils/menuItem';
 
 const CATEGORY_DATA = {
     all: { label: 'الكل', icon: '🍽️' },
@@ -183,10 +182,7 @@ const MenuPage = () => {
      */
     useEffect(() => {
         if (menuItems.length > 0) {
-            const keys = menuItems
-                .map((item) => normalizeCategoryKey(item.category))
-                .filter(Boolean);
-            const uniqueCategories = ['all', ...new Set(keys)];
+            const uniqueCategories = ['all', ...new Set(menuItems.map(item => item.category).filter(Boolean))];
             setCategories(uniqueCategories);
         }
     }, [menuItems]);
@@ -194,13 +190,7 @@ const MenuPage = () => {
     const searchLower = useMemo(() => searchQuery.toLowerCase(), [searchQuery]);
 
     const filteredItems = useMemo(() => menuItems.filter((item) => {
-        const nameOk = item?.name != null && String(item.name).trim() !== '';
-        const idRaw = item?.id;
-        const idOk = idRaw != null && String(idRaw).trim() !== '';
-        if (!nameOk || !idOk) return false;
-        const matchesCategory =
-            activeCategory === 'all' ||
-            normalizeCategoryKey(item.category) === normalizeCategoryKey(activeCategory);
+        const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
         const matchesSearch =
             item.name.toLowerCase().includes(searchLower) ||
             (item.description && item.description.toLowerCase().includes(searchLower));
@@ -331,9 +321,7 @@ const MenuPage = () => {
                                 const data = CATEGORY_DATA[catId] || { label: catId, icon: '🍽️' };
                                 const count = catId === 'all'
                                     ? menuItems.length
-                                    : menuItems.filter(
-                                        (i) => normalizeCategoryKey(i.category) === normalizeCategoryKey(catId)
-                                    ).length;
+                                    : menuItems.filter(i => i.category === catId).length;
 
                                 return (
                                     <button
