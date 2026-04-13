@@ -4,7 +4,7 @@ import { describeFetchError } from '../utils/errors';
 import { isValidRawMenuItem, resolveItemCategory, normalizeCategoryKey } from '../utils/menuItem';
 import { generateOnlineOrderId } from '../utils/orderId';
 
-// Configuration for n8n Webhooks
+// Configuration for n8n Webhooks (single source of truth for the app)
 export const N8N_BASE_URL = 'https://abu-khater-pro.app.n8n.cloud/webhook-test';
 
 /**
