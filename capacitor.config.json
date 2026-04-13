@@ -1,0 +1,6 @@
+{
+  "appId": "com.example.app",
+  "appName": "Menu-abu-khater",
+  "webDir": "dist"
+  "bundledWebRuntime": false
+}

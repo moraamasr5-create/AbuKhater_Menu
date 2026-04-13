@@ -408,7 +408,7 @@ const CartDrawer = () => {
                             {orderType === 'pickup' && (
                                 <>
                                     <div className="flex justify-between items-center text-slate-400">
-                                        <span>رسوم خدمة</span>
+                                        <span>تكلفة خدمة</span>
                                         <span className="text-white">{formatCurrency(serviceFee)}</span>
                                     </div>
                                     <div className="my-2 border-t border-white/5"></div>
