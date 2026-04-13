@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { X, MapPin, Bike, Store, Trash2, AlertCircle, Minus, Plus } from 'lucide-react';
 import useCart from '../../hooks/useCart';
-import { generateOnlineOrderId } from '../../utils/orderId';
-import { N8N_BASE_URL } from '../../services/api';
 import { formatCurrency } from '../../utils/formatters';
 import LoadingSpinner from '../common/LoadingSpinner';
 
@@ -118,7 +116,10 @@ const CartDrawer = () => {
 
         setIsSubmitting(true);
 
-        const order_id = generateOnlineOrderId();
+        // جلب آخر رقم طلب من التخزين المحلي لضمان التتابع التصاعدي (#1, #2, #3)
+        const lastCount = parseInt(localStorage.getItem('order_sequence_num') || '0');
+        const nextCount = lastCount + 1;
+        const order_id = `#${nextCount}`;
 
         // 🎯 EXACT Required Payload Format
         const payload = {
@@ -141,12 +142,10 @@ const CartDrawer = () => {
         };
 
         try {
-            const response = await fetch(`${N8N_BASE_URL}/submit-order`, {
+            const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Order-ID': order_id
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
             });
@@ -154,6 +153,9 @@ const CartDrawer = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
+            // Advance sequence on success
+            localStorage.setItem('order_sequence_num', nextCount.toString());
 
             // Success UX
             alert(orderType === 'pickup'
