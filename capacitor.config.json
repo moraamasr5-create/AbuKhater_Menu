@@ -1,9 +1,6 @@
 {
   "appId": "com.abukhater.menu",
-  "appName": "React Menu App",
-  "webDir": "dist"
-  "appId": "com.example.app",
-  "appName": "Menu-abu-khater",
+  "appName": "Abu Khater Menu",
   "webDir": "dist",
   "bundledWebRuntime": false
 }
