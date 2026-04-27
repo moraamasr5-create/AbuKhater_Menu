@@ -5,9 +5,9 @@ import { isValidRawMenuItem, resolveItemCategory, normalizeCategoryKey } from '.
 import { generateOnlineOrderId } from '../utils/orderId';
 
 // Configuration for n8n Webhooks (single source of truth for the app)
-export const N8N_BASE_URL = 'https://abu-khater-pro.app.n8n.cloud/webhook-test';
+export const N8N_BASE_URL = 'https:/restaurantabukhater111.app.n8n.cloud/webhook-test';
 
-/**
+/**https://restaurantabukhater111.app.n8n.cloud/webhook-test/menu-api
  * Robust Service to interact with n8n Webhooks
  */
 export const n8nService = {
