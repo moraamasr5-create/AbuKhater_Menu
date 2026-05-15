@@ -2,109 +2,122 @@ import { menuItems } from '../utils/data';
 import { normalizeGoogleDriveImageUrl } from '../utils/googleDrive';
 import { describeFetchError } from '../utils/errors';
 import { isValidRawMenuItem, resolveItemCategory, normalizeCategoryKey } from '../utils/menuItem';
+import { supabase } from './supabaseClient';
 import { generateOnlineOrderId } from '../utils/orderId';
 
 // Configuration for n8n Webhooks (single source of truth for the app)
-export const N8N_BASE_URL = 'https://abu-khater-pro.app.n8n.cloud/webhook-test';
+export const N8N_BASE_URL = 'https://restaurantabukhater111.app.n8n.cloud/webhook-test';
 
 /**
  * Robust Service to interact with n8n Webhooks
  */
 export const n8nService = {
     /**
-     * 🔴 الدالة المسؤولة عن تحميل المنيو (القائمة) من n8n
-     * بتقوم بسحب البيانات وتحويلها لشكل يفهمه التطبيق، مع نظام حماية "Fallback"
-     */
-    /**
-     * @returns {{ items: Array, usedFallback: boolean, error: string | null }}
+     * 🟢 الاستراتيجية الذكية (Waterfall): n8n -> Supabase -> Offline
      */
     async fetchMenu() {
-        console.group('🌐 جاري تحميل ا8لقائمة من n8n');
+        console.group('🌊 استراتيجية جلب البيانات (Waterfall)');
+        
+        // 1. محاولة n8n (المصدر الحي)
         try {
-            const payload = {
-                request_type: 'menu',
-                timestamp: new Date().toISOString(),
-                source: 'web-app'
-            };
-
-            console.log('📤 إرسال طلب القائمة:', payload);
-
-            const response = await fetch(`${N8N_BASE_URL}/menu-api`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Request-Source': 'restaurant-web-app'
-                },
-                body: JSON.stringify(payload),
-            });
-
-            console.log('📥 استجابة الخادم:', {
-                status: response.status,
-                statusText: response.statusText,
-                ok: response.ok
-            });
-
-            // 🛡️ قراءة الاستجابة كـ Text أولاً لتجنب الـ Crash في حالة وجود خطأ
-            const rawText = await response.text();
-            console.log('📝 الاستجابة الخام:', rawText.substring(0, 200));
-
-            let data;
-            try {
-                data = rawText ? JSON.parse(rawText) : {};
-                console.log('✅ JSON محلل:', data);
-            } catch (parseError) {
-                console.error('❌ فشل تحليل JSON:', parseError);
-                throw new Error(`تنسيق استجابة غير صالح: ${parseError.message}`);
-            }
-
-            if (!response.ok) {
-                console.error('❌ خطأ HTTP:', {
-                    status: response.status,
-                    data: data
-                });
-                throw new Error(data.message || `خطأ في الخادم: ${response.status}`);
-            }
-
-            // The new structure used by n8n
-            if (data && data.success && data.menu) {
-                const transformed = this.transformMenuData(data.menu);
-                console.log(`✅ تم تحويل ${transformed.length} عنصر`);
-                console.groupEnd();
-                return { items: transformed, usedFallback: false, error: null };
-            } else if (Array.isArray(data)) {
-                const mapped = data
-                    .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
-                    .filter(Boolean);
-                console.log(`✅ تم تحويل ${mapped.length} عنصر (مباشر)`);
-                console.groupEnd();
-                return { items: mapped, usedFallback: false, error: null };
-            } else if (data.items || data.products) {
-                // هيكل بديل
-                const items = data.items || data.products || [];
-                const mapped = items
-                    .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
-                    .filter(Boolean);
-                console.log(`✅ تم تحويل ${mapped.length} عنصر (بديل)`);
-                console.groupEnd();
-                return { items: mapped, usedFallback: false, error: null };
-            } else {
-                console.warn('⚠️ تنسيق غير متوقع من n8n:', data);
-                console.groupEnd();
-                throw new Error('تنسيق البيانات غير صحيح من الخادم');
-            }
-
-        } catch (error) {
-            console.error('❌ فشل في تحميل القائمة من n8n:', error);
-            console.log('🔄 استخدام البيانات المحلية كاحتياطي');
+            const result = await this._fetchFromN8n();
+            console.log('✅ تم جلب البيانات بنجاح من n8n');
             console.groupEnd();
-            const msg = describeFetchError(error);
-            return {
-                items: this.getFallbackMenu(),
-                usedFallback: true,
-                error: msg
-            };
+            return { ...result, dataSource: 'n8n' };
+        } catch (error) {
+            console.warn('⚠️ فشل n8n، جاري التحويل إلى Supabase...', error.message);
+            
+            // 2. محاولة Supabase (المصدر الاحتياطي)
+            try {
+                const result = await this._fetchFromSupabase();
+                console.log('✅ تم جلب البيانات بنجاح من Supabase');
+                console.groupEnd();
+                return { ...result, dataSource: 'supabase' };
+            } catch (sbError) {
+                console.error('❌ فشل Supabase، جاري التحويل إلى الوضع الأوفلاين...', sbError.message);
+                
+                // 3. الحل الأخير: الملف المحلي
+                const items = this.getFallbackMenu();
+                console.groupEnd();
+                return { 
+                    items, 
+                    usedFallback: true, 
+                    error: describeFetchError(sbError), 
+                    dataSource: 'offline' 
+                };
+            }
         }
+    },
+
+    /**
+     * محرك جلب البيانات من n8n
+     */
+    async _fetchFromN8n() {
+        const payload = {
+            request_type: 'menu',
+            timestamp: new Date().toISOString(),
+            source: 'web-app'
+        };
+
+        const response = await fetch(`${N8N_BASE_URL}/menu-api`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Request-Source': 'restaurant-web-app'
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) throw new Error(`n8n HTTP Error: ${response.status}`);
+
+        const rawText = await response.text();
+        const data = rawText ? JSON.parse(rawText) : {};
+
+        if (data && data.success && data.menu) {
+            return { items: this.transformMenuData(data.menu), usedFallback: false, error: null };
+        } else if (Array.isArray(data)) {
+            const mapped = data
+                .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
+                .filter(Boolean);
+            return { items: mapped, usedFallback: false, error: null };
+        } else if (data.items || data.products) {
+            const items = data.items || data.products || [];
+            const mapped = items
+                .map((item) => this.mapSingleItem(item, item.category || item.category_id || 'general'))
+                .filter(Boolean);
+            return { items: mapped, usedFallback: false, error: null };
+        }
+        
+        throw new Error('Invalid data format from n8n');
+    },
+
+    /**
+     * محرك جلب البيانات من Supabase
+     */
+    async _fetchFromSupabase() {
+        const { data, error } = await supabase
+            .from('menu_items')
+            .select(`
+                *,
+                categories (
+                    name
+                )
+            `)
+            .eq('status', 'available');
+
+        if (error) throw error;
+        if (!data || data.length === 0) throw new Error('Supabase returned empty data');
+
+        const mapped = data
+            .map((item) => {
+                // استخدام اسم التصنيف من الجدول المرتبط أو المعرف كاحتياطي
+                const categoryName = item.categories?.name || item.category_id || 'general';
+                return this.mapSingleItem(item, categoryName);
+            })
+            .filter(Boolean);
+
+        return { items: mapped, usedFallback: false, error: null };
     },
 
     /**

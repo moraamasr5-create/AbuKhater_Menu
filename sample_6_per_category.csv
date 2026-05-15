@@ -1,0 +1,43 @@
+id,name,description,price,image_url,status,category_slug
+0e9afabe-2954-49ec-85b0-883a295c1bbd,ورقة لحمة,علبة سلطة - علبة طحينة - كيس عيش (4 رغيف),200,https://lh3.googleusercontent.com/d/1EqpDr5cfCXibfZraSFUuJyKtgD8198sw,available,grills
+ca1fd573-c8b9-4d63-8e2f-9bad24aa5801,ورقة كبدة,علبة سلطة - علبة طحينة - كيس عيش (4 رغيف),200,https://lh3.googleusercontent.com/d/1EqpDr5cfCXibfZraSFUuJyKtgD8198sw,unavailable,grills
+0d190306-6799-4aa4-a26d-867a924e2ac7,ورقة سجق,علبة سلطة - علبة طحينة - كيس عيش (4 رغيف),200,https://lh3.googleusercontent.com/d/1PvbAlWDxE_KQBZAfS24SL1fj9W5qjiPu,available,grills
+b053f9bf-abd7-4b84-aa4b-c00bf6b721f9,موزة ضاني بالأرز,,400,,available,grills
+ee3ed9d3-0964-4117-bee5-34d0b20a3652,فرخه شواية (بالخلطة السرية),علبة سلطة - علبة طحينة - كيس عيش (4 رغيف),320,https://lh3.googleusercontent.com/d/1MBiWi-p7a4aeQ0rIoKsXwk9Lo2tGpQ0j,unavailable,grills
+d6f71c0d-750b-45d2-b26f-5790ac808c31,فرخة شيش,,330,https://lh3.googleusercontent.com/d/1qeccDbxrwashHmRNHMjd7OlbRm4-Mg_I,unavailable,grills
+01c513b7-a395-4f12-97f5-084ebbd85df1,التوفير,ربع سجق - ربع فرخة - ربع كفتة - ربع كباب أستيك - ربع ممبار - ربع ورق عنب - أرز بسمتي,840,,available,trays
+330b6440-bdb2-492b-8a1b-6123b63ddf10,المافيا,ربع سجق - ربع فرخة - ربع كفتة - ربع كباب أستيك - ربع ممبار - ربع ورق عنب - أرز بسمتي,1010,,available,trays
+f6e47fbe-e805-47bb-b2f5-244f5b62d2aa,الضهبة,ربع نيفا - ربع كفتة - ربع سجق مشوي - ربع طرب - نصف فرخة شيش - ربع ورق عنب - أرز بسمتي,1005,,available,trays
+a4f4673b-674a-4dd8-b539-78edfb0e204b,الملكية,ربع كفتة - ربع نيفا - ربع طرب - ربع سجق مشوي - ربع كباب ضاني - ربع ريش ضاني - أرز بسمتي,1245,,available,trays
+eacb85c6-8afd-4ea9-8d3c-e9aada1c33f5,العتاولة,فرخة مشوية - فردين حمام - ربع كفتة - ربع كباب - ربع نيفا - ربع ريش - ربع سجق - ربع طرب - ربع ممبار - ربع ورق عنب - أرز بسمتي,1950,,available,trays
+c76ace6f-84c5-4663-a184-cdce52d12d85,الملوك,نصف بطة - نصف كفتة - نصف سجق - ربع طرب - ربع ممبار - أرز بسمتي - عيش - سلطات,1225,,available,trays
+be6fc162-d8c3-4adc-b7af-55692b46bb3c,نصف فرخة,أرز - خضار - سلطات,235,,available,meals
+2eb2fa79-f53d-4c65-bd20-4d37c2722a0e,ربع فرخة,أرز - خضار - سلطات,160,,available,meals
+dfd8db39-c809-4fc0-ac6d-372310cd4781,السلطان,أرز - حمام - ورق عنب - بطاطس - سلطات,240,https://lh3.googleusercontent.com/d/1EqpDr5cfCXibfZraSFUuJyKtgD8198sw,available,meals
+2a0e87e4-d251-4202-b248-624ba8c51e87,نصف فرخة,أرز - خضار - سلطات,235,,available,meals
+f247826d-8e0d-45b8-b47c-d313d7864bd0,ربع فرخة,أرز - خضار - سلطات,160,,available,meals
+af0126e8-a399-4480-ae41-7a4be6b20267,الاسطورة,أرز - خضار بالحمة - سلطات,225,,available,meals
+00cb3d39-d963-4507-a62d-6eddcf1942c9,أرز بسمتي سادة,أرز,40,,available,casseroles
+bfa0196a-71c0-4adf-92cd-ed4ca4371e5e,أرز شعرية سادة,أرز,30,,available,casseroles
+1a991dca-03a9-4740-a8b6-482cefd98f26,بالكبدة,أرز,45,,available,casseroles
+cf2635d3-dc61-46a9-b0ad-62d08d1974ca,بالسجق,أرز,45,,available,casseroles
+221b1d73-8dfd-45ce-8e5d-a4ff03ef02bb,كبدة وسجق,أرز,55,,available,casseroles
+5f82c5b3-4e44-475a-b7c8-355df54f37e4,كبدة وقوانص,أرز,45,,available,casseroles
+b6070911-64b6-407e-8062-0a2f1c28b661,شيش طاووق,فراخ,80,,available,crepes
+d4fb5754-6f78-4174-96a9-10313cd0e18f,شاورما فراخ,فراخ,85,,available,crepes
+910909ee-e124-483e-a276-e890268c2c3f,فاهيتا فراخ,فراخ,75,,available,crepes
+edbfe994-533d-464d-ade5-5973f3927543,ميكس فراخ,فراخ,90,,available,crepes
+d1b20ad0-76ac-46d7-9e80-965701e844d1,استربس,فراخ,65,,available,crepes
+1e0198cc-93bc-433d-80c6-98d37a6bec23,بانية,فراخ,70,,available,crepes
+c7210a8d-3d2f-4f73-b48b-9c073b52ca9d,شاورما لحمة,كيزر,60,,available,sandwiches
+b488230b-292e-4f11-a653-403279ea8f18,شاورما فراخ,كيزر,50,,available,sandwiches
+26b7658e-4ce1-449d-8ddc-a3513d649d41,برجر سادة,كيزر,30,,available,sandwiches
+8bb24f72-9e04-41ad-b7d3-fea39a826547,برجر بالبيض,كيزر,45,,available,sandwiches
+021f576b-4394-4a69-90bc-2614fb114e20,برجر بالجبنة,كيزر,45,,available,sandwiches
+adab6400-d9ba-4a26-b6dc-48788e8dea87,بالبيض والجبنة,كيزر,50,,available,sandwiches
+f50249e4-9a31-4663-b2b4-7d9c86188074,سلطة تومية,إضافة,15,,available,extras
+45178e1d-055d-4d4f-97c0-9ddd23b2dd57,سلطة تومية,إضافة,20,,available,extras
+67daf575-e48f-445e-a38b-7b42062a2557,سلطة كلوسلو,إضافة,15,,unavailable,extras
+29b0c470-808e-4261-a5e7-d326322154ab,سلطة كلوسلو,إضافة,20,,unavailable,extras
+abeea2d8-7ad8-4d99-8623-90219b59102f,سلطة طماطم,إضافة,10,,unavailable,extras
+7f1449c2-fc93-4280-a26d-cd0456591011,سلطة طحينة,إضافة,10,,available,extras

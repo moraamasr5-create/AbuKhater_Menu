@@ -33,6 +33,24 @@ const CATEGORY_DATA = {
     combos: { label: 'عروض', icon: '🎁' }
 };
 
+const DataSourceBadge = ({ source }) => {
+    const config = {
+        n8n: { label: 'مباشر (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
+        supabase: { label: 'احتياطي (Backup)', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+        offline: { label: 'أوفلاين (Offline)', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
+    };
+    
+    if (!source) return null;
+    const { label, color } = config[source] || config.offline;
+    
+    return (
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-sm ${color} transition-all duration-500 animate-in fade-in slide-in-from-top-1`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${source === 'n8n' ? 'bg-green-500 animate-pulse' : source === 'supabase' ? 'bg-blue-500' : 'bg-amber-500'}`} />
+            <span>{label}</span>
+        </div>
+    );
+};
+
 const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage, addToCart, updateQuantity }) {
     const isAvailable = item.status === 'available';
     return (
@@ -118,6 +136,7 @@ const MenuPage = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [dataSource, setDataSource] = useState(null);
     const [activeCategory, setActiveCategory] = useState('all');
     const [categories, setCategories] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -150,9 +169,12 @@ const MenuPage = () => {
     const loadMenu = useCallback(async () => {
         try {
             setLoading(true);
-            const { items, usedFallback, error: remoteError } = await n8nService.fetchMenu();
+            const { items, usedFallback, error: remoteError, dataSource: source } = await n8nService.fetchMenu();
+            setDataSource(source);
+            
             if (!items || items.length === 0) {
                 setMenuItems(n8nService.getFallbackMenu());
+                setDataSource('offline');
                 setError('لا توجد عناصر حالياً في القائمة.');
                 return;
             }
@@ -169,6 +191,7 @@ const MenuPage = () => {
             console.error('Fetch error:', err);
             setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
             setMenuItems(n8nService.getFallbackMenu());
+            setDataSource('offline');
         } finally {
             setLoading(false);
         }
@@ -257,7 +280,12 @@ const MenuPage = () => {
             <div className="sticky top-3 sm:top-4 z-40 px-3 sm:px-4 transition-all duration-500">
                 <div className={`max-w-3xl mx-auto bg-dark-900/88 backdrop-blur-xl border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2rem] shadow-[0_20px_56px_rgba(0,0,0,0.42)] p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 transition-all duration-300 ${isScrolled ? 'scale-[0.98] shadow-primary/10' : 'scale-100'}`}>
                     {/* Search & Actions */}
-                    <div className="flex gap-2 sm:gap-3 items-stretch sm:items-center">
+                    <div className="flex flex-col gap-3.5">
+                        <div className="flex items-center justify-between px-1">
+                            <span className="text-[10px] sm:text-xs font-black text-slate-500 uppercase tracking-widest">تصفح القائمة</span>
+                            <DataSourceBadge source={dataSource} />
+                        </div>
+                        <div className="flex gap-2 sm:gap-3 items-stretch sm:items-center">
                         <div className="relative flex-1 min-w-0">
                             <label htmlFor="menu-search" className="sr-only">البحث في قائمة الطعام</label>
                             <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} aria-hidden />
@@ -305,8 +333,9 @@ const MenuPage = () => {
                             <span className="text-xs font-black hidden sm:inline">حجز</span>
                         </button>
                     </div>
+                </div>
 
-                    {/* Categories Scrollable Bar with Navigation */}
+                {/* Categories Scrollable Bar with Navigation */}
                     <div className="relative flex items-center gap-1">
                         <button
                             type="button"
