@@ -28,3 +28,5 @@ const LoadingSpinner = ({ size = 24, color = 'text-white' }) => {
 };
 
 export default LoadingSpinner;
+
+

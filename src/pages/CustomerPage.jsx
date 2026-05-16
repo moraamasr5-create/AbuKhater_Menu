@@ -13,8 +13,8 @@ import {
     Lock
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
-import { FIXED_AREAS, RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../utils/constants';
-import ProgressSteps from '../components/checkout/ProgressSteps';
+import { FIXED_AREAS, RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../core/constants';
+import ProgressSteps from '../features/checkout/ProgressSteps';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const CustomerPage = () => {
@@ -538,3 +538,5 @@ const CustomerPage = () => {
 };
 
 export default CustomerPage;
+
+

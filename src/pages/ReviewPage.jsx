@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bike, Store, ArrowRight, ArrowLeft } from 'lucide-react';
 import useCart from '../hooks/useCart';
-import ProgressSteps from '../components/checkout/ProgressSteps';
-import StickyCartBar from '../components/cart/StickyCartBar';
-import OrderSummary from '../components/checkout/OrderSummary';
-import { calculateServiceFee } from '../utils/calculations';
+import ProgressSteps from '../features/checkout/ProgressSteps';
+import StickyCartBar from '../features/cart/StickyCartBar';
+import OrderSummary from '../features/checkout/OrderSummary';
+import { calculateServiceFee } from '../core/utils/calculations';
 
 const ReviewPage = () => {
     /**
@@ -139,3 +139,5 @@ const ReviewPage = () => {
 };
 
 export default ReviewPage;
+
+

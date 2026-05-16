@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CartProvider } from './context/CartContext';
+import { CartProvider } from './core/context/CartContext';
 import MenuPage from './pages/MenuPage';
 import ReviewPage from './pages/ReviewPage';
 import CustomerPage from './pages/CustomerPage';
@@ -22,3 +22,5 @@ function App() {
 }
 
 export default App;
+
+

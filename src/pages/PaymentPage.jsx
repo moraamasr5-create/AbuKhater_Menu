@@ -14,12 +14,12 @@ import {
     Image as ImageIcon
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
-import ProgressSteps from '../components/checkout/ProgressSteps';
-import { formatCurrency } from '../utils/formatters';
-import { calculateServiceFee } from '../utils/calculations';
-import { n8nService } from '../services/api';
+import ProgressSteps from '../features/checkout/ProgressSteps';
+import { formatCurrency } from '../core/utils/formatters';
+import { calculateServiceFee } from '../core/utils/calculations';
+import { orderService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import OrderConfirmation from '../components/checkout/OrderConfirmation';
+import OrderConfirmation from '../features/checkout/OrderConfirmation';
 
 const PaymentPage = () => {
     const {
@@ -231,25 +231,9 @@ const PaymentPage = () => {
             console.log('🎯 بدء تأكيد الطلب...');
             setSubmitError(null);
 
-            // 🚀 Send production payload to webhook as requested
-            try {
-                const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(orderPayload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                console.log('✅ Structured order payload sent to n8n');
-            } catch (error) {
-                console.error('⚠️ n8n webhook error:', error);
-                throw new Error('فشل إرسال الطلب. يرجى التحقق من الاتصال والمحاولة مرة أخرى.'); // Fail gracefully and show error banner
-            }
+            // 🚀 Send to Supabase directly
+            await orderService.submitOrder(orderData);
+            console.log('✅ Order submitted to Supabase');
 
             // Record success data immediately since we succeeded
             setSuccessData({
@@ -268,9 +252,6 @@ const PaymentPage = () => {
 
             setIsSuccess(true);
             localStorage.setItem('order_sequence_num', nextCount.toString());
-
-            // Try legacy sync in background just in case, but don't block
-            n8nService.submitOrder(orderData).catch(e => console.log('Legacy sync skipped/failed', e));
 
             try {
                 localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
@@ -532,3 +513,5 @@ const PaymentPage = () => {
 };
 
 export default PaymentPage;
+
+

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
-import { n8nService } from '../services/api';
+import { menuService } from '../services/api';
 import useCart from '../hooks/useCart';
-import StickyCartBar from '../components/cart/StickyCartBar';
-import ProgressSteps from '../components/checkout/ProgressSteps';
-import ReservationModal from '../components/reservation/ReservationModal';
-import FeedbackModal from '../components/feedback/FeedbackModal';
+import StickyCartBar from '../features/cart/StickyCartBar';
+import ProgressSteps from '../features/checkout/ProgressSteps';
+import ReservationModal from '../features/reservation/ReservationModal';
+import FeedbackModal from '../features/feedback/FeedbackModal';
 import {
     Search,
     RefreshCcw,
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import restaurantLogo from '../assets/logo.png';
 import restaurantBanner from '../assets/banner.png';
-import { normalizeCategoryKey } from '../utils/menuItem';
+import { normalizeCategoryKey } from '../core/utils/menuItem';
 
 const CATEGORY_DATA = {
     all: { label: 'الكل', icon: '🍽️' },
@@ -172,20 +172,20 @@ const MenuPage = () => {
     const loadMenu = useCallback(async () => {
         try {
             setLoading(true);
-            const { items, usedFallback, error: remoteError, dataSource: source } = await n8nService.fetchMenu();
+            const { items, error: remoteError, dataSource: source } = await menuService.fetchMenu();
             setDataSource(source);
 
             if (!items || items.length === 0) {
-                setMenuItems(n8nService.getFallbackMenu());
+                setMenuItems(menuService._getFallbackMenu());
                 setDataSource('offline');
                 setError('لا توجد عناصر حالياً في القائمة.');
                 return;
             }
 
             setMenuItems(items);
-            if (usedFallback && remoteError) {
+            if (source === 'offline' && remoteError) {
                 setError(`تعذر تحميل المنيو من الخادم. عُرضت القائمة المحلية. (${remoteError})`);
-            } else if (usedFallback) {
+            } else if (source === 'offline') {
                 setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
             } else {
                 setError(null);
@@ -193,7 +193,7 @@ const MenuPage = () => {
         } catch (err) {
             console.error('Fetch error:', err);
             setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
-            setMenuItems(n8nService.getFallbackMenu());
+            setMenuItems(menuService._getFallbackMenu());
             setDataSource('offline');
         } finally {
             setLoading(false);
@@ -558,3 +558,5 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
+
+
