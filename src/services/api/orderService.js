@@ -6,9 +6,8 @@ export const orderService = {
      */
     async submitOrder(payload) {
         console.group('🚀 Submitting order to Supabase');
-        
         try {
-            // 1. Insert main order record without id (Supabase creates UUID)
+            // 1. Insert main order record
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .insert([{
@@ -31,12 +30,12 @@ export const orderService = {
                 return null;
             }
 
-            const dbOrderId = orderData.id; // New ID from database
+            const insertedOrderId = orderData.id;
 
-            // 2. Use new ID to link items
+            // 2. Insert order items if table exists
             if (payload.items && payload.items.length > 0) {
                 const itemsToInsert = payload.items.map(item => ({
-                    order_id: dbOrderId,
+                    order_id: insertedOrderId,
                     product_id: item.id,
                     product_name: item.name,
                     quantity: item.quantity,
@@ -53,12 +52,12 @@ export const orderService = {
                 }
             }
 
-            console.log('✅ Order submitted successfully:', dbOrderId);
+            console.log('✅ Order submitted successfully:', insertedOrderId);
             console.groupEnd();
             
             return {
                 success: true,
-                order_id: dbOrderId,
+                order_id: insertedOrderId,
                 data: orderData
             };
         } catch (error) {
