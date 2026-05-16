@@ -8,8 +8,7 @@ export const orderService = {
         console.group('🚀 Submitting order to Supabase');
         
         try {
-            // 1. Insert main order record
-            // Note: ID is generated automatically by Supabase (UUID)
+            // 1. Insert main order record without id (Supabase creates UUID)
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .insert([{
@@ -26,14 +25,18 @@ export const orderService = {
                 .select()
                 .single();
 
-            if (orderError) throw orderError;
+            if (orderError) {
+                console.error("Order failed:", orderError);
+                console.groupEnd();
+                return null;
+            }
 
-            const generatedOrderId = orderData.id;
+            const dbOrderId = orderData.id; // New ID from database
 
-            // 2. Insert order items if table exists
+            // 2. Use new ID to link items
             if (payload.items && payload.items.length > 0) {
                 const itemsToInsert = payload.items.map(item => ({
-                    order_id: generatedOrderId,
+                    order_id: dbOrderId,
                     product_id: item.id,
                     product_name: item.name,
                     quantity: item.quantity,
@@ -50,18 +53,17 @@ export const orderService = {
                 }
             }
 
-            console.log('✅ Order submitted successfully:', generatedOrderId);
+            console.log('✅ Order submitted successfully:', dbOrderId);
             console.groupEnd();
             
             return {
                 success: true,
-                order_id: generatedOrderId,
+                order_id: dbOrderId,
                 data: orderData
             };
         } catch (error) {
-            console.error('❌ Order submission failed:', error.message || error);
+            console.error('❌ Order submission failed:', error);
             console.groupEnd();
-            // Graceful Fallback: Return null on failure instead of throwing
             return null;
         }
     }
