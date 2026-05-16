@@ -64,13 +64,13 @@ export const orderService = {
                 }
             }
 
-            // 2. Create a cleaned payload for the raw_payload backup (prevents storing large base64)
-            const cleanedPayload = {
-                ...payload,
-                payment: payload.payment ? {
-                    ...payload.payment,
-                    screenshot: screenshotUrl // Use URL instead of base64
-                } : payload.payment
+            // 2. Create a compact payload for the raw_payload backup (prevents duplicating data)
+            const compactPayload = {
+                order_id: payload.order_id,
+                timestamp: payload.timestamp,
+                order_type: payload.order_type,
+                restaurant: payload.restaurant,
+                items: payload.items
             };
 
             // 3. Insert main order record
@@ -93,7 +93,7 @@ export const orderService = {
                     payment_method: payload.customer?.payment_method,
                     payment_screenshot: screenshotUrl, // Now using URL or fallback to original
                     created_at: new Date().toISOString(),
-                    raw_payload: cleanedPayload // Storing cleaned payload as backup
+                    raw_payload: compactPayload // Storing compact payload as backup
                 }])
                 .select()
                 .single();
