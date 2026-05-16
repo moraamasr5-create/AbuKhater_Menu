@@ -231,9 +231,25 @@ const PaymentPage = () => {
             console.log('🎯 بدء تأكيد الطلب...');
             setSubmitError(null);
 
-            // 🚀 Send to Supabase directly
-            await orderService.submitOrder(orderData);
-            console.log('✅ Order submitted to Supabase');
+            // 🚀 Send to n8n first (Primary) then fallback to Supabase
+            try {
+                const response = await fetch('https://restaurantabukhater111.app.n8n.cloud/webhook-test/submit-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                if (!response.ok) throw new Error('n8n submission failed');
+                console.log('✅ Structured order payload sent to n8n');
+            } catch (n8nError) {
+                console.warn('⚠️ n8n webhook failed, trying Supabase fallback...', n8nError);
+                // 🚀 Fallback to Supabase
+                await orderService.submitOrder(orderData);
+                console.log('✅ Order submitted to Supabase (Fallback)');
+            }
 
             // Record success data immediately since we succeeded
             setSuccessData({
