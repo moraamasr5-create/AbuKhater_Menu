@@ -1,5 +1,29 @@
 import { supabase } from '../supabase/supabaseClient';
 
+/**
+ * Converts a base64 string to a Blob object
+ * @param {string} base64Data - The base64 string (data:image/...)
+ * @returns {Blob} The converted Blob
+ */
+const base64ToBlob = (base64Data) => {
+    try {
+        const parts = base64Data.split(';base64,');
+        const contentType = parts[0].split(':')[1];
+        const raw = window.atob(parts[1]);
+        const rawLength = raw.length;
+        const uInt8Array = new Uint8Array(rawLength);
+
+        for (let i = 0; i < rawLength; ++i) {
+            uInt8Array[i] = raw.charCodeAt(i);
+        }
+
+        return new Blob([uInt8Array], { type: contentType });
+    } catch (error) {
+        console.error("❌ Error converting base64 to blob:", error);
+        return null;
+    }
+};
+
 export const orderService = {
     /**
      * Submit order directly to Supabase
@@ -7,7 +31,40 @@ export const orderService = {
     async submitOrder(payload) {
         console.group('🚀 Submitting order to Supabase');
         try {
-            // 1. Insert main order record
+            let screenshotUrl = payload.payment?.screenshot;
+
+            // 1. Handle payment screenshot upload if it's a base64 string
+            if (screenshotUrl && typeof screenshotUrl === 'string' && screenshotUrl.startsWith('data:image')) {
+                console.log('📸 Uploading payment screenshot to storage...');
+                const blob = base64ToBlob(screenshotUrl);
+                
+                if (blob) {
+                    const fileExt = blob.type.split('/')[1] || 'jpg';
+                    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+                    const filePath = `payments/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('payment-screenshots')
+                        .upload(filePath, blob, {
+                            contentType: blob.type,
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) {
+                        console.error('⚠️ Screenshot upload failed, falling back to base64:', uploadError.message);
+                    } else {
+                        const { data: publicUrlData } = supabase.storage
+                            .from('payment-screenshots')
+                            .getPublicUrl(filePath);
+                        
+                        screenshotUrl = publicUrlData.publicUrl;
+                        console.log('✅ Screenshot uploaded successfully:', screenshotUrl);
+                    }
+                }
+            }
+
+            // 2. Insert main order record
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .insert([{
@@ -25,7 +82,7 @@ export const orderService = {
                     latitude: payload.customer?.delivery_info?.coordinates?.lat,
                     longitude: payload.customer?.delivery_info?.coordinates?.lon,
                     payment_method: payload.customer?.payment_method,
-                    payment_screenshot: payload.payment?.screenshot,
+                    payment_screenshot: screenshotUrl, // Now using URL or fallback to original
                     created_at: new Date().toISOString(),
                     raw_payload: payload // Storing full payload as backup
                 }])
@@ -40,7 +97,7 @@ export const orderService = {
 
             const insertedOrderId = orderData.id;
 
-            // 2. Insert order items if table exists
+            // 3. Insert order items if table exists
             if (payload.items && payload.items.length > 0) {
                 const itemsToInsert = payload.items.map(item => ({
                     order_id: insertedOrderId,
@@ -77,5 +134,6 @@ export const orderService = {
 };
 
 export default orderService;
+
 
 
