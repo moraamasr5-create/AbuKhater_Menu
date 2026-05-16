@@ -1,5 +1,4 @@
 import { supabase } from '../supabase/supabaseClient';
-import { generateOnlineOrderId } from '../../core/utils/orderId';
 
 export const orderService = {
     /**
@@ -8,14 +7,12 @@ export const orderService = {
     async submitOrder(payload) {
         console.group('🚀 Submitting order to Supabase');
         
-        const orderId = payload.order_id || generateOnlineOrderId();
-        
         try {
             // 1. Insert main order record
+            // Note: ID is generated automatically by Supabase (UUID)
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .insert([{
-                    id: orderId,
                     customer_name: payload.customer?.full_name,
                     customer_phone: payload.customer?.phone_1,
                     order_type: payload.order_type,
@@ -31,10 +28,12 @@ export const orderService = {
 
             if (orderError) throw orderError;
 
+            const generatedOrderId = orderData.id;
+
             // 2. Insert order items if table exists
             if (payload.items && payload.items.length > 0) {
                 const itemsToInsert = payload.items.map(item => ({
-                    order_id: orderId,
+                    order_id: generatedOrderId,
                     product_id: item.id,
                     product_name: item.name,
                     quantity: item.quantity,
@@ -51,18 +50,19 @@ export const orderService = {
                 }
             }
 
-            console.log('✅ Order submitted successfully:', orderId);
+            console.log('✅ Order submitted successfully:', generatedOrderId);
             console.groupEnd();
             
             return {
                 success: true,
-                order_id: orderId,
+                order_id: generatedOrderId,
                 data: orderData
             };
         } catch (error) {
-            console.error('❌ Order submission failed:', error);
+            console.error('❌ Order submission failed:', error.message || error);
             console.groupEnd();
-            throw error;
+            // Graceful Fallback: Return null on failure instead of throwing
+            return null;
         }
     }
 };
