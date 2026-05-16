@@ -1,0 +1,9 @@
+{
+  "name": "react-menu-app",
+  "displayName": "React Menu App",
+  "version": "0.0.0",
+  "capacitor": {
+    "appId": "com.abukhater.menu",
+    "appName": "React Menu App"
+  }
+}
