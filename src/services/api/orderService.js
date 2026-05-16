@@ -13,11 +13,18 @@ export const orderService = {
                 .insert([{
                     customer_name: payload.customer?.full_name,
                     customer_phone: payload.customer?.phone_1,
+                    customer_phone_2: payload.customer?.phone_2,
                     order_type: payload.order_type,
                     total_amount: payload.payment?.total_amount,
+                    service_fee: payload.payment?.service_fee,
+                    paid_now: payload.payment?.paid_now,
+                    remaining_amount: payload.payment?.remaining,
                     status: 'pending',
                     delivery_address: payload.customer?.delivery_info?.address,
+                    latitude: payload.customer?.delivery_info?.coordinates?.lat,
+                    longitude: payload.customer?.delivery_info?.coordinates?.lon,
                     payment_method: payload.customer?.payment_method,
+                    payment_screenshot: payload.payment?.screenshot,
                     created_at: new Date().toISOString(),
                     raw_payload: payload // Storing full payload as backup
                 }])
