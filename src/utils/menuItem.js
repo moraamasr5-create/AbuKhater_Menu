@@ -12,12 +12,18 @@ export function normalizeCategoryKey(value) {
  * Prefer explicit item category from payload over the parent bucket (fixes wrong n8n grouping).
  */
 export function resolveItemCategory(item, bucketCategory) {
+    // Priority to bucketCategory (the name fetched from Supabase)
+    if (bucketCategory && String(bucketCategory).trim() !== '') {
+        return normalizeCategoryKey(bucketCategory);
+    }
+
+    // Fallback to internal item fields if bucketCategory is missing
     const fromItem = item?.category_id ?? item?.category;
     if (fromItem != null && String(fromItem).trim() !== '') {
         return normalizeCategoryKey(fromItem);
     }
-    const bucket = normalizeCategoryKey(bucketCategory);
-    return bucket || 'general';
+    
+    return 'general';
 }
 
 /**

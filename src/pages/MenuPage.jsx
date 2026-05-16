@@ -4,6 +4,7 @@ import useCart from '../hooks/useCart';
 import StickyCartBar from '../components/cart/StickyCartBar';
 import ProgressSteps from '../components/checkout/ProgressSteps';
 import ReservationModal from '../components/reservation/ReservationModal';
+import FeedbackModal from '../components/feedback/FeedbackModal';
 import {
     Search,
     RefreshCcw,
@@ -13,10 +14,11 @@ import {
     ChevronLeft,
     ChevronRight,
     Calendar,
+    MessageSquare,
     X
 } from 'lucide-react';
-import restaurantLogo from '../assets/logo.jpg';
-import restaurantBanner from '../assets/banner.jpg';
+import restaurantLogo from '../assets/logo.png';
+import restaurantBanner from '../assets/banner.png';
 import { normalizeCategoryKey } from '../utils/menuItem';
 
 const CATEGORY_DATA = {
@@ -36,13 +38,13 @@ const CATEGORY_DATA = {
 const DataSourceBadge = ({ source }) => {
     const config = {
         n8n: { label: 'مباشر (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
-        supabase: { label: 'احتياطي (Backup)', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+        supabase: { label: 'أحـدث منيـو - (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
         offline: { label: 'أوفلاين (Offline)', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
     };
-    
+
     if (!source) return null;
     const { label, color } = config[source] || config.offline;
-    
+
     return (
         <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-sm ${color} transition-all duration-500 animate-in fade-in slide-in-from-top-1`}>
             <div className={`w-1.5 h-1.5 rounded-full ${source === 'n8n' ? 'bg-green-500 animate-pulse' : source === 'supabase' ? 'bg-blue-500' : 'bg-amber-500'}`} />
@@ -142,6 +144,7 @@ const MenuPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
     const [showReservation, setShowReservation] = useState(false);
+    const [showFeedback, setShowFeedback] = useState(false);
     const menuProductsRef = useRef(null);
     const skipCategoryScrollRef = useRef(true);
 
@@ -171,7 +174,7 @@ const MenuPage = () => {
             setLoading(true);
             const { items, usedFallback, error: remoteError, dataSource: source } = await n8nService.fetchMenu();
             setDataSource(source);
-            
+
             if (!items || items.length === 0) {
                 setMenuItems(n8nService.getFallbackMenu());
                 setDataSource('offline');
@@ -242,7 +245,7 @@ const MenuPage = () => {
 
             {/* Banner Section */}
             <div className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden">
-                <div className="absolute top-20 right-3 sm:top-28 md:top-36 sm:right-8 md:right-10 z-30">
+                <div className="absolute top-20 right-3 sm:top-28 md:top-36 sm:right-8 md:right-10 z-30 flex flex-col gap-2.5">
                     <button
                         type="button"
                         onClick={() => setShowReservation(true)}
@@ -251,6 +254,16 @@ const MenuPage = () => {
                     >
                         <Calendar size={20} className="sm:w-[22px] sm:h-[22px] shrink-0 animate-pulse" />
                         <span className="leading-tight">أحجز  : مطعم أو كافية </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setShowFeedback(true)}
+                        className="bg-primary/95 hover:bg-primary text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-full font-black text-xs sm:text-sm shadow-lg shadow-primary/40 flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-100 border border-white/10"
+                        aria-label="إرسال شكوى أو مقترح للمطعم"
+                    >
+                        <MessageSquare size={20} className="sm:w-[22px] sm:h-[22px] shrink-0" />
+                        <span className="leading-tight">الشكاوي والمقترحات</span>
                     </button>
                 </div>
 
@@ -263,13 +276,16 @@ const MenuPage = () => {
                     decoding="async"
                 />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10">
-                    <div className="mb-3 sm:mb-4 animate-float">
-                        <img
-                            src={restaurantLogo}
-                            className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.45)]"
-                            alt="مطعم أبو خاطر"
-                            decoding="async"
-                        />
+                    <div className="mb-4 sm:mb-6 animate-float relative">
+                        <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 opacity-40"></div>
+                        <div className="relative bg-white/5 backdrop-blur-md p-3 sm:p-4 rounded-full border border-white/10 shadow-2xl">
+                            <img
+                                src={restaurantLogo}
+                                className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-110"
+                                alt="مطعم أبو خاطر"
+                                decoding="async"
+                            />
+                        </div>
                     </div>
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-1.5 sm:mb-2 drop-shadow-2xl leading-tight tracking-tight">مطعم أبو خاطر</h1>
                     <p className="text-slate-300/90 text-sm font-medium tracking-wide max-w-md mx-auto leading-relaxed">  </p>
@@ -286,56 +302,67 @@ const MenuPage = () => {
                             <DataSourceBadge source={dataSource} />
                         </div>
                         <div className="flex gap-2 sm:gap-3 items-stretch sm:items-center">
-                        <div className="relative flex-1 min-w-0">
-                            <label htmlFor="menu-search" className="sr-only">البحث في قائمة الطعام</label>
-                            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} aria-hidden />
-                            <input
-                                id="menu-search"
-                                type="search"
-                                enterKeyHint="search"
-                                autoComplete="off"
-                                placeholder="ابحث عن وجبتك المفضلة..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className={`w-full bg-dark-950/60 border border-white/[0.06] text-white pr-10 py-3 sm:py-2.5 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/35 focus:border-primary/35 transition-all text-[15px] sm:text-sm placeholder:text-slate-600 ${searchQuery ? 'pl-9' : 'pl-3 sm:pl-4'}`}
-                            />
-                            {searchQuery ? (
-                                <button
-                                    type="button"
-                                    onClick={() => setSearchQuery('')}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
-                                    aria-label="مسح البحث"
-                                >
-                                    <X size={16} strokeWidth={2.5} />
-                                </button>
-                            ) : null}
+                            <div className="relative flex-1 min-w-0">
+                                <label htmlFor="menu-search" className="sr-only">البحث في قائمة الطعام</label>
+                                <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} aria-hidden />
+                                <input
+                                    id="menu-search"
+                                    type="search"
+                                    enterKeyHint="search"
+                                    autoComplete="off"
+                                    placeholder="ابحث عن وجبتك المفضلة..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className={`w-full bg-dark-950/60 border border-white/[0.06] text-white pr-10 py-3 sm:py-2.5 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/35 focus:border-primary/35 transition-all text-[15px] sm:text-sm placeholder:text-slate-600 ${searchQuery ? 'pl-9' : 'pl-3 sm:pl-4'}`}
+                                />
+                                {searchQuery ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchQuery('')}
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
+                                        aria-label="مسح البحث"
+                                    >
+                                        <X size={16} strokeWidth={2.5} />
+                                    </button>
+                                ) : null}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={loadMenu}
+                                disabled={loading}
+                                className="bg-dark-800 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-white/[0.06] text-slate-400 hover:text-primary hover:bg-dark-700/80 transition-all active:scale-90 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center disabled:opacity-60 disabled:pointer-events-none"
+                                title="تحديث القائمة من الخادم"
+                                aria-label={loading ? 'جاري تحديث القائمة' : 'تحديث القائمة من الخادم'}
+                            >
+                                <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} aria-hidden />
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowReservation(true)}
+                                className="bg-teal-600/12 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-teal-500/25 text-teal-400 hover:bg-teal-600 hover:text-white transition-all active:scale-90 flex items-center gap-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-auto sm:px-3"
+                                title="حجز طاولة"
+                                aria-label="حجز طاولة"
+                            >
+                                <Calendar size={18} />
+                                <span className="text-xs font-black hidden sm:inline">حجز</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowFeedback(true)}
+                                className="bg-primary/12 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-primary/25 text-primary hover:bg-primary hover:text-white transition-all active:scale-90 flex items-center gap-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-auto sm:px-3"
+                                title="شكاوي ومقترحات"
+                                aria-label="شكاوي ومقترحات"
+                            >
+                                <MessageSquare size={18} />
+                                <span className="text-xs font-black hidden sm:inline">شكوى</span>
+                            </button>
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={loadMenu}
-                            disabled={loading}
-                            className="bg-dark-800 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-white/[0.06] text-slate-400 hover:text-primary hover:bg-dark-700/80 transition-all active:scale-90 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center disabled:opacity-60 disabled:pointer-events-none"
-                            title="تحديث القائمة من الخادم"
-                            aria-label={loading ? 'جاري تحديث القائمة' : 'تحديث القائمة من الخادم'}
-                        >
-                            <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} aria-hidden />
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={() => setShowReservation(true)}
-                            className="bg-teal-600/12 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-teal-500/25 text-teal-400 hover:bg-teal-600 hover:text-white transition-all active:scale-90 flex items-center gap-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-auto sm:px-3"
-                            title="حجز طاولة"
-                            aria-label="حجز طاولة"
-                        >
-                            <Calendar size={18} />
-                            <span className="text-xs font-black hidden sm:inline">حجز</span>
-                        </button>
                     </div>
-                </div>
 
-                {/* Categories Scrollable Bar with Navigation */}
+                    {/* Categories Scrollable Bar with Navigation */}
                     <div className="relative flex items-center gap-1">
                         <button
                             type="button"
@@ -441,21 +468,21 @@ const MenuPage = () => {
                                 ? `عرض ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`
                                 : `بعد التصفية: ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`}
                         </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-                        {filteredItems.map((item) => {
-                            const qty = qtyByItemId.get(item.id) ?? 0;
-                            return (
-                                <MenuProductCard
-                                    key={item.id}
-                                    item={item}
-                                    qty={qty}
-                                    fallbackImage={restaurantLogo}
-                                    addToCart={addToCart}
-                                    updateQuantity={updateQuantity}
-                                />
-                            );
-                        })}
-                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+                            {filteredItems.map((item) => {
+                                const qty = qtyByItemId.get(item.id) ?? 0;
+                                return (
+                                    <MenuProductCard
+                                        key={item.id}
+                                        item={item}
+                                        qty={qty}
+                                        fallbackImage={restaurantLogo}
+                                        addToCart={addToCart}
+                                        updateQuantity={updateQuantity}
+                                    />
+                                );
+                            })}
+                        </div>
                     </>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-20 sm:py-32 px-4 text-center">
@@ -520,6 +547,11 @@ const MenuPage = () => {
             <ReservationModal
                 isOpen={showReservation}
                 onClose={() => setShowReservation(false)}
+            />
+
+            <FeedbackModal
+                isOpen={showFeedback}
+                onClose={() => setShowFeedback(false)}
             />
         </div>
     );

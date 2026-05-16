@@ -17,7 +17,7 @@ export const n8nService = {
      */
     async fetchMenu() {
         console.group('🌊 استراتيجية جلب البيانات (Waterfall)');
-        
+
         // 1. محاولة n8n (المصدر الحي)
         try {
             const result = await this._fetchFromN8n();
@@ -26,7 +26,7 @@ export const n8nService = {
             return { ...result, dataSource: 'n8n' };
         } catch (error) {
             console.warn('⚠️ فشل n8n، جاري التحويل إلى Supabase...', error.message);
-            
+
             // 2. محاولة Supabase (المصدر الاحتياطي)
             try {
                 const result = await this._fetchFromSupabase();
@@ -35,15 +35,15 @@ export const n8nService = {
                 return { ...result, dataSource: 'supabase' };
             } catch (sbError) {
                 console.error('❌ فشل Supabase، جاري التحويل إلى الوضع الأوفلاين...', sbError.message);
-                
+
                 // 3. الحل الأخير: الملف المحلي
                 const items = this.getFallbackMenu();
                 console.groupEnd();
-                return { 
-                    items, 
-                    usedFallback: true, 
-                    error: describeFetchError(sbError), 
-                    dataSource: 'offline' 
+                return {
+                    items,
+                    usedFallback: true,
+                    error: describeFetchError(sbError),
+                    dataSource: 'offline'
                 };
             }
         }
@@ -88,7 +88,7 @@ export const n8nService = {
                 .filter(Boolean);
             return { items: mapped, usedFallback: false, error: null };
         }
-        
+
         throw new Error('Invalid data format from n8n');
     },
 
@@ -101,18 +101,19 @@ export const n8nService = {
             .select(`
                 *,
                 categories (
-                    name
+                    name,
+                    slug
                 )
             `)
             .eq('status', 'available');
-
+        console.log(data);
         if (error) throw error;
         if (!data || data.length === 0) throw new Error('Supabase returned empty data');
 
         const mapped = data
             .map((item) => {
                 // استخدام اسم التصنيف من الجدول المرتبط أو المعرف كاحتياطي
-                const categoryName = item.categories?.name || item.category_id || 'general';
+                const categoryName = item.categories?.name || 'general';
                 return this.mapSingleItem(item, categoryName);
             })
             .filter(Boolean);
@@ -139,7 +140,7 @@ export const n8nService = {
             description: item.comment || item.description || item.desc || '',
             image: imageUrl || '/logo.jpg',
             category: resolvedCategory,
-            category_id: resolvedCategory,
+            category_id: item.category_id || null,
             unit_type: item.unit_type || 'qty',
             base_qty: parseInt(item.base_qty) || 1,
             status: (item.status || 'available').toString().toLowerCase(),
@@ -479,6 +480,38 @@ export const n8nService = {
             const wrapped = new Error(describeFetchError(error));
             wrapped.originalError = error;
             throw wrapped;
+        }
+    },
+
+    /**
+     * 📝 إرسال شكوى أو مقترح إلى Supabase
+     */
+    async submitFeedback(payload) {
+        const { supabase } = await import('./supabaseClient');
+        
+        console.group('📝 إرسال شكوى/مقترح إلى Supabase');
+        try {
+            const { data, error } = await supabase
+                .from('feedback')
+                .insert([
+                    {
+                        full_name: payload.fullName,
+                        phone: payload.phone,
+                        type: payload.type,
+                        message: payload.message,
+                        created_at: new Date().toISOString()
+                    }
+                ]);
+
+            if (error) throw error;
+
+            console.log('✅ تم حفظ الرسالة في Supabase:', data);
+            console.groupEnd();
+            return { success: true, data };
+        } catch (error) {
+            console.error('❌ فشل حفظ الرسالة:', error);
+            console.groupEnd();
+            throw error;
         }
     }
 };

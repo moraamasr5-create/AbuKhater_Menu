@@ -302,7 +302,7 @@ const CustomerPage = () => {
                             <label className="text-[10px] text-slate-500 font-black mr-2">الاسم بالكامل <span className="text-red-500">*</span></label>
                             <input
                                 required
-                                placeholder="محمد علي..."
+                                placeholder="أسـم ثنائـي ..."
                                 className={getInputClass('name')}
                                 value={customerData.name}
                                 onChange={e => handleChange('name', e.target.value)}
@@ -490,7 +490,7 @@ const CustomerPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                         {[
                             { id: 'cash', label: 'نقدي' },
-                            { id: 'vodafone_cash', label: 'فودافون كاش' },
+                            { id: 'vodafone_cash', label: 'أتصـالات كاش' },
                             { id: 'instapay', label: 'انستاباي' }
                         ].map(method => (
                             <button
