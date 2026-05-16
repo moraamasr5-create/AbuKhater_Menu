@@ -37,7 +37,7 @@ export const orderService = {
             if (screenshotUrl && typeof screenshotUrl === 'string' && screenshotUrl.startsWith('data:image')) {
                 console.log('📸 Uploading payment screenshot to storage...');
                 const blob = base64ToBlob(screenshotUrl);
-                
+
                 if (blob) {
                     const fileExt = blob.type.split('/')[1] || 'jpg';
                     const fileName = `${crypto.randomUUID()}.${fileExt}`;
@@ -57,14 +57,23 @@ export const orderService = {
                         const { data: publicUrlData } = supabase.storage
                             .from('payment-screenshots')
                             .getPublicUrl(filePath);
-                        
+
                         screenshotUrl = publicUrlData.publicUrl;
                         console.log('✅ Screenshot uploaded successfully:', screenshotUrl);
                     }
                 }
             }
 
-            // 2. Insert main order record
+            // 2. Create a cleaned payload for the raw_payload backup (prevents storing large base64)
+            const cleanedPayload = {
+                ...payload,
+                payment: payload.payment ? {
+                    ...payload.payment,
+                    screenshot: screenshotUrl // Use URL instead of base64
+                } : payload.payment
+            };
+
+            // 3. Insert main order record
             const { data: orderData, error: orderError } = await supabase
                 .from('orders')
                 .insert([{
@@ -84,7 +93,7 @@ export const orderService = {
                     payment_method: payload.customer?.payment_method,
                     payment_screenshot: screenshotUrl, // Now using URL or fallback to original
                     created_at: new Date().toISOString(),
-                    raw_payload: payload // Storing full payload as backup
+                    raw_payload: cleanedPayload // Storing cleaned payload as backup
                 }])
                 .select()
                 .single();
@@ -97,7 +106,7 @@ export const orderService = {
 
             const insertedOrderId = orderData.id;
 
-            // 3. Insert order items if table exists
+            // 4. Insert order items if table exists
             if (payload.items && payload.items.length > 0) {
                 const itemsToInsert = payload.items.map(item => ({
                     order_id: insertedOrderId,
@@ -119,7 +128,7 @@ export const orderService = {
 
             console.log('✅ Order submitted successfully:', insertedOrderId);
             console.groupEnd();
-            
+
             return {
                 success: true,
                 order_id: insertedOrderId,
