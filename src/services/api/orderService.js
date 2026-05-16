@@ -27,7 +27,7 @@ export const orderService = {
             if (orderError) {
                 console.error("Order failed:", orderError);
                 console.groupEnd();
-                return null;
+                throw orderError;
             }
 
             const insertedOrderId = orderData.id;
@@ -63,7 +63,7 @@ export const orderService = {
         } catch (error) {
             console.error('❌ Order submission failed:', error);
             console.groupEnd();
-            return null;
+            throw error;
         }
     }
 };

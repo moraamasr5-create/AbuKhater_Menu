@@ -247,8 +247,13 @@ const PaymentPage = () => {
             } catch (n8nError) {
                 console.warn('⚠️ n8n webhook failed, trying Supabase fallback...', n8nError);
                 // 🚀 Fallback to Supabase
-                await orderService.submitOrder(orderData);
-                console.log('✅ Order submitted to Supabase (Fallback)');
+                try {
+                    await orderService.submitOrder(orderData);
+                    console.log('✅ Order submitted to Supabase (Fallback)');
+                } catch (err) {
+                    console.error("❌ submit failed", err);
+                    throw err; // Re-throw to ensure the outer catch block handles the error UI
+                }
             }
 
             // Record success data immediately since we succeeded
