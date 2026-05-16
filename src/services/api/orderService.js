@@ -21,6 +21,7 @@ export const orderService = {
                     remaining_amount: payload.payment?.remaining,
                     status: 'pending',
                     delivery_address: payload.customer?.delivery_info?.address,
+                    delivery_fee: payload.customer?.delivery_info?.delivery_fee,
                     latitude: payload.customer?.delivery_info?.coordinates?.lat,
                     longitude: payload.customer?.delivery_info?.coordinates?.lon,
                     payment_method: payload.customer?.payment_method,
