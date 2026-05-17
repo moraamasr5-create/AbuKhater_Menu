@@ -6,7 +6,7 @@ export const RESTAURANT_LOCATION = {
 export const PRICING_RULES = {
     BASE_RATE: 25,           // 25 EGP (Fixed for first 500m)
     BASE_DISTANCE: 0.5,      // 500m
-    ADDITIONAL_RATE: 1.5,      // 1 EGP
+    ADDITIONAL_RATE: 1.2,      // 1 EGP
     ADDITIONAL_DISTANCE: 0.1 // 100m (0.1km)
 };
 
