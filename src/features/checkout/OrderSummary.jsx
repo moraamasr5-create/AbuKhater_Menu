@@ -78,18 +78,6 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
                     </div>
                 </div>
 
-                {orderType === 'pickup' && (
-                    <div className="mt-3 flex flex-col gap-1.5 bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20">
-                        <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-black text-emerald-400 uppercase tracking-widest">المطلوب دفعه الآن</span>
-                            <span className="font-black text-emerald-400">{formatCurrency(paidNow)}</span>
-                        </div>
-                        <div className="flex justify-between items-center opacity-80">
-                            <span className="text-[10px] font-bold text-slate-400">المتبقي عند الاستلام</span>
-                            <span className="text-[10px] font-bold text-slate-400">{formatCurrency(remaining)}</span>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

@@ -28,27 +28,10 @@ const ReviewPage = () => {
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     // Pickup Calculations
-    const pickupSubtotalHalf = subtotal / 2;
-    const serviceFee = calculateServiceFee(pickupSubtotalHalf);
-    const requiredDeposit = pickupSubtotalHalf;
-    // The user has to pay: Deposit + Fee NOW.
-    // Total Order Cost (Pickup) = Subtotal + Fee ? NO.
-    // Prompt says: "Total = 155". "Remaining = 77.5". "Paid Now = 87.5" (77.5 + 10).
-    // So Total Order Cost to customer is 155 + 10 = 165? 
-    // "Total Amount" in JSON is 155. "Paid Now" 87.5. "Remaining" 77.5. 
-    // 87.5 + 77.5 = 165.
-    // So Yes, Total (to customer) is Subtotal + Fee.
-
-    // Let's refine variables to match Prompt's logic:
-    // "Total (subtotal)" = 155.
-    // "First Half" = 77.5.
-    // "Service Fee" = 10.
-    // "Current Amount (Paid Now)" = 87.5.
-    // "Remaining" = 77.5.
-
-    const pickupTotal = subtotal + serviceFee; // This is the final effective total including fee
-    const remaining = pickupSubtotalHalf;
-    const paidNow = requiredDeposit + serviceFee;
+    const serviceFee = calculateServiceFee(subtotal);
+    const pickupTotal = subtotal + serviceFee;
+    const remaining = 0;
+    const paidNow = pickupTotal;
 
     // 🔴 تحديد المبلغ الإجمالي بناءً على نوع الطلب (توصيل أو استلام)
     const total = orderType === 'delivery' ? (subtotal + deliveryFee) : pickupTotal;
@@ -104,7 +87,6 @@ const ReviewPage = () => {
                             <Store size={28} className={`sm:w-8 sm:h-8 ${orderType === 'pickup' ? 'opacity-100' : 'opacity-70'}`} />
                             <div className="text-center space-y-0.5">
                                 <span className="block font-bold text-[13px] sm:text-sm leading-snug">استلام من المطعم</span>
-                                <span className={`text-[10px] ${orderType === 'pickup' ? 'text-white/85' : 'text-slate-500'}`}>دفع 50%</span>
                             </div>
                         </button>
                     </div>

@@ -44,32 +44,22 @@ const PaymentPage = () => {
     const isCash = paymentMethod === 'cash';
 
     let serviceFee = 0;
-    let requiredDeposit = 0;
     let paidNow = 0;
     let remaining = 0;
     let totalOrderValue = 0;
     let finalTotal = 0;
 
-    if (isPickup) {
-        totalOrderValue = subtotal;
-        requiredDeposit = subtotal / 2;
-        // الرسوم تُحسب على المبلغ الذي سيتم تحويله (العربون)
-        serviceFee = calculateFee(requiredDeposit);
+    totalOrderValue = subtotal + (isPickup ? 0 : deliveryFee);
 
-        paidNow = requiredDeposit + serviceFee;
-        remaining = subtotal / 2;
+    if (isCash) {
+        serviceFee = 0;
+        paidNow = 0;
+        remaining = totalOrderValue;
     } else {
-        totalOrderValue = subtotal + deliveryFee;
-        if (isCash) {
-            serviceFee = 0;
-            paidNow = 0;
-            remaining = totalOrderValue;
-        } else {
-            // الرسوم تُحسب على إجمالي المبلغ المحول (المنتجات + التوصيل)
-            serviceFee = calculateFee(totalOrderValue);
-            paidNow = totalOrderValue + serviceFee;
-            remaining = 0;
-        }
+        // الرسوم تُحسب على إجمالي المبلغ المحول
+        serviceFee = calculateFee(totalOrderValue);
+        paidNow = totalOrderValue + serviceFee;
+        remaining = 0;
     }
 
     finalTotal = totalOrderValue + serviceFee;
@@ -138,7 +128,7 @@ const PaymentPage = () => {
     const handleConfirmPayment = async () => {
         if (isSubmitting) return; // حماية ضد الضغط المتكرر
 
-        if ((!isCash || (isCash && isPickup)) && !screenshot) {
+        if (!isCash && !screenshot) {
             setSubmitError('يرجى رفع صورة إيصال التحويل (Screenshot) للمتابعة.');
             return;
         }
@@ -306,10 +296,10 @@ const PaymentPage = () => {
                     <div className="relative z-10 flex flex-col items-center gap-1.5">
                         <CheckCircle size={32} className="opacity-90 mb-1" />
                         <h3 className="text-[11px] font-black uppercase tracking-widest opacity-90">
-                            {(isCash && orderType === 'delivery') ? 'المبلغ المطلوب عند التوصيل' : 'المبلغ المطلوب دفعه الآن'}
+                            {isCash ? (isPickup ? 'المبلغ المطلوب عند الاستلام' : 'المبلغ المطلوب عند التوصيل') : 'المبلغ المطلوب دفعه الآن'}
                         </h3>
-                        <div className="text-3xl sm:text-4xl font-black display-font tracking-tight tabular-nums">{formatCurrency(paidNow)}</div>
-                        {remaining > 0 && (
+                        <div className="text-3xl sm:text-4xl font-black display-font tracking-tight tabular-nums">{formatCurrency(isCash ? remaining : paidNow)}</div>
+                        {!isCash && remaining > 0 && (
                             <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full backdrop-blur-sm">
                                 <span className="text-[10px] font-bold opacity-90">المتبقي عند الاستلام: {formatCurrency(remaining)}</span>
                             </div>
@@ -318,7 +308,7 @@ const PaymentPage = () => {
                 </div>
 
                 {/* Payment Action Section */}
-                {(!isCash || (isCash && isPickup)) ? (
+                {!isCash ? (
                     <div className="space-y-4">
                         {/* Bank Account Details */}
                         <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 shadow-sm">
@@ -390,8 +380,8 @@ const PaymentPage = () => {
                             <Receipt size={24} />
                         </div>
                         <div>
-                            <h4 className="text-teal-400 font-bold text-sm mb-0.5">الدفع كاش عند الباب</h4>
-                            <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">يرجى تجهيز المبلغ للمندوب عند الاستلام</p>
+                            <h4 className="text-teal-400 font-bold text-sm mb-0.5">{isPickup ? 'الدفع كاش عند الاستلام' : 'الدفع كاش عند الباب'}</h4>
+                            <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">{isPickup ? 'يرجى تجهيز المبلغ عند استلام طلبك من الفرع' : 'يرجى تجهيز المبلغ للمندوب عند الاستلام'}</p>
                         </div>
                     </div>
                 )}
@@ -468,7 +458,7 @@ const PaymentPage = () => {
                             <LoadingSpinner size={22} color="text-white" />
                         ) : (
                             <>
-                                <span className="text-[15px]">{(isCash && orderType === 'delivery') ? 'تأكيد الطلب' : 'إتمام الدفع'}</span>
+                                <span className="text-[15px]">{isCash ? 'تأكيد الطلب' : 'إتمام الدفع'}</span>
                                 <CheckCircle size={18} className="opacity-80" />
                             </>
                         )}
