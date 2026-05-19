@@ -205,15 +205,28 @@ const MenuPage = () => {
     }, [loadMenu]);
 
     /**
-     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على البيانات
+     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على البيانات مع الترتيب
      */
     useEffect(() => {
         if (menuItems.length > 0) {
-            const keys = menuItems
-                .map((item) => normalizeCategoryKey(item.category))
-                .filter(Boolean);
-            const uniqueCategories = ['all', ...new Set(keys)];
-            setCategories(uniqueCategories);
+            const categoryMap = new Map();
+            menuItems.forEach((item) => {
+                const catKey = normalizeCategoryKey(item.category);
+                if (catKey) {
+                    if (!categoryMap.has(catKey)) {
+                        categoryMap.set(catKey, item.category_order ?? 999);
+                    } else {
+                        // Update order if we find a lower one
+                        categoryMap.set(catKey, Math.min(categoryMap.get(catKey), item.category_order ?? 999));
+                    }
+                }
+            });
+
+            const sortedCategories = Array.from(categoryMap.entries())
+                .sort((a, b) => a[1] - b[1])
+                .map(entry => entry[0]);
+
+            setCategories(['all', ...sortedCategories]);
         }
     }, [menuItems]);
 

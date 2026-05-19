@@ -15,7 +15,8 @@ export const menuService = {
                     *,
                     categories (
                         name,
-                        slug
+                        slug,
+                        display_order
                     )
                 `)
                 .eq('status', 'available');
@@ -28,7 +29,8 @@ export const menuService = {
                     const categoryName = item.categories?.name || 'general';
                     return this._mapSingleItem(item, categoryName);
                 })
-                .filter(Boolean);
+                .filter(item => item && item.category !== 'general')
+                .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
             return { items: mapped, dataSource: 'supabase' };
         } catch (error) {
@@ -61,6 +63,8 @@ export const menuService = {
             unit_type: item.unit_type || 'qty',
             base_qty: parseInt(item.base_qty) || 1,
             status: (item.status || 'available').toString().toLowerCase(),
+            display_order: item.display_order || 0,
+            category_order: item.categories?.display_order || 999,
             originalItem: item
         };
     },
