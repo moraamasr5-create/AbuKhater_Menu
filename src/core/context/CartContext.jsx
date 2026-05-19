@@ -49,11 +49,12 @@ export const CartProvider = ({ children }) => {
                 setDeliveryFee(0); // Flag for out of range
             } else {
                 setDistanceKm(dist);
-                setDeliveryFee(getDeliveryFee(dist));
+                const exactFee = getDeliveryFee(dist);
+                setDeliveryFee(Math.round(exactFee / 5) * 5);
             }
         } else if (locationMethod === 'fixed' && selectedAreaId) {
             const area = FIXED_AREAS.find(a => a.id === selectedAreaId);
-            setDeliveryFee(area ? area.fee : 0);
+            setDeliveryFee(area ? Math.round(area.fee / 5) * 5 : 0);
             setDistanceKm(0);
         } else {
             setDeliveryFee(0);
