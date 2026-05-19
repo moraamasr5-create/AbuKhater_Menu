@@ -3,6 +3,7 @@ import { X, MapPin, Bike, Store, Trash2, AlertCircle, Minus, Plus } from 'lucide
 import useCart from '../../hooks/useCart';
 import { formatCurrency } from '../../core/utils/formatters';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { orderService } from '../../services/api';
 
 const CartDrawer = () => {
     const {
@@ -100,7 +101,7 @@ const CartDrawer = () => {
 
     /**
      * 🔴 الدالة المسؤولة عن معالجة طلب العميل من السلة (Cart)
-     * بتجمع البيانات وبتبعتها فوراً لـ n8n كطلب جديد (pending)
+     * يتم إرسال الطلب مباشرة إلى Supabase
      */
     const handleCreateOrder = async (e) => {
         e.preventDefault();
@@ -121,38 +122,47 @@ const CartDrawer = () => {
         const nextCount = lastCount + 1;
         const order_id = `#${nextCount}`;
 
-        // 🎯 EXACT Required Payload Format
-        const payload = {
+        const orderData = {
+            restaurant: "مطعم أبو خاطر",
             order_id: order_id,
-            status: "pending",
+            timestamp: new Date().toISOString(),
+            order_type: orderType,
             customer: {
-                name: formData.name || "Unknown",
-                phone: formData.phone1 || "Unknown",
-                address: orderType === 'delivery' ? formData.address : 'استلام من المطعم'
+                full_name: formData.name || "Unknown",
+                phone_1: formData.phone1 || "Unknown",
+                phone_2: formData.phone2 || "",
+                payment_method: paymentMethod,
+                delivery_info: orderType === 'delivery' ? {
+                    address: formData.address,
+                    delivery_fee: deliveryFee,
+                    coordinates: location || { lat: 0, lon: 0 }
+                } : null
             },
-            items: cart.map(item => ({
+            payment: {
+                total_amount: total,
+                paid_now: orderType === 'pickup' ? requiredDeposit : (paymentMethod === 'cash' ? 0 : total),
+                remaining: orderType === 'pickup' ? remainingDate : (paymentMethod === 'cash' ? total : 0),
+                service_fee: orderType === 'pickup' ? serviceFee : 0,
+                screenshot: null
+            },
+            items: cart.map((item, index) => ({
+                id: `#${index + 1}`,
                 name: item.name,
-                quantity: item.quantity
+                category: item.category || "عام",
+                quantity: item.quantity,
+                price: item.price,
+                total: item.price * item.quantity
             })),
             totals: {
-                total: total,
-                delivery_fee: orderType === 'delivery' ? deliveryFee : 0
-            },
-            created_at: new Date().toISOString()
+                subtotal: subtotal,
+                delivery_fee: orderType === 'delivery' ? deliveryFee : 0,
+                service_fee: orderType === 'pickup' ? serviceFee : 0,
+                total: total
+            }
         };
 
         try {
-            const response = await fetch('https://restaurant1abukhater.app.n8n.cloud/webhook-test/submit-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            await orderService.submitOrder(orderData);
             
             // Advance sequence on success
             localStorage.setItem('order_sequence_num', nextCount.toString());

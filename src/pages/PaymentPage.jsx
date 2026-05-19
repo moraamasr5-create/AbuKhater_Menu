@@ -150,39 +150,7 @@ const PaymentPage = () => {
         const nextCount = lastCount + 1;
         const orderId = `#${nextCount}`;
 
-        // 🎯 بناء هيكل البيانات المطلوب تماماً لـ n8n ولشيت جوجل
-        // نأكد على إرسال الـ items كمصفوفة JSON صحيحة، مع إدراج طريقة الدفع وصورة الإيصال
-        const orderPayload = {
-            order_id: orderId,
-            status: "pending",
-            order_type: orderType,
-            created_at: new Date().toISOString(),
-            customer: {
-                name: customerData.name || "Unknown",
-                phone_primary: customerData.phone1 || "Unknown",
-                phone_secondary: customerData.phone2 || "",
-                address: customerData.address || (isPickup ? "استلام من الفرع" : "لم يتم تحديد العنوان"),
-                coordinates: location ? {
-                    lat: location.lat,
-                    lon: location.lon
-                } : null
-            },
-            payment: {
-                method: paymentMethod,
-                amount_total: finalTotal,
-                amount_paid: paidNow,
-                amount_remaining: remaining,
-                delivery_fee: deliveryFee || 0,
-                screenshot: screenshot // 🖼️ إرسال صورة إثبات الدفع (Base64)
-            },
-            items: cart.map(item => ({
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price
-            }))
-        };
-
-        // Existing orderData for local state and legacy support
+        // Data structure for Supabase submission
         const orderData = {
             restaurant: "مطعم أبو خاطر",
             order_id: orderId,
@@ -228,33 +196,11 @@ const PaymentPage = () => {
         };
 
         try {
-            console.log('🎯 بدء تأكيد الطلب...');
+            console.log('🎯 بدء تأكيد الطلب عبر Supabase...');
             setSubmitError(null);
 
-            // 🚀 Send to n8n first (Primary) then fallback to Supabase
-            try {
-                const response = await fetch('https://restaurantabukhater111.app.n8n.cloud/webhook-test/submit-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(orderPayload)
-                });
-
-                if (!response.ok) throw new Error('n8n submission failed');
-                console.log('✅ Structured order payload sent to n8n');
-            } catch (n8nError) {
-                console.warn('⚠️ n8n webhook failed, trying Supabase fallback...', n8nError);
-                // 🚀 Fallback to Supabase
-                try {
-                    await orderService.submitOrder(orderData);
-                    console.log('✅ Order submitted to Supabase (Fallback)');
-                } catch (err) {
-                    console.error("❌ submit failed", err);
-                    throw err; // Re-throw to ensure the outer catch block handles the error UI
-                }
-            }
+            await orderService.submitOrder(orderData);
+            console.log('✅ Order submitted directly to Supabase');
 
             // Record success data immediately since we succeeded
             setSuccessData({
