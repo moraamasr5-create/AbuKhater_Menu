@@ -258,28 +258,6 @@ const MenuPage = () => {
 
             {/* Banner Section */}
             <div className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden">
-                <div className="absolute top-20 right-3 sm:top-28 md:top-36 sm:right-8 md:right-10 z-30 flex flex-col gap-2.5">
-                    <button
-                        type="button"
-                        onClick={() => setShowReservation(true)}
-                        className="bg-teal-600 hover:bg-teal-500 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-full font-black text-xs sm:text-sm shadow-lg shadow-teal-900/40 flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-100 border border-teal-400/25"
-                        aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
-                    >
-                        <Calendar size={20} className="sm:w-[22px] sm:h-[22px] shrink-0 animate-pulse" />
-                        <span className="leading-tight">أحجز  : مطعم أو كافية </span>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => setShowFeedback(true)}
-                        className="bg-primary/95 hover:bg-primary text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-full font-black text-xs sm:text-sm shadow-lg shadow-primary/40 flex items-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-100 border border-white/10"
-                        aria-label="إرسال شكوى أو مقترح للمطعم"
-                    >
-                        <MessageSquare size={20} className="sm:w-[22px] sm:h-[22px] shrink-0" />
-                        <span className="leading-tight">الشكاوي والمقترحات</span>
-                    </button>
-                </div>
-
                 <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-dark-950 z-10"></div>
                 <img
                     src={restaurantBanner}
@@ -303,6 +281,29 @@ const MenuPage = () => {
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-1.5 sm:mb-2 drop-shadow-2xl leading-tight tracking-tight">مطعم أبو خاطر</h1>
                     <p className="text-slate-300/90 text-sm font-medium tracking-wide max-w-md mx-auto leading-relaxed">  </p>
                 </div>
+            </div>
+
+            {/* Action Buttons Container */}
+            <div className="max-w-3xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5 mb-2 z-30 relative flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={() => setShowReservation(true)}
+                    className="flex-1 bg-teal-600/95 hover:bg-teal-500 text-white py-3 sm:py-3.5 rounded-[1.25rem] sm:rounded-2xl font-black text-xs sm:text-sm shadow-lg shadow-teal-900/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-teal-400/20"
+                    aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
+                >
+                    <Calendar size={20} className="shrink-0 animate-pulse" />
+                    <span className="leading-tight truncate">أحجز : مطعم أو كافيه</span>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setShowFeedback(true)}
+                    className="flex-1 bg-primary/95 hover:bg-primary text-white py-3 sm:py-3.5 rounded-[1.25rem] sm:rounded-2xl font-black text-xs sm:text-sm shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/10"
+                    aria-label="إرسال شكوى أو مقترح للمطعم"
+                >
+                    <MessageSquare size={20} className="shrink-0" />
+                    <span className="leading-tight truncate">الشكاوي والمقترحات</span>
+                </button>
             </div>
 
             {/* Floating Interaction Bar */}
@@ -349,28 +350,6 @@ const MenuPage = () => {
                                 aria-label={loading ? 'جاري تحديث القائمة' : 'تحديث القائمة من الخادم'}
                             >
                                 <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} aria-hidden />
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => setShowReservation(true)}
-                                className="bg-teal-600/12 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-teal-500/25 text-teal-400 hover:bg-teal-600 hover:text-white transition-all active:scale-90 flex items-center gap-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-auto sm:px-3"
-                                title="حجز طاولة"
-                                aria-label="حجز طاولة"
-                            >
-                                <Calendar size={18} />
-                                <span className="text-xs font-black hidden sm:inline">حجز</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => setShowFeedback(true)}
-                                className="bg-primary/12 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-primary/25 text-primary hover:bg-primary hover:text-white transition-all active:scale-90 flex items-center gap-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-auto sm:px-3"
-                                title="شكاوي ومقترحات"
-                                aria-label="شكاوي ومقترحات"
-                            >
-                                <MessageSquare size={18} />
-                                <span className="text-xs font-black hidden sm:inline">شكوى</span>
                             </button>
                         </div>
                     </div>
