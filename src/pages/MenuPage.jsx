@@ -278,13 +278,16 @@ const MenuPage = () => {
                             />
                         </div>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2.5 tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2.5 tracking-tight drop-shadow-[0_2px_30px_rgba(249,115,22,0.35)] hover:scale-[1.01] transition-transform duration-300 cursor-default">
                         <span className="bg-gradient-to-r from-amber-300 via-primary to-orange-500 bg-clip-text text-transparent">
                             مطعم أبو خاطر
                         </span>
                     </h1>
                     <p className="text-slate-200/90 text-xs sm:text-sm font-bold tracking-wide max-w-sm mx-auto leading-relaxed border-t border-white/10 pt-2 mt-1">
-                        أصالة المذاق الشرقي والوجبات الفاخرة
+                        ولا علـ البــال ولا علـ الخـاطـر
+                    </p>
+                    <p className="text-slate-200/90 text-xs sm:text-sm font-bold tracking-wide max-w-sm mx-auto leading-relaxed border-t border-white/10 pt-2 mt-1">
+                        كـله عنـد أبـو خــاطـر
                     </p>
                 </div>
             </div>
