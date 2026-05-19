@@ -18,8 +18,7 @@ export const menuService = {
                         slug,
                         display_order
                     )
-                `)
-                .eq('status', 'available');
+                `);
 
             if (error) throw error;
             if (!data || data.length === 0) throw new Error('Supabase returned empty data');
