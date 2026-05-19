@@ -301,7 +301,7 @@ const MenuPage = () => {
                     aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
                 >
                     <Calendar size={20} className="shrink-0 animate-pulse" />
-                    <span className="leading-tight truncate">أحجز : مطعم أو كافيه</span>
+                    <span className="leading-tight truncate"> أحجز طاولتك الآن </span>
                 </button>
 
                 <button
