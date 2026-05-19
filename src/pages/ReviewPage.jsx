@@ -66,11 +66,10 @@ const ReviewPage = () => {
                     <div className="grid grid-cols-2 gap-2.5 sm:gap-3 px-0.5 sm:px-1">
                         <button
                             onClick={() => setOrderType('delivery')}
-                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${
-                                orderType === 'delivery'
-                                    ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
-                                    : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
-                            }`}
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'delivery'
+                                ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
+                                : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                }`}
                         >
                             <Bike size={28} className={`sm:w-8 sm:h-8 ${orderType === 'delivery' ? 'opacity-100' : 'opacity-70'}`} />
                             <span className="font-bold text-[13px] sm:text-sm text-center leading-snug">توصيل للمنزل</span>
@@ -78,11 +77,10 @@ const ReviewPage = () => {
 
                         <button
                             onClick={() => setOrderType('pickup')}
-                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${
-                                orderType === 'pickup'
-                                    ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
-                                    : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
-                            }`}
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'pickup'
+                                ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
+                                : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                }`}
                         >
                             <Store size={28} className={`sm:w-8 sm:h-8 ${orderType === 'pickup' ? 'opacity-100' : 'opacity-70'}`} />
                             <div className="text-center space-y-0.5">

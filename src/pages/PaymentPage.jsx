@@ -129,7 +129,7 @@ const PaymentPage = () => {
         if (isSubmitting) return; // حماية ضد الضغط المتكرر
 
         if (!isCash && !screenshot) {
-            setSubmitError('يرجى رفع صورة إيصال التحويل (Screenshot) للمتابعة.');
+            setSubmitError('يرجى رفع صورة أسكرين شوت التحويل (Screenshot) للمتابعة.');
             return;
         }
 
