@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { menuService } from '../services/api';
+import { supabase } from '../services/supabaseClient';
 import useCart from '../hooks/useCart';
 import StickyCartBar from '../features/cart/StickyCartBar';
 import ProgressSteps from '../features/checkout/ProgressSteps';
@@ -202,6 +203,26 @@ const MenuPage = () => {
 
     useEffect(() => {
         loadMenu();
+
+        // Subscribe to real-time changes in menu_items table
+        const channel = supabase
+            .channel('menu-realtime-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'menu_items'
+                },
+                () => {
+                    loadMenu();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [loadMenu]);
 
     /**
