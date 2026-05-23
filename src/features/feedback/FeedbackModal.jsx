@@ -197,6 +197,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 value={formData.phone}
                                 onChange={handleInputChange}
                                 placeholder="01xxxxxxxxx"
+                                maxLength={11}
                                 className={`w-full bg-dark-950/50 border ${errors.phone ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
                             />
                             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}

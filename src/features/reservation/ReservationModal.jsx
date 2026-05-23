@@ -280,6 +280,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         onChange={handleInputChange}
                                         placeholder="01xxxxxxxxx"
                                         aria-invalid={!!errors.phone}
+                                        maxLength={11}
                                         className={`w-full bg-dark-950/50 border ${errors.phone ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
                                     />
                                     {errors.phone && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.phone}</p>}
