@@ -37,6 +37,36 @@ const CustomerPage = () => {
     const [isLocating, setIsLocating] = useState(false);
     const [gpsError, setGpsError] = useState(null);
 
+    const [savedCustomers, setSavedCustomers] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem('saved_customers') || '[]');
+        setSavedCustomers(saved);
+    }, []);
+
+    const handleSelectCustomer = (entry) => {
+        setCustomerData(prev => ({
+            ...prev,
+            name: entry.name,
+            phone1: entry.phone1,
+            phone2: entry.phone2,
+            address: entry.address
+        }));
+        
+        const match = entry.address?.match(/شارع (.*?) - مبنى (.*?) - شقة (.*)/);
+        if (match) setAddressDetails({ street: match[1], building: match[2], apartment: match[3] });
+        
+        setShowSuggestions(false);
+    };
+
+    const handleDeleteCustomer = (phone1) => {
+        const updated = savedCustomers.filter(c => c.phone1 !== phone1);
+        setSavedCustomers(updated);
+        localStorage.setItem('saved_customers', JSON.stringify(updated));
+        if (updated.length === 0) setShowSuggestions(false);
+    };
+
     // Map Refs
     const mapRef = useRef(null);
     const mapInstance = useRef(null);
@@ -274,6 +304,17 @@ const CustomerPage = () => {
 
     const handleNext = () => {
         if (isFormValid()) {
+            const saved = JSON.parse(localStorage.getItem('saved_customers') || '[]');
+            const newEntry = {
+                name: customerData.name,
+                phone1: customerData.phone1,
+                phone2: customerData.phone2,
+                address: customerData.address
+            };
+            const filtered = saved.filter(c => c.phone1 !== newEntry.phone1);
+            const updated = [newEntry, ...filtered].slice(0, 5);
+            localStorage.setItem('saved_customers', JSON.stringify(updated));
+
             navigate('/payment');
         } else {
             alert('يرجى إكمال جميع البيانات المطلوبة');
@@ -298,7 +339,7 @@ const CustomerPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
+                        <div className="space-y-1.5 relative">
                             <label className="text-[10px] text-slate-500 font-black mr-2">الاسم بالكامل <span className="text-red-500">*</span></label>
                             <input
                                 required
@@ -306,9 +347,40 @@ const CustomerPage = () => {
                                 className={getInputClass('name')}
                                 value={customerData.name}
                                 onChange={e => handleChange('name', e.target.value)}
-                            // onBlur={() => handleBlur('name')}
+                                onFocus={() => { if (savedCustomers.length > 0) setShowSuggestions(true); }}
+                                onBlur={() => {
+                                    handleBlur('name');
+                                    setTimeout(() => setShowSuggestions(false), 200);
+                                }}
                             />
                             {touched.name && errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.name}</p>}
+
+                            {showSuggestions && savedCustomers.length > 0 && (
+                                <div className="absolute top-[100%] left-0 w-full mt-1 bg-dark-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+                                    {savedCustomers.map((entry, idx) => (
+                                        <div 
+                                            key={idx} 
+                                            className="flex justify-between items-center px-4 py-3 hover:bg-dark-800 cursor-pointer border-b border-white/5 last:border-0"
+                                            onClick={() => handleSelectCustomer(entry)}
+                                        >
+                                            <div className="flex flex-col">
+                                                <span className="font-bold text-white text-sm">{entry.name}</span>
+                                                <span className="text-xs text-slate-500">{entry.phone1}</span>
+                                            </div>
+                                            <button 
+                                                type="button"
+                                                className="text-slate-500 hover:text-red-400 text-xs p-1"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteCustomer(entry.phone1);
+                                                }}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-[10px] text-slate-500 font-black mr-2">رقم الهاتف الأساسي <span className="text-red-500">*</span></label>
