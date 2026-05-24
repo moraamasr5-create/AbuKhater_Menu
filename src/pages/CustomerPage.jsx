@@ -241,13 +241,31 @@ const CustomerPage = () => {
                 if (!mapRef.current || !window.L) return;
 
                 const center = location ? [location.lat, location.lon] : [RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon];
-                const zoom = location ? 15 : 13;
+                const zoom = location ? 15 : 12;
 
                 try {
                     mapInstance.current = window.L.map(mapRef.current).setView(center, zoom);
 
-                    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OSM'
+                    const MATARIA_CENTER = [30.126131, 31.298350];
+                    const MAX_KM = 15;
+                    const KM_TO_DEG = 0.009;
+                    const offset = MAX_KM * KM_TO_DEG;
+                    const southWest = window.L.latLng(MATARIA_CENTER[0] - offset, MATARIA_CENTER[1] - offset);
+                    const northEast = window.L.latLng(MATARIA_CENTER[0] + offset, MATARIA_CENTER[1] + offset);
+                    const bounds = window.L.latLngBounds(southWest, northEast);
+                    mapInstance.current.setMaxBounds(bounds);
+                    mapInstance.current.setMinZoom(11);
+                    mapInstance.current.setMaxZoom(18);
+
+                    window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: 'Tiles &copy; Esri',
+                        maxZoom: 19
+                    }).addTo(mapInstance.current);
+
+                    window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: '',
+                        maxZoom: 19,
+                        opacity: 0.7
                     }).addTo(mapInstance.current);
 
                     mapInstance.current.invalidateSize();
