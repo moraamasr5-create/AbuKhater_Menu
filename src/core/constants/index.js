@@ -4,10 +4,10 @@ export const RESTAURANT_LOCATION = {
 };
 
 export const PRICING_RULES = {
-    BASE_RATE: 25,           // 25 EGP (Fixed for first 500m)
-    BASE_DISTANCE: 0.5,      // 500m
-    ADDITIONAL_RATE: 1.2,      // 1 EGP
-    ADDITIONAL_DISTANCE: 0.1 // 100m (0.1km)
+    BASE_RATE: 25,             // 25 ج.م ثابت لأول 1.5 كم
+    BASE_DISTANCE: 1.5,        // 1.5 كم
+    ADDITIONAL_RATE: 3,        // 3 ج.م
+    ADDITIONAL_DISTANCE: 0.5   // كل 500 متر إضافية
 };
 
 export const MAX_DELIVERY_DISTANCE = 15; // 15 km
