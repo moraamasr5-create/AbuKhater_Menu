@@ -244,7 +244,7 @@ const CustomerPage = () => {
                 const zoom = location ? 15 : 12;
 
                 try {
-                    mapInstance.current = window.L.map(mapRef.current).setView(center, zoom);
+                    mapInstance.current = window.L.map(mapRef.current, { attributionControl: false }).setView(center, zoom);
 
                     const MATARIA_CENTER = [30.126131, 31.298350];
                     const MAX_KM = 15;
@@ -259,7 +259,7 @@ const CustomerPage = () => {
 
                     // Satellite base layer
                     window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                        attribution: '',
                         maxZoom: 19
                     }).addTo(mapInstance.current);
 
@@ -504,7 +504,7 @@ const CustomerPage = () => {
                         {/* Method Specific UI */}
                         <div className="min-h-[100px] flex items-center justify-center">
                             {locationMethod === 'gps' && (
-                                <div className="w-full space-y-4">
+                                <div className="w-full space-y-3">
                                     <button
                                         type="button"
                                         onClick={handleLocationFetch}
@@ -521,6 +521,15 @@ const CustomerPage = () => {
                                                 </span>
                                             </>
                                         )}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleLocationFetch}
+                                        disabled={isLocating}
+                                        className="w-full bg-dark-800/70 border border-white/10 shadow text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
+                                    >
+                                        {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={16} />}
+                                        <span>أين انا!</span>
                                     </button>
                                     {gpsError && <p className="text-red-400 text-[10px] text-center">{gpsError}</p>}
                                 </div>
