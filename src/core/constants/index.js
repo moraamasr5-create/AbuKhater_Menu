@@ -5,9 +5,9 @@ export const RESTAURANT_LOCATION = {
 
 export const PRICING_RULES = {
     BASE_RATE: 25,             // 25 ج.م ثابت لأول 1.5 كم
-    BASE_DISTANCE: 0.6,        // 1.5 كم
+    BASE_DISTANCE: 0.5,        // 1.5 كم
     ADDITIONAL_RATE: 3,        // 3 ج.م
-    ADDITIONAL_DISTANCE: 0.3   // كل 500 متر إضافية
+    ADDITIONAL_DISTANCE: 0.2  // كل 500 متر إضافية
 };
 
 export const MAX_DELIVERY_DISTANCE = 12; // 15 km
