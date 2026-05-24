@@ -71,6 +71,7 @@ const CustomerPage = () => {
     const mapRef = useRef(null);
     const mapInstance = useRef(null);
     const markerInstance = useRef(null);
+    const pendingGPSLocation = useRef(null); // موقع GPS ينتظر وضعه على الخريطة
 
     // Address local state
     const [addressDetails, setAddressDetails] = useState({
@@ -312,7 +313,22 @@ const CustomerPage = () => {
                         setLocation({ lat, lon: lng });
                     });
 
-                    setTimeout(() => mapInstance.current?.invalidateSize(), 300);
+                    setTimeout(() => {
+                        mapInstance.current?.invalidateSize();
+
+                        // إذا كان هناك موقع GPS معلق، اطر إليه وضع الدبوس
+                        if (pendingGPSLocation.current && mapInstance.current) {
+                            const { lat, lon } = pendingGPSLocation.current;
+                            const latlng = window.L.latLng(lat, lon);
+                            mapInstance.current.flyTo(latlng, 17);
+                            if (markerInstance.current) {
+                                markerInstance.current.setLatLng(latlng);
+                            } else {
+                                markerInstance.current = window.L.marker(latlng).addTo(mapInstance.current);
+                            }
+                            pendingGPSLocation.current = null;
+                        }
+                    }, 350);
 
                 } catch (e) {
                     console.error("Map Init Error:", e);
@@ -330,6 +346,7 @@ const CustomerPage = () => {
         }
     }, [locationMethod]);
 
+    // زر "أين انا!" داخل الخريطة
     const handleLocateMeOnMap = () => {
         if (!navigator.geolocation) {
             alert("المتصفح لا يدعم تحديد الموقع");
@@ -344,7 +361,7 @@ const CustomerPage = () => {
 
                 if (mapInstance.current) {
                     const newLatLng = window.L.latLng(latitude, longitude);
-                    mapInstance.current.flyTo(newLatLng, 16);
+                    mapInstance.current.flyTo(newLatLng, 17);
                     if (markerInstance.current) {
                         markerInstance.current.setLatLng(newLatLng);
                     } else {
@@ -355,6 +372,35 @@ const CustomerPage = () => {
             (error) => {
                 console.error("GPS Error:", error);
                 alert("فشل تحديد الموقع. يرجى تفعيل الـ GPS والسماح للمتصفح بالوصول.");
+                setIsLocating(false);
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    };
+
+    // زر "أين انا!" في قسم GPS — يحدد الموقع ثم ينتقل للخريطة ويضع الدبوس
+    const handleLocateAndSwitchToMap = () => {
+        if (!navigator.geolocation) {
+            setGpsError("المتصفح لا يدعم تحديد الموقع");
+            return;
+        }
+        setIsLocating(true);
+        setGpsError(null);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                // احفظ الموقع في الـ ref ليُستخدم فور تهيئة الخريطة
+                pendingGPSLocation.current = { lat: latitude, lon: longitude };
+                setLocation({ lat: latitude, lon: longitude });
+                setIsLocating(false);
+                // الانتقال لتبويب الخريطة سيُشغّل useEffect الذي يضع الدبوس
+                setLocationMethod('map');
+            },
+            (error) => {
+                console.error("GPS Error:", error);
+                let msg = "فشل تحديد الموقع. يرجى تفعيل الـ GPS.";
+                if (error.code === 1) msg = "تم رفض الوصول للمكان. يرجى السماح للمتصفح بالوصول.";
+                setGpsError(msg);
                 setIsLocating(false);
             },
             { enableHighAccuracy: true, timeout: 10000 }
@@ -524,12 +570,12 @@ const CustomerPage = () => {
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={handleLocationFetch}
+                                        onClick={handleLocateAndSwitchToMap}
                                         disabled={isLocating}
                                         className="w-full bg-dark-800/70 border border-white/10 shadow text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
                                     >
                                         {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={16} />}
-                                        <span>أين انا!</span>
+                                        <span>أين انا! (على الخريطة)</span>
                                     </button>
                                     {gpsError && <p className="text-red-400 text-[10px] text-center">{gpsError}</p>}
                                 </div>
