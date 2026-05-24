@@ -320,6 +320,37 @@ const CustomerPage = () => {
         }
     }, [locationMethod]);
 
+    const handleLocateMeOnMap = () => {
+        if (!navigator.geolocation) {
+            alert("المتصفح لا يدعم تحديد الموقع");
+            return;
+        }
+        setIsLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                setLocation({ lat: latitude, lon: longitude });
+                setIsLocating(false);
+
+                if (mapInstance.current) {
+                    const newLatLng = window.L.latLng(latitude, longitude);
+                    mapInstance.current.flyTo(newLatLng, 16);
+                    if (markerInstance.current) {
+                        markerInstance.current.setLatLng(newLatLng);
+                    } else {
+                        markerInstance.current = window.L.marker(newLatLng).addTo(mapInstance.current);
+                    }
+                }
+            },
+            (error) => {
+                console.error("GPS Error:", error);
+                alert("فشل تحديد الموقع. يرجى تفعيل الـ GPS والسماح للمتصفح بالوصول.");
+                setIsLocating(false);
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    };
+
     const handleNext = () => {
         if (isFormValid()) {
             const saved = JSON.parse(localStorage.getItem('saved_customers') || '[]');
@@ -487,7 +518,18 @@ const CustomerPage = () => {
 
                             {locationMethod === 'map' && (
                                 <div className="w-full space-y-4">
-                                    <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner grayscale-[0.5] hover:grayscale-0 transition-all z-0" />
+                                    <div className="relative w-full">
+                                        <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner grayscale-[0.5] hover:grayscale-0 transition-all z-0" />
+                                        <button
+                                            type="button"
+                                            onClick={handleLocateMeOnMap}
+                                            disabled={isLocating}
+                                            className="absolute bottom-4 left-4 z-[400] bg-dark-900/90 backdrop-blur border border-white/10 shadow-lg text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
+                                        >
+                                            {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={14} />}
+                                            <span>أين انا!</span>
+                                        </button>
+                                    </div>
                                     <p className="text-[10px] text-slate-500 text-center italic">اسحب الخريطة وانقر لتحديد نقطة التوصيل الدقيقة</p>
                                 </div>
                             )}
