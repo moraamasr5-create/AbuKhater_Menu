@@ -13,13 +13,13 @@ export const PRICING_RULES = {
 export const MAX_DELIVERY_DISTANCE = 12; // 15 km
 
 export const FIXED_AREAS = [
-    { id: 'mataria', name: 'المطرية', fee: 25 },
-    { id: 'zaitoun', name: 'الزيتون', fee: 35 },
-    { id: 'shams', name: 'عين شمس', fee: 40 },
-    { id: 'marg', name: 'المرج', fee: 45 },
-    { id: 'khosos', name: 'الخصوص', fee: 50 },
-    { id: 'heliopolis', name: 'مصر الجديدة', fee: 55 },
-    { id: 'nasr_city', name: 'مدينة نصر', fee: 60 }
+    { id: 'mataria', name: 'المطرية', fee: 30 },
+    { id: 'zaitoun', name: 'الزيتون', fee: 50 },
+    { id: 'shams', name: 'عين شمس', fee: 50 },
+    { id: 'marg', name: 'المرج', fee: 70 },
+    { id: 'khosos', name: 'الخصوص', fee: 60 },
+    { id: 'heliopolis', name: 'مصر الجديدة', fee: 70 },
+    { id: 'nasr_city', name: 'مدينة نصر', fee: 80 }
 ];
 
 export const DEFAULT_DELIVERY_FEE = 35;
