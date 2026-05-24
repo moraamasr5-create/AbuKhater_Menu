@@ -10,7 +10,7 @@ export const PRICING_RULES = {
     ADDITIONAL_DISTANCE: 0.3  // كل 500 متر إضافية
 };
 
-export const MAX_DELIVERY_DISTANCE = 12; // 15 km
+export const MAX_DELIVERY_DISTANCE = 10; // 15 km
 
 export const FIXED_AREAS = [
     { id: 'mataria', name: 'المطرية', fee: 30 },
