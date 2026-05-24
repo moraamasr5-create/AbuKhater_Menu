@@ -6,11 +6,11 @@ export const RESTAURANT_LOCATION = {
 export const PRICING_RULES = {
     BASE_RATE: 25,             // 25 ج.م ثابت لأول 1.5 كم
     BASE_DISTANCE: 0.5,        // 1.5 كم
-    ADDITIONAL_RATE: 1.5,        // 3 ج.م
+    ADDITIONAL_RATE: 1.25,        // 3 ج.م
     ADDITIONAL_DISTANCE: 0.1  // كل 500 متر إضافية
 };
 
-export const MAX_DELIVERY_DISTANCE = 9; // 15 km
+export const MAX_DELIVERY_DISTANCE = 10; // 15 km
 
 export const FIXED_AREAS = [
     { id: 'mataria', name: 'المطرية', fee: 30 },
