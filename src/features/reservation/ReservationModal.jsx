@@ -64,7 +64,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     const validateField = (name, value) => {
         let fieldError = '';
-        
+
         switch (name) {
             case 'fullName':
                 // Arabic and English characters, min 3 chars, no numbers
@@ -88,7 +88,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     today.setHours(0, 0, 0, 0);
                     const maxDate = new Date();
                     maxDate.setDate(today.getDate() + 30);
-                    
+
                     if (selectedDate < today) fieldError = 'لا يمكن اختيار تاريخ في الماضي';
                     else if (selectedDate > maxDate) fieldError = 'يمكن الحجز خلال 30 يوم من الآن فقط';
                 }
@@ -118,7 +118,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         // Real-time validation
         const fieldError = validateField(name, value);
         setErrors(prev => ({ ...prev, [name]: fieldError }));
@@ -330,8 +330,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         <button
                                             type="button"
                                             onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
-                                            className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-black transition-all border-2 ${formData.locationType === 'restaurant' 
-                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                                            className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-black transition-all border-2 ${formData.locationType === 'restaurant'
+                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
                                                 : 'bg-dark-950/50 border-white/5 text-slate-500 hover:bg-dark-800'}`}
                                         >
                                             <UtensilsCrossed size={18} />
@@ -340,8 +340,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         <button
                                             type="button"
                                             onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
-                                            className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-black transition-all border-2 ${formData.locationType === 'cafe' 
-                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                                            className={`flex items-center justify-center gap-3 py-4 rounded-2xl font-black transition-all border-2 ${formData.locationType === 'cafe'
+                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
                                                 : 'bg-dark-950/50 border-white/5 text-slate-500 hover:bg-dark-800'}`}
                                         >
                                             <Coffee size={18} />
@@ -423,7 +423,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Instapay / Wallet:</span>
-                                        <span className="text-white font-black tracking-wider">01144423700</span>
+                                        <span className="text-white font-red tracking-wider">01144423700</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">الاسم :</span>
