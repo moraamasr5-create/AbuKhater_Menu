@@ -35,7 +35,7 @@ export const reservationService = {
 
                 if (blob) {
                     const fileExt = blob.type.split('/')[1] || 'jpg';
-                    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+                    const fileName = `reservations/${crypto.randomUUID()}.${fileExt}`;
                     const filePath = `${fileName}`;
 
                     const { error: uploadError } = await supabase.storage
