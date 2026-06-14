@@ -25,7 +25,7 @@ export const reservationService = {
      */
     async submitReservation(payload) {
         console.group('📅 Submitting reservation to Supabase');
-        
+
         try {
             let screenshotUrl = payload.payment_screenshot;
 
@@ -39,7 +39,7 @@ export const reservationService = {
                     const filePath = `${fileName}`;
 
                     const { error: uploadError } = await supabase.storage
-                        .from('reservation-proofs')
+                        .from('payment-screenshots')
                         .upload(filePath, blob, {
                             contentType: blob.type,
                             cacheControl: '3600',
@@ -50,9 +50,9 @@ export const reservationService = {
                         console.error('⚠️ Screenshot upload failed:', uploadError.message);
                     } else {
                         const { data: publicUrlData } = supabase.storage
-                            .from('reservation-proofs')
+                            .from('payment-screenshots')
                             .getPublicUrl(filePath);
-                        
+
                         if (publicUrlData && publicUrlData.publicUrl) {
                             screenshotUrl = publicUrlData.publicUrl;
                             console.log('✅ Screenshot uploaded:', screenshotUrl);
@@ -82,7 +82,7 @@ export const reservationService = {
 
             console.log('✅ Reservation submitted successfully');
             console.groupEnd();
-            
+
             return {
                 success: true,
                 data
