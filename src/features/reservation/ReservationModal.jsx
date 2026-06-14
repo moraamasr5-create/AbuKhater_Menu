@@ -18,13 +18,6 @@ import {
 import { reservationService } from '../../services/api';
 
 const ReservationModal = ({ isOpen, onClose }) => {
-    // Generate 30-min interval times
-    const timeOptions = Array.from({ length: 48 }, (_, i) => {
-        const hour = Math.floor(i / 2).toString().padStart(2, '0');
-        const minute = i % 2 === 0 ? '00' : '30';
-        return `${hour}:${minute}`;
-    });
-
     const [step, setStep] = useState(1); // 1: Info, 2: Payment
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -36,6 +29,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
         phone: '',
         guests: 2,
         date: '',
+        timeHour: '',
+        timeMinute: '',
+        timeAmPm: '',
         time: '',
         notes: '',
         locationType: 'restaurant', // 'restaurant' or 'cafe'
@@ -55,6 +51,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     phone: '',
                     guests: 2,
                     date: '',
+                    timeHour: '',
+                    timeMinute: '',
+                    timeAmPm: '',
                     time: '',
                     notes: '',
                     locationType: 'restaurant',
@@ -125,6 +124,25 @@ const ReservationModal = ({ isOpen, onClose }) => {
         setErrors(prev => ({ ...prev, [name]: fieldError }));
     };
 
+    const handleTimeChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => {
+            const newData = { ...prev, [name]: value };
+            
+            if (newData.timeHour && newData.timeMinute && newData.timeAmPm) {
+                let h = parseInt(newData.timeHour, 10);
+                if (newData.timeAmPm === 'PM' && h !== 12) h += 12;
+                if (newData.timeAmPm === 'AM' && h === 12) h = 0;
+                newData.time = `${h.toString().padStart(2, '0')}:${newData.timeMinute}`;
+                setErrors(errs => ({ ...errs, time: validateField('time', newData.time) }));
+            } else {
+                newData.time = '';
+            }
+            
+            return newData;
+        });
+    };
+
     const sanitizeInput = (str) => {
         return str.replace(/[<>]/g, "").trim(); // Simple XSS/HTML prevention
     };
@@ -132,7 +150,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const validateForm = () => {
         const newErrors = {};
         Object.keys(formData).forEach(key => {
-            if (key !== 'paymentProof' && key !== 'paymentProofPreview') {
+            if (!['paymentProof', 'paymentProofPreview', 'timeHour', 'timeMinute', 'timeAmPm'].includes(key)) {
                 const error = validateField(key, formData[key]);
                 if (error) newErrors[key] = error;
             }
@@ -311,19 +329,43 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
                                         <Clock size={14} className="text-primary" /> الوقت
                                     </label>
-                                    <select
-                                        required
-                                        name="time"
-                                        value={formData.time}
-                                        onChange={handleInputChange}
-                                        aria-invalid={!!errors.time}
-                                        className={`w-full bg-dark-950/50 border ${errors.time ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all [color-scheme:dark]`}
-                                    >
-                                        <option value="" disabled hidden>اختر الوقت</option>
-                                        {timeOptions.map(t => (
-                                            <option key={t} value={t} className="bg-dark-900">{t}</option>
-                                        ))}
-                                    </select>
+                                    <div className="flex gap-2 items-center">
+                                        <select
+                                            required
+                                            name="timeHour"
+                                            value={formData.timeHour}
+                                            onChange={handleTimeChange}
+                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
+                                        >
+                                            <option value="" disabled hidden>الساعة</option>
+                                            {[...Array(12)].map((_, i) => (
+                                                <option key={i+1} value={i+1} className="bg-dark-900">{i+1}</option>
+                                            ))}
+                                        </select>
+                                        <span className="text-slate-500 font-bold">:</span>
+                                        <select
+                                            required
+                                            name="timeMinute"
+                                            value={formData.timeMinute}
+                                            onChange={handleTimeChange}
+                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
+                                        >
+                                            <option value="" disabled hidden>الدقيقة</option>
+                                            <option value="00" className="bg-dark-900">00</option>
+                                            <option value="30" className="bg-dark-900">30</option>
+                                        </select>
+                                        <select
+                                            required
+                                            name="timeAmPm"
+                                            value={formData.timeAmPm}
+                                            onChange={handleTimeChange}
+                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
+                                        >
+                                            <option value="" disabled hidden>الفترة</option>
+                                            <option value="AM" className="bg-dark-900">صباحًا AM</option>
+                                            <option value="PM" className="bg-dark-900">مساءً PM</option>
+                                        </select>
+                                    </div>
                                     {errors.time && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.time}</p>}
                                 </div>
 
