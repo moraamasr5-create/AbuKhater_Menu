@@ -16,7 +16,7 @@ import {
     UtensilsCrossed
 } from 'lucide-react';
 import { reservationService } from '../../services/api';
-
+import { supabase } from '../../config/supabaseClient';
 const ReservationModal = ({ isOpen, onClose }) => {
     const WORKING_HOURS = { start: '10:00', end: '23:59' }; // Configurable hours
 
@@ -141,19 +141,22 @@ const ReservationModal = ({ isOpen, onClose }) => {
     };
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData(prev => ({
-                    ...prev,
-                    paymentProof: reader.result, // Base64
-                    paymentProofPreview: reader.result
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+        setFormData(prev => ({
+            ...prev,
+            paymentProof: file,
+            paymentProofPreview: reader.result
+        }));
     };
+
+    reader.readAsDataURL(file);
+};
 
     const nextStep = (e) => {
         e.preventDefault();
