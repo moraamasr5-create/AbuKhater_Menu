@@ -16,7 +16,7 @@ import {
     UtensilsCrossed
 } from 'lucide-react';
 import { reservationService } from '../../services/api';
-import { supabase } from '../../config/supabaseClient';
+
 const ReservationModal = ({ isOpen, onClose }) => {
     const WORKING_HOURS = { start: '10:00', end: '23:59' }; // Configurable hours
 
@@ -141,22 +141,19 @@ const ReservationModal = ({ isOpen, onClose }) => {
     };
 
     const handleFileChange = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-        setFormData(prev => ({
-            ...prev,
-            paymentProof: file,
-            paymentProofPreview: reader.result
-        }));
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData(prev => ({
+                    ...prev,
+                    paymentProof: reader.result, // Base64
+                    paymentProofPreview: reader.result
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
-
-    reader.readAsDataURL(file);
-};
 
     const nextStep = (e) => {
         e.preventDefault();
@@ -167,78 +164,38 @@ const ReservationModal = ({ isOpen, onClose }) => {
     };
 
     const handleSubmit = async () => {
-    if (!formData.paymentProof) {
-        setError('الرجاء رفع صورة إيصال التحويل لتأكيد الحجز');
-        return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-
-        // رفع الصورة إلى Storage
-
-        const file = formData.paymentProof;
-
-        const extension =
-            file.name.split('.').pop();
-
-        const fileName =
-            `reservation-${Date.now()}.${extension}`;
-
-        const { error: uploadError } =
-            await supabase.storage
-                .from('reservation-proofs')
-                .upload(fileName, file);
-
-        if (uploadError) {
-            throw uploadError;
+        if (!formData.paymentProof) {
+            setError('الرجاء رفع صورة إيصال التحويل لتأكيد الحجز');
+            return;
         }
 
-        // استخراج الرابط العام
+        setLoading(true);
+        setError(null);
 
-        const { data: publicUrlData } =
-            supabase.storage
-                .from('reservation-proofs')
-                .getPublicUrl(fileName);
+        try {
+            // Prepare production-ready JSON payload
+            const payload = {
+                name: sanitizeInput(formData.fullName),
+                phone: formData.phone,
+                guests: parseInt(formData.guests),
+                date: formData.date,
+                time: formData.time,
+                location_type: formData.locationType, // مطعم أو كافيه
+                notes: sanitizeInput(formData.notes),
+                payment_screenshot: formData.paymentProof,
+                status: 'pending',
+                source: 'web_reservation_form',
+                created_at: new Date().toISOString()
+            };
 
-        const imageUrl =
-            publicUrlData.publicUrl;
-
-        // إرسال بيانات الحجز
-
-        const payload = {
-            name: sanitizeInput(formData.fullName),
-            phone: formData.phone,
-            guests: parseInt(formData.guests),
-            date: formData.date,
-            time: formData.time,
-            location_type: formData.locationType,
-            notes: sanitizeInput(formData.notes),
-
-            payment_screenshot: imageUrl,
-
-            status: 'pending',
-            source: 'web_reservation_form',
-            created_at: new Date().toISOString()
-        };
-
-        await reservationService.submitReservation(payload);
-
-        setSuccess(true);
-
-    } catch (err) {
-        console.error(err);
-
-        setError(
-            err.message ||
-            'حدث خطأ أثناء إرسال طلب الحجز'
-        );
-    } finally {
-        setLoading(false);
-    }
-};
+            await reservationService.submitReservation(payload);
+            setSuccess(true);
+        } catch (err) {
+            setError(err.message || 'حدث خطأ أثناء إرسال طلب الحجز، حاول مرة أخرى');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (success) {
         return (
@@ -558,5 +515,4 @@ const ReservationModal = ({ isOpen, onClose }) => {
 };
 
 export default ReservationModal;
-
 
