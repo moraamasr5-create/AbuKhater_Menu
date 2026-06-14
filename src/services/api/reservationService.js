@@ -50,7 +50,7 @@ export const reservationService = {
                         console.error('⚠️ Screenshot upload failed:', uploadError.message);
                     } else {
                         const { data: publicUrlData } = supabase.storage
-                            .from('reservation-proofs')
+                            .from('payment-screenshots')
                             .getPublicUrl(filePath);
                         
                         if (publicUrlData && publicUrlData.publicUrl) {
