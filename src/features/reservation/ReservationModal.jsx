@@ -147,8 +147,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
             reader.onloadend = () => {
                 setFormData(prev => ({
                     ...prev,
-                    paymentProof: reader.result, // Base64
-                    paymentProofPreview: reader.result
+                    paymentProof: file, // Store the File object
+                    paymentProofPreview: reader.result // Use Base64 for preview
                 }));
             };
             reader.readAsDataURL(file);

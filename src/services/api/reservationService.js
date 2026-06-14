@@ -27,27 +27,47 @@ export const reservationService = {
         console.group('📅 Submitting reservation to Supabase');
 
         try {
-            let screenshotUrl = payload.payment_screenshot;
+            let screenshotUrl = null;
+            let fileToUpload = payload.payment_screenshot;
 
-            if (screenshotUrl && typeof screenshotUrl === 'string' && screenshotUrl.startsWith('data:image')) {
-                console.log('📸 Uploading reservation payment screenshot to storage...');
-                const blob = base64ToBlob(screenshotUrl);
+            if (fileToUpload) {
+                // Log data type
+                if (fileToUpload instanceof File) {
+                    console.log('📸 Received data type: File', { type: fileToUpload.type, size: fileToUpload.size });
+                } else if (fileToUpload instanceof Blob) {
+                    console.log('📸 Received data type: Blob', { type: fileToUpload.type, size: fileToUpload.size });
+                } else if (typeof fileToUpload === 'string') {
+                    if (fileToUpload.startsWith('data:image')) {
+                        console.log('📸 Received data type: Base64 string, converting to Blob...');
+                        fileToUpload = base64ToBlob(fileToUpload);
+                    } else if (fileToUpload.startsWith('http')) {
+                        console.log('📸 Received data type: URL string, skipping upload.');
+                        screenshotUrl = fileToUpload;
+                        fileToUpload = null;
+                    } else {
+                        console.log('📸 Received data type: Unknown string format');
+                    }
+                } else {
+                    console.log('📸 Received data type: Unknown object type');
+                }
 
-                if (blob) {
-                    const fileExt = blob.type.split('/')[1] || 'jpg';
+                if (fileToUpload && (fileToUpload instanceof File || fileToUpload instanceof Blob)) {
+                    console.log('📸 Uploading reservation payment screenshot to storage...');
+                    const fileExt = fileToUpload.type ? (fileToUpload.type.split('/')[1] || 'jpg') : 'jpg';
                     const fileName = `reservations/${crypto.randomUUID()}.${fileExt}`;
                     const filePath = `${fileName}`;
 
                     const { error: uploadError } = await supabase.storage
                         .from('payment-screenshots')
-                        .upload(filePath, blob, {
-                            contentType: blob.type,
+                        .upload(filePath, fileToUpload, {
+                            contentType: fileToUpload.type || 'image/jpeg',
                             cacheControl: '3600',
                             upsert: false
                         });
 
                     if (uploadError) {
                         console.error('⚠️ Screenshot upload failed:', uploadError.message);
+                        throw new Error(`فشل رفع صورة الإيصال: ${uploadError.message}`);
                     } else {
                         const { data: publicUrlData } = supabase.storage
                             .from('payment-screenshots')
@@ -56,9 +76,16 @@ export const reservationService = {
                         if (publicUrlData && publicUrlData.publicUrl) {
                             screenshotUrl = publicUrlData.publicUrl;
                             console.log('✅ Screenshot uploaded:', screenshotUrl);
+                        } else {
+                            throw new Error('فشل الحصول على رابط الصورة بعد الرفع');
                         }
                     }
                 }
+            }
+
+            // Final safety check
+            if (screenshotUrl && typeof screenshotUrl === 'string' && screenshotUrl.startsWith('data:image')) {
+                throw new Error('خطأ: محاولة تخزين Base64 في قاعدة البيانات مرفوضة.');
             }
 
             const { data, error } = await supabase
