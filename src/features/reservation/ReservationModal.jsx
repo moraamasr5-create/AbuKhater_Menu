@@ -18,7 +18,12 @@ import {
 import { reservationService } from '../../services/api';
 
 const ReservationModal = ({ isOpen, onClose }) => {
-    const WORKING_HOURS = { start: '10:00', end: '23:59' }; // Configurable hours
+    // Generate 30-min interval times
+    const timeOptions = Array.from({ length: 48 }, (_, i) => {
+        const hour = Math.floor(i / 2).toString().padStart(2, '0');
+        const minute = i % 2 === 0 ? '00' : '30';
+        return `${hour}:${minute}`;
+    });
 
     const [step, setStep] = useState(1); // 1: Info, 2: Payment
     const [loading, setLoading] = useState(false);
@@ -87,19 +92,15 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     const maxDate = new Date();
-                    maxDate.setDate(today.getDate() + 30);
+                    maxDate.setDate(today.getDate() + 2);
 
                     if (selectedDate < today) fieldError = 'لا يمكن اختيار تاريخ في الماضي';
-                    else if (selectedDate > maxDate) fieldError = 'يمكن الحجز خلال 30 يوم من الآن فقط';
+                    else if (selectedDate > maxDate) fieldError = 'يمكن الحجز خلال اليومين القادمين فقط';
                 }
                 break;
             case 'time':
                 if (!value) {
                     fieldError = 'الوقت مطلوب';
-                } else {
-                    if (value < WORKING_HOURS.start || value > WORKING_HOURS.end) {
-                        fieldError = `مواعيد العمل من ${WORKING_HOURS.start} حتى ${WORKING_HOURS.end}`;
-                    }
                 }
                 break;
             case 'guests':
@@ -298,6 +299,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         value={formData.date}
                                         onChange={handleInputChange}
                                         min={new Date().toISOString().split('T')[0]}
+                                        max={new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0]}
                                         aria-invalid={!!errors.date}
                                         className={`w-full bg-dark-950/50 border ${errors.date ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all [color-scheme:dark]`}
                                     />
@@ -309,15 +311,19 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
                                         <Clock size={14} className="text-primary" /> الوقت
                                     </label>
-                                    <input
+                                    <select
                                         required
-                                        type="time"
                                         name="time"
                                         value={formData.time}
                                         onChange={handleInputChange}
                                         aria-invalid={!!errors.time}
                                         className={`w-full bg-dark-950/50 border ${errors.time ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all [color-scheme:dark]`}
-                                    />
+                                    >
+                                        <option value="" disabled hidden>اختر الوقت</option>
+                                        {timeOptions.map(t => (
+                                            <option key={t} value={t} className="bg-dark-900">{t}</option>
+                                        ))}
+                                    </select>
                                     {errors.time && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.time}</p>}
                                 </div>
 
@@ -423,7 +429,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Instapay / Wallet:</span>
-                                        <span className="text-white font-red tracking-wider">01144423700</span>
+                                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                                            01144423700
+                                        </span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">الاسم :</span>
@@ -487,7 +495,11 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     ) : (
                         <>
                             <button
-                                onClick={() => setStep(1)}
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setStep(1);
+                                }}
                                 className="w-1/3 bg-dark-800 hover:bg-dark-700 text-slate-300 font-bold py-4 rounded-2xl transition-all active:scale-95"
                             >
                                 رجوع
