@@ -39,7 +39,7 @@ export const reservationService = {
                     const filePath = `${fileName}`;
 
                     const { error: uploadError } = await supabase.storage
-                        .from('reservation-proofs')
+                        .from('payment-screenshots')
                         .upload(filePath, blob, {
                             contentType: blob.type,
                             cacheControl: '3600',
