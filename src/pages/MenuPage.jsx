@@ -58,76 +58,84 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
     const isAvailable = item.status === 'available';
     return (
         <div
-            className={`group glass-card rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl hover:shadow-primary/12 hover:-translate-y-1 sm:hover:-translate-y-2 ${!isAvailable ? 'opacity-50 grayscale' : ''}`}
+            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-2 ${!isAvailable ? 'opacity-50 grayscale' : ''}`}
         >
-            <div className="relative h-48 sm:h-52 md:h-56 overflow-hidden">
+            <div className="relative w-[88px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden">
                 <img
                     src={item.image || fallbackImage}
                     alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-110"
                     loading="lazy"
                     decoding="async"
                     onError={(e) => { e.currentTarget.src = fallbackImage; }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60" />
+                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60" />
 
                 {!isAvailable && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                        <span className="bg-red-500 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">غير متاح</span>
+                        <span className="bg-red-500 text-white px-2 py-0.5 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest">غير متاح</span>
                     </div>
                 )}
 
-                <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-primary/95 backdrop-blur-sm px-2.5 py-1 sm:px-3 sm:py-1 rounded-full shadow-lg">
-                    <span className="text-white font-black text-base sm:text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-85 uppercase">ج.م</small></span>
+                <div className="hidden md:block absolute bottom-4 right-4 bg-primary/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg">
+                    <span className="text-white font-black text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-85 uppercase">ج.م</small></span>
                 </div>
             </div>
 
-            <div className="p-4 sm:p-6 flex flex-col flex-1 min-h-0">
-                <div className="mb-3 sm:mb-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 sm:mb-2 group-hover:text-primary transition-colors leading-snug">{item.name}</h3>
-                    <p className="text-slate-400/95 text-sm line-clamp-2 leading-relaxed min-h-[2.5rem]">
+            <div className="flex-1 p-2.5 md:p-6 flex flex-col min-w-0 min-h-0">
+                <div className="mb-0 md:mb-4">
+                    <h3 className="text-sm md:text-xl font-bold text-white mb-0.5 md:mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none">{item.name}</h3>
+                    <p className="text-slate-400/95 text-xs md:text-sm line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.5rem]">
                         {item.description || 'لم يتم إضافة وصف لهذا الصنف بعد.'}
                     </p>
                 </div>
 
-                <div className="mt-auto pt-3 sm:pt-4 border-t border-white/[0.06]">
-                    {isAvailable ? (
-                        qty > 0 ? (
-                            <div className="flex items-center justify-between bg-dark-800/55 p-1.5 rounded-xl sm:rounded-2xl border border-white/[0.06] shadow-inner gap-1">
+                <div className="mt-auto pt-1.5 md:pt-4 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
+                    <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
+                        {item.price} <small className="text-[9px] font-bold opacity-85">ج.م</small>
+                    </span>
+
+                    <div className="shrink-0 md:w-full">
+                        {isAvailable ? (
+                            qty > 0 ? (
+                                <div className="flex items-center bg-dark-800/55 p-0.5 md:p-1.5 rounded-lg md:rounded-2xl border border-white/[0.06] shadow-inner gap-0 md:gap-1 md:justify-between md:w-full">
+                                    <button
+                                        type="button"
+                                        onClick={() => updateQuantity(item.id, -1)}
+                                        className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-dark-700/60 hover:bg-dark-600 text-white rounded-md md:rounded-xl transition-all active:scale-90"
+                                        aria-label={`تقليل كمية ${item.name}`}
+                                    >
+                                        <span className="text-lg md:text-xl font-bold" aria-hidden>−</span>
+                                    </button>
+                                    <span className="text-sm md:text-lg font-black text-white w-7 md:w-12 text-center tabular-nums" aria-live="polite">{qty}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => updateQuantity(item.id, 1)}
+                                        className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-primary hover:bg-orange-600 text-white rounded-md md:rounded-xl shadow-md shadow-primary/25 transition-all active:scale-90"
+                                        aria-label={`زيادة كمية ${item.name}`}
+                                    >
+                                        <span className="text-lg md:text-xl font-bold" aria-hidden>+</span>
+                                    </button>
+                                </div>
+                            ) : (
                                 <button
                                     type="button"
-                                    onClick={() => updateQuantity(item.id, -1)}
-                                    className="min-w-[44px] min-h-[44px] sm:w-10 sm:h-10 flex items-center justify-center bg-dark-700/60 hover:bg-dark-600 text-white rounded-lg sm:rounded-xl transition-all active:scale-90"
-                                    aria-label={`تقليل كمية ${item.name}`}
+                                    onClick={() => addToCart(item)}
+                                    className="w-9 h-9 md:w-full md:min-h-[48px] md:py-3.5 bg-dark-800/85 hover:bg-primary text-slate-100 hover:text-white rounded-lg md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 md:gap-3 border border-white/[0.08] hover:border-primary active:scale-[0.98] shadow-md md:group-hover:shadow-primary/20 text-[15px] md:text-base"
+                                    aria-label={`أضف ${item.name} إلى السلة`}
                                 >
-                                    <span className="text-xl font-bold" aria-hidden>−</span>
+                                    <span className="md:hidden text-xl font-bold leading-none" aria-hidden>+</span>
+                                    <Flame size={20} className="hidden md:block text-primary group-hover:text-white shrink-0" aria-hidden />
+                                    <span className="hidden md:inline">إضافة للطلب</span>
                                 </button>
-                                <span className="text-lg font-black text-white w-10 sm:w-12 text-center tabular-nums" aria-live="polite">{qty}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => updateQuantity(item.id, 1)}
-                                    className="min-w-[44px] min-h-[44px] sm:w-10 sm:h-10 flex items-center justify-center bg-primary hover:bg-orange-600 text-white rounded-lg sm:rounded-xl shadow-md shadow-primary/25 transition-all active:scale-90"
-                                    aria-label={`زيادة كمية ${item.name}`}
-                                >
-                                    <span className="text-xl font-bold" aria-hidden>+</span>
-                                </button>
-                            </div>
+                            )
                         ) : (
-                            <button
-                                type="button"
-                                onClick={() => addToCart(item)}
-                                className="w-full bg-dark-800/85 hover:bg-primary text-slate-100 hover:text-white py-3.5 min-h-[48px] rounded-xl sm:rounded-2xl font-black transition-all flex items-center justify-center gap-2 sm:gap-3 border border-white/[0.08] hover:border-primary active:scale-[0.98] shadow-md group-hover:shadow-primary/20 text-[15px] sm:text-base"
-                                aria-label={`أضف ${item.name} إلى السلة`}
-                            >
-                                <Flame size={20} className="text-primary group-hover:text-white shrink-0" aria-hidden />
-                                <span>إضافة للطلب</span>
+                            <button type="button" disabled className="w-9 h-9 md:w-full bg-dark-800/50 text-slate-500 md:py-3.5 rounded-lg md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.05] opacity-50 md:min-h-[48px] flex items-center justify-center">
+                                <span className="md:hidden text-xs">×</span>
+                                <span className="hidden md:inline">نفذت الكمية</span>
                             </button>
-                        )
-                    ) : (
-                        <button type="button" disabled className="w-full bg-dark-800/50 text-slate-500 py-3.5 rounded-xl sm:rounded-2xl font-bold cursor-not-allowed border border-white/[0.05] opacity-50 min-h-[48px]">
-                            نفذت الكمية
-                        </button>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -477,9 +485,9 @@ const MenuPage = () => {
                             <RefreshCcw size={16} className="animate-spin shrink-0 text-primary" aria-hidden />
                             جاري تحميل القائمة…
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                             {[1, 2, 3, 4, 5, 6].map(i => (
-                                <div key={i} className="bg-dark-900/50 rounded-2xl sm:rounded-3xl min-h-[280px] sm:h-80 shimmer border border-white/[0.06]" />
+                                <div key={i} className="bg-dark-900/50 rounded-xl md:rounded-3xl min-h-[88px] md:min-h-[280px] md:h-80 shimmer border border-white/[0.06]" />
                             ))}
                         </div>
                     </div>
@@ -490,7 +498,7 @@ const MenuPage = () => {
                                 ? `عرض ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`
                                 : `بعد التصفية: ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`}
                         </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 lg:gap-8">
                             {filteredItems.map((item) => {
                                 const qty = qtyByItemId.get(item.id) ?? 0;
                                 return (
