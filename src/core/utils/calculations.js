@@ -29,8 +29,8 @@ export const getDeliveryFee = (distanceKm) => {
 };
 
 export const calculateServiceFee = (amount) => {
-    const CHUNK_SIZE = 500;
-    const FEE_PER_CHUNK = 10;
+    const CHUNK_SIZE = 125;
+    const FEE_PER_CHUNK = 2.5;
     return Math.ceil(amount / CHUNK_SIZE) * FEE_PER_CHUNK;
 };
 
