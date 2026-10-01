@@ -331,42 +331,31 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
                                         <Clock size={14} className="text-primary" /> الوقت
                                     </label>
-                                    <div className="flex gap-2 items-center">
-                                        <select
-                                            required
-                                            name="timeHour"
-                                            value={formData.timeHour}
-                                            onChange={handleTimeChange}
-                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
-                                        >
-                                            <option value="" disabled hidden>الساعة</option>
-                                            {[...Array(12)].map((_, i) => (
-                                                <option key={i+1} value={i+1} className="bg-dark-900">{i+1}</option>
-                                            ))}
-                                        </select>
-                                        <span className="text-slate-500 font-bold">:</span>
-                                        <select
-                                            required
-                                            name="timeMinute"
-                                            value={formData.timeMinute}
-                                            onChange={handleTimeChange}
-                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
-                                        >
-                                            <option value="" disabled hidden>الدقيقة</option>
-                                            <option value="00" className="bg-dark-900">00</option>
-                                            <option value="30" className="bg-dark-900">30</option>
-                                        </select>
-                                        <select
-                                            required
-                                            name="timeAmPm"
-                                            value={formData.timeAmPm}
-                                            onChange={handleTimeChange}
-                                            className={`w-1/3 bg-dark-950/50 border ${errors.time ? 'border-red-500' : 'border-white/5'} text-white px-2 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all text-center`}
-                                        >
-                                            <option value="" disabled hidden>الفترة</option>
-                                            <option value="AM" className="bg-dark-900">صباحًا AM</option>
-                                            <option value="PM" className="bg-dark-900">مساءً PM</option>
-                                        </select>
+                                    <div className="grid grid-cols-3 gap-2 items-start">
+                                        {[
+                                            { name: 'timeHour', label: 'الساعة', values: [...Array(12)].map((_, i) => String(i + 1)) },
+                                            { name: 'timeMinute', label: 'الدقيقة', values: ['00', '30'] },
+                                            { name: 'timeAmPm', label: 'الفترة', values: ['AM', 'PM'] }
+                                        ].map(({ name, label, values }) => (
+                                            <div key={name} className="space-y-2">
+                                                <span className="block text-center text-xs font-bold text-slate-500">{label}</span>
+                                                <div className={name === 'timeHour' ? 'grid grid-cols-3 gap-1' : 'grid grid-cols-1 gap-1'}>
+                                                    {values.map(value => (
+                                                        <button
+                                                            key={value}
+                                                            type="button"
+                                                            aria-pressed={formData[name] === value}
+                                                            onClick={() => handleTimeChange({ target: { name, value } })}
+                                                            className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData[name] === value
+                                                                ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
+                                                                : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                        >
+                                                            {name === 'timeAmPm' ? (value === 'AM' ? 'صباحًا' : 'مساءً') : value}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                     {errors.time && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.time}</p>}
                                 </div>

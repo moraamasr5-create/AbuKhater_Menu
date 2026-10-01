@@ -313,11 +313,10 @@ const PaymentPage = () => {
                         <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.08] p-4 sm:p-5 shadow-lg space-y-3">
                             <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                                        paymentMethod === 'instapay'
-                                            ? 'bg-purple-500/20 text-purple-400'
-                                            : 'bg-primary/20 text-primary'
-                                    }`}>
+                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${paymentMethod === 'instapay'
+                                        ? 'bg-purple-500/20 text-purple-400'
+                                        : 'bg-primary/20 text-primary'
+                                        }`}>
                                         {paymentMethod === 'instapay' ? <CreditCard size={18} /> : <Wallet size={18} />}
                                     </div>
                                     <span className="text-xs font-black text-white">
@@ -339,11 +338,10 @@ const PaymentPage = () => {
                                 <button
                                     type="button"
                                     onClick={() => copyToClipboard(paymentNumber)}
-                                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-90 shrink-0 ${
-                                        copied
-                                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                                            : 'bg-dark-800 hover:bg-primary text-slate-200 hover:text-white border border-white/10'
-                                    }`}
+                                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-90 shrink-0 ${copied
+                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                                        : 'bg-dark-800 hover:bg-primary text-slate-200 hover:text-white border border-white/10'
+                                        }`}
                                     aria-label="نسخ رقم الحساب"
                                 >
                                     {copied ? (
@@ -432,7 +430,7 @@ const PaymentPage = () => {
                         )}
                         {serviceFee > 0 && (
                             <div className="flex justify-between items-center text-xs font-bold">
-                                <span className="text-slate-400">رسوم السيرفر</span>
+                                <span className="text-slate-400">خدمة التحويل</span>
                                 <span className="text-white">{formatCurrency(serviceFee)}</span>
                             </div>
                         )}
