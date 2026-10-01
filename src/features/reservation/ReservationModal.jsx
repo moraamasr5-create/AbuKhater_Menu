@@ -343,18 +343,18 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     if (success) {
         return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.5rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl">
-                    <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="text-emerald-500 w-10 h-10" />
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <CheckCircle className="text-emerald-500 w-8 h-8 sm:w-10 sm:h-10" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-3">تم إرسال طلبك بنجاح وهو قيد المراجعة ✅</h2>
-                    <p className="text-slate-400 mb-8 leading-relaxed">
+                    <h2 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">تم إرسال طلبك بنجاح وهو قيد المراجعة ✅</h2>
+                    <p className="text-slate-400 text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed">
                         سيتم مراجعة طلب الحجز وصورة التحويل وتأكيده معك عبر الهاتف أو الواتساب في أقرب وقت.
                     </p>
                     <button
                         onClick={onClose}
-                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm"
                     >
                         حسناً، فهمت
                     </button>
@@ -364,24 +364,35 @@ const ReservationModal = ({ isOpen, onClose }) => {
     }
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
-            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.5rem] w-full max-w-xl max-h-[min(90dvh,720px)] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-xl max-h-[min(90dvh,720px)] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-4 py-4 sm:p-6 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/25">
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/30 shrink-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                            <Calendar size={18} className="sm:w-5 sm:h-5" />
+                        </div>
+                        <div>
+                            <h2 className="text-base sm:text-lg font-black text-white leading-tight">
+                                {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز ودفع العربون'}
+                            </h2>
+                            <p className="text-[11px] sm:text-xs text-slate-400 font-bold mt-0.5">
+                                {step === 1 ? 'الخطوة 1 من 2 - بيانات الحجز' : 'الخطوة 2 من 2 - تحويل وتأكيد العربون'}
+                            </p>
+                        </div>
+                    </div>
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="p-2.5 bg-dark-700/50 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-xl transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-dark-800/80 border border-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all active:scale-95 shrink-0"
+                        aria-label="إغلاق"
                     >
-                        <X size={20} />
+                        <X size={18} className="sm:w-5 sm:h-5" />
                     </button>
-                    <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-3">
-                        {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز ودفع العربون'}
-                        <Calendar className="text-primary" size={24} />
-                    </h2>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="h-1 bg-dark-950">
+                <div className="h-1 bg-dark-950 shrink-0">
                     <div
                         className="h-full bg-primary transition-all duration-500"
                         style={{ width: `${step === 1 ? '50%' : '100%'}` }}
@@ -389,14 +400,49 @@ const ReservationModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-7 custom-scrollbar overscroll-contain">
                     {step === 1 ? (
-                        <form id="reservation-form" onSubmit={nextStep} className="space-y-6" dir="rtl">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form id="reservation-form" onSubmit={nextStep} className="space-y-4 sm:space-y-5" dir="rtl">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                                {/* Location Type Select (Restaurant / Cafe) */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <UtensilsCrossed size={14} className="text-primary shrink-0" /> 
+                                        <span>اختر المكان</span>
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 h-[48px] sm:h-[52px]">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'restaurant'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <UtensilsCrossed size={16} />
+                                            <span>مطعم</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'cafe'
+                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-600/30 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-purple-300'
+                                            }`}
+                                        >
+                                            <Coffee size={16} />
+                                            <span>كافيه</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 {/* Full Name */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <User size={14} className="text-primary" /> الاسم ثنائي
+                                <div className="space-y-1.5 sm:space-y-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <User size={14} className="text-primary shrink-0" /> 
+                                        <span>الاسم ثنائي</span>
                                     </label>
                                     <input
                                         required
@@ -406,15 +452,16 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         onChange={handleInputChange}
                                         placeholder="بالعربي من فضلكـ."
                                         aria-invalid={!!errors.fullName}
-                                        className={`w-full bg-dark-950/50 border ${errors.fullName ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
+                                        className={`w-full bg-dark-950/60 border ${errors.fullName ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-medium`}
                                     />
-                                    {errors.fullName && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.fullName}</p>}
+                                    {errors.fullName && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.fullName}</p>}
                                 </div>
 
                                 {/* Phone */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <Phone size={14} className="text-primary" /> رقم الهاتف
+                                <div className="space-y-1.5 sm:space-y-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <Phone size={14} className="text-primary shrink-0" /> 
+                                        <span>رقم الهاتف</span>
                                     </label>
                                     <input
                                         required
@@ -425,67 +472,35 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         placeholder="01xxxxxxxxx"
                                         aria-invalid={!!errors.phone}
                                         maxLength={11}
-                                        className={`w-full bg-dark-950/50 border ${errors.phone ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
+                                        className={`w-full bg-dark-950/60 border ${errors.phone ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-mono`}
                                     />
-                                    {errors.phone && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.phone}</p>}
-                                </div>
-
-                                {/* Location Type Select (Restaurant / Cafe) */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-3 h-[60px]">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
-                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'restaurant'
-                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
-                                            }`}
-                                        >
-                                            <UtensilsCrossed size={17} />
-                                            <span>مطعم</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
-                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'cafe'
-                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-600/30 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-purple-300'
-                                            }`}
-                                        >
-                                            <Coffee size={17} />
-                                            <span>كافيه</span>
-                                        </button>
-                                    </div>
+                                    {errors.phone && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.phone}</p>}
                                 </div>
 
                                 {/* Date Selection (Today or Tomorrow) */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center justify-between">
+                                <div className="space-y-1.5 sm:space-y-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center justify-between select-none">
                                         <span className="flex items-center gap-2">
-                                            <Calendar size={14} className="text-primary" /> ميعاد الحجز
+                                            <Calendar size={14} className="text-primary shrink-0" /> 
+                                            <span>ميعاد الحجز</span>
                                         </span>
-                                        <span className="text-[11px] text-slate-500 font-normal">اليوم أو غداً فقط</span>
+                                        <span className="text-[10px] sm:text-[11px] text-slate-500 font-normal">اليوم أو غداً فقط</span>
                                     </label>
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                                         <button
                                             type="button"
                                             onClick={() => {
                                                 setFormData(prev => ({ ...prev, date: todayStr }));
                                                 setErrors(prev => ({ ...prev, date: '' }));
                                             }}
-                                            className={`flex flex-col items-center justify-center py-3.5 px-3 rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
+                                            className={`flex flex-col items-center justify-center py-2.5 sm:py-3 px-3 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
                                                 formData.date === todayStr
-                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
                                             }`}
                                         >
-                                            <span className="text-sm sm:text-base font-black">اليوم</span>
-                                            <span className={`text-[11px] mt-0.5 font-medium ${formData.date === todayStr ? 'text-white/90' : 'text-slate-500'}`}>
+                                            <span className="text-xs sm:text-sm font-black">اليوم</span>
+                                            <span className={`text-[10px] sm:text-[11px] mt-0.5 font-medium ${formData.date === todayStr ? 'text-white/90' : 'text-slate-500'}`}>
                                                 {todayLabel}
                                             </span>
                                         </button>
@@ -495,31 +510,66 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                 setFormData(prev => ({ ...prev, date: tomorrowStr }));
                                                 setErrors(prev => ({ ...prev, date: '' }));
                                             }}
-                                            className={`flex flex-col items-center justify-center py-3.5 px-3 rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
+                                            className={`flex flex-col items-center justify-center py-2.5 sm:py-3 px-3 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
                                                 formData.date === tomorrowStr
-                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
                                             }`}
                                         >
-                                            <span className="text-sm sm:text-base font-black">غداً</span>
-                                            <span className={`text-[11px] mt-0.5 font-medium ${formData.date === tomorrowStr ? 'text-white/90' : 'text-slate-500'}`}>
+                                            <span className="text-xs sm:text-sm font-black">غداً</span>
+                                            <span className={`text-[10px] sm:text-[11px] mt-0.5 font-medium ${formData.date === tomorrowStr ? 'text-white/90' : 'text-slate-500'}`}>
                                                 {tomorrowLabel}
                                             </span>
                                         </button>
                                     </div>
-                                    {errors.date && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.date}</p>}
+                                    {errors.date && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.date}</p>}
                                 </div>
 
-                                {/* Time */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <Clock size={14} className="text-primary" /> الوقت
+                                {/* Guests */}
+                                <div className="space-y-1.5 sm:space-y-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <Users size={14} className="text-primary shrink-0" /> 
+                                        <span>عدد الأشخاص</span>
                                     </label>
-                                    <div className="grid grid-cols-3 gap-2 items-start">
-                                        {/* Hour (Scrollable on phones) */}
-                                        <div className="space-y-2">
-                                            <span className="block text-center text-xs font-bold text-slate-500">الساعة</span>
-                                            <div ref={hourScrollRef} className="h-[92px] overflow-y-auto flex flex-col gap-1 pr-1 custom-scrollbar snap-y snap-mandatory rounded-xl touch-pan-y overscroll-contain">
+                                    <div className={`flex items-center bg-dark-950/60 border ${errors.guests ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} rounded-xl sm:rounded-2xl p-1.5 h-[48px] sm:h-[52px]`}>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newVal = Math.max(1, formData.guests - 1);
+                                                setFormData(p => ({ ...p, guests: newVal }));
+                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
+                                            }}
+                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-dark-800 text-white rounded-lg sm:rounded-xl hover:bg-dark-700 font-bold transition-all active:scale-95"
+                                        >-</button>
+                                        <input
+                                            readOnly
+                                            value={formData.guests}
+                                            className="flex-1 text-center bg-transparent text-white font-black text-base sm:text-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newVal = formData.guests + 1;
+                                                setFormData(p => ({ ...p, guests: newVal }));
+                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
+                                            }}
+                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary text-white rounded-lg sm:rounded-xl shadow-md shadow-primary/20 font-bold transition-all active:scale-95"
+                                        >+</button>
+                                    </div>
+                                    {errors.guests && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.guests}</p>}
+                                </div>
+
+                                {/* Time (Hour, Minute, Period) */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <Clock size={14} className="text-primary shrink-0" /> 
+                                        <span>الوقت</span>
+                                    </label>
+                                    <div className="grid grid-cols-3 gap-2 sm:gap-2.5 items-start">
+                                        {/* Hour (Scrollable) */}
+                                        <div className="space-y-1">
+                                            <span className="block text-center text-[10px] sm:text-[11px] font-bold text-slate-500">الساعة</span>
+                                            <div ref={hourScrollRef} className="h-[88px] sm:h-[96px] overflow-y-auto flex flex-col gap-1 pr-1 custom-scrollbar snap-y snap-mandatory rounded-xl touch-pan-y overscroll-contain">
                                                 {[...Array(12)].map((_, i) => {
                                                     const value = String(i + 1);
                                                     const isSelected = formData.timeHour === value;
@@ -529,9 +579,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                             type="button"
                                                             aria-pressed={isSelected}
                                                             onClick={() => handleTimeChange({ target: { name: 'timeHour', value } })}
-                                                            className={`min-h-11 w-full shrink-0 snap-center rounded-xl border text-sm font-bold transition-all touch-manipulation flex items-center justify-center ${isSelected
+                                                            className={`min-h-10 sm:min-h-11 w-full shrink-0 snap-center rounded-xl border text-xs sm:text-sm font-bold transition-all touch-manipulation flex items-center justify-center ${isSelected
                                                                 ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
-                                                                : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                                : `bg-dark-950/60 ${errors.time ? 'border-red-500/60' : 'border-white/[0.08]'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
                                                         >
                                                             {value}
                                                         </button>
@@ -541,8 +591,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         </div>
 
                                         {/* Minute */}
-                                        <div className="space-y-2">
-                                            <span className="block text-center text-xs font-bold text-slate-500">الدقيقة</span>
+                                        <div className="space-y-1">
+                                            <span className="block text-center text-[10px] sm:text-[11px] font-bold text-slate-500">الدقيقة</span>
                                             <div className="grid grid-cols-1 gap-1">
                                                 {['00', '30'].map(value => (
                                                     <button
@@ -550,9 +600,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                         type="button"
                                                         aria-pressed={formData.timeMinute === value}
                                                         onClick={() => handleTimeChange({ target: { name: 'timeMinute', value } })}
-                                                        className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData.timeMinute === value
+                                                        className={`min-h-10 sm:min-h-11 rounded-xl border text-xs sm:text-sm font-bold transition-colors touch-manipulation ${formData.timeMinute === value
                                                             ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
-                                                            : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                            : `bg-dark-950/60 ${errors.time ? 'border-red-500/60' : 'border-white/[0.08]'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
                                                     >
                                                         {value}
                                                     </button>
@@ -561,8 +611,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         </div>
 
                                         {/* Period (AM/PM) */}
-                                        <div className="space-y-2">
-                                            <span className="block text-center text-xs font-bold text-slate-500">الفترة</span>
+                                        <div className="space-y-1">
+                                            <span className="block text-center text-[10px] sm:text-[11px] font-bold text-slate-500">الفترة</span>
                                             <div className="grid grid-cols-1 gap-1">
                                                 {['AM', 'PM'].map(value => (
                                                     <button
@@ -570,9 +620,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                         type="button"
                                                         aria-pressed={formData.timeAmPm === value}
                                                         onClick={() => handleTimeChange({ target: { name: 'timeAmPm', value } })}
-                                                        className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData.timeAmPm === value
+                                                        className={`min-h-10 sm:min-h-11 rounded-xl border text-xs sm:text-sm font-bold transition-colors touch-manipulation ${formData.timeAmPm === value
                                                             ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
-                                                            : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                            : `bg-dark-950/60 ${errors.time ? 'border-red-500/60' : 'border-white/[0.08]'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
                                                     >
                                                         {value === 'AM' ? 'صباحًا' : 'مساءً'}
                                                     </button>
@@ -580,57 +630,25 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    {errors.time && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.time}</p>}
-                                </div>
-
-                                {/* Guests */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <Users size={14} className="text-primary" /> عدد الأشخاص
-                                    </label>
-                                    <div className={`flex items-center bg-dark-950/50 border ${errors.guests ? 'border-red-500' : 'border-white/5'} rounded-2xl p-2 h-[60px]`}>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newVal = Math.max(1, formData.guests - 1);
-                                                setFormData(p => ({ ...p, guests: newVal }));
-                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
-                                            }}
-                                            className="w-10 h-10 flex items-center justify-center bg-dark-800 text-white rounded-xl hover:bg-dark-700 font-bold"
-                                        >-</button>
-                                        <input
-                                            readOnly
-                                            value={formData.guests}
-                                            className="flex-1 text-center bg-transparent text-white font-black text-lg"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newVal = formData.guests + 1;
-                                                setFormData(p => ({ ...p, guests: newVal }));
-                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
-                                            }}
-                                            className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-xl shadow-lg shadow-primary/20 font-bold"
-                                        >+</button>
-                                    </div>
-                                    {errors.guests && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.guests}</p>}
+                                    {errors.time && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.time}</p>}
                                 </div>
 
                                 {/* Notes */}
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <FileText size={14} className="text-primary" /> ملاحظات إضافية (اختياري)
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <FileText size={14} className="text-primary shrink-0" /> 
+                                        <span>ملاحظات إضافية (اختياري)</span>
                                     </label>
                                     <textarea
                                         name="notes"
                                         value={formData.notes}
                                         onChange={handleInputChange}
                                         placeholder="هل هناك أي تفاصيل إضافية تود إخبارنا بها؟"
-                                        className={`w-full bg-dark-950/50 border ${errors.notes ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all min-h-[100px] resize-none`}
+                                        className={`w-full bg-dark-950/60 border ${errors.notes ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all min-h-[85px] sm:min-h-[95px] resize-none leading-relaxed`}
                                     ></textarea>
                                     <div className="flex justify-between items-center mt-1 px-1">
-                                        {errors.notes && <p className="text-red-500 text-xs flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.notes}</p>}
-                                        <span className={`text-[10px] mr-auto ${formData.notes.length > 300 ? 'text-red-500' : 'text-slate-500'}`}>
+                                        {errors.notes && <p className="text-red-400 text-[11px] sm:text-xs font-bold flex items-center gap-1 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.notes}</p>}
+                                        <span className={`text-[10px] mr-auto ${formData.notes.length > 300 ? 'text-red-400' : 'text-slate-500'}`}>
                                             {formData.notes.length}/300
                                         </span>
                                     </div>
@@ -638,7 +656,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                             </div>
                         </form>
                     ) : (
-                        <div className="space-y-6" dir="rtl">
+                        <div className="space-y-4 sm:space-y-5" dir="rtl">
                             {/* Arboon Notice */}
                             {(() => {
                                 const depositBase = parseFloat(restaurantSettings?.reservation_deposit_amount) || 100;
@@ -650,58 +668,60 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
                                 return (
                                     <>
-                                        <div className="bg-primary/10 border border-primary/20 p-5 sm:p-6 rounded-3xl text-center space-y-2">
-                                            <h3 className="text-lg sm:text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
+                                        <div className="bg-primary/10 border border-primary/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl text-center space-y-1.5">
+                                            <h3 className="text-base sm:text-lg font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
                                             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
                                                 لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br />
-                                                <span className="text-slate-400 text-xs">(يتم خصم العربون بالكامل من فاتورة الحساب عند الحضور)</span>
-                                                <span className="text-2xl font-black text-white mt-1 block">{totalDeposit} ج.م</span>
+                                                <span className="text-slate-400 text-[11px] sm:text-xs">(يتم خصم العربون بالكامل من فاتورة الحساب عند الحضور)</span>
+                                                <span className="text-xl sm:text-2xl font-black text-white mt-1 block">{totalDeposit} ج.م</span>
                                             </p>
                                         </div>
 
                                         {/* Payment Method Tabs */}
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                                <CreditCard size={14} className="text-primary" /> اختر طريقة التحويل
+                                        <div className="space-y-1.5 sm:space-y-2">
+                                            <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                                <CreditCard size={14} className="text-primary shrink-0" /> 
+                                                <span>اختر طريقة التحويل</span>
                                             </label>
-                                            <div className="grid grid-cols-2 gap-3">
+                                            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                                                 <button
                                                     type="button"
                                                     onClick={() => handlePaymentMethodChange('wallet')}
-                                                    className={`flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 ${
+                                                    className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
                                                         formData.paymentMethod === 'wallet'
-                                                            ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-lg shadow-emerald-500/10 scale-[1.02]'
-                                                            : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                                            ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-md shadow-emerald-500/10 scale-[1.01]'
+                                                            : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800'
                                                     }`}
                                                 >
-                                                    <Wallet size={18} className={formData.paymentMethod === 'wallet' ? 'text-emerald-400' : 'text-slate-500'} />
+                                                    <Wallet size={16} className={formData.paymentMethod === 'wallet' ? 'text-emerald-400' : 'text-slate-500'} />
                                                     <span>محفظة إلكترونية</span>
                                                 </button>
                                                 <button
                                                     type="button"
                                                     onClick={() => handlePaymentMethodChange('instapay')}
-                                                    className={`flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 ${
+                                                    className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
                                                         formData.paymentMethod === 'instapay'
-                                                            ? 'bg-primary/15 border-primary text-primary shadow-lg shadow-primary/10 scale-[1.02]'
-                                                            : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                                            ? 'bg-primary/15 border-primary text-primary shadow-md shadow-primary/10 scale-[1.01]'
+                                                            : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800'
                                                     }`}
                                                 >
-                                                    <Smartphone size={18} className={formData.paymentMethod === 'instapay' ? 'text-primary' : 'text-slate-500'} />
+                                                    <Smartphone size={16} className={formData.paymentMethod === 'instapay' ? 'text-primary' : 'text-slate-500'} />
                                                     <span>إنستاباي (Instapay)</span>
                                                 </button>
                                             </div>
                                         </div>
 
                                         {/* Transfer Info based on selected payment method */}
-                                        <div className="bg-dark-950/50 border border-white/5 p-5 sm:p-6 rounded-3xl space-y-4">
+                                        <div className="bg-dark-950/60 border border-white/[0.08] p-4 sm:p-5 rounded-2xl sm:rounded-3xl space-y-3">
                                             <h4 className="font-bold text-slate-400 border-b border-white/5 pb-2 text-xs sm:text-sm flex items-center gap-2">
-                                                <CreditCard size={14} className="text-primary" /> بيانات التحويل للمطعم
+                                                <CreditCard size={14} className="text-primary shrink-0" /> 
+                                                <span>بيانات التحويل للمطعم</span>
                                             </h4>
-                                            <div className="space-y-3">
+                                            <div className="space-y-2.5">
                                                 {formData.paymentMethod === 'wallet' ? (
                                                     <div className="flex justify-between items-center text-xs sm:text-sm">
                                                         <span className="text-slate-400 font-medium">فودافون كاش / المحفظة:</span>
-                                                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest text-sm sm:text-base shadow-[0_0_15px_rgba(16,185,129,0.15)] select-all font-mono">
+                                                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest text-xs sm:text-sm md:text-base shadow-[0_0_15px_rgba(16,185,129,0.15)] select-all font-mono">
                                                             {walletNum}
                                                         </span>
                                                     </div>
@@ -721,15 +741,15 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         </div>
 
                                         {/* Sender Account Input & Confirmation */}
-                                        <div className="space-y-3 bg-dark-950/50 border border-white/5 p-5 rounded-3xl">
-                                            <label className="text-xs sm:text-sm font-bold text-slate-300 flex items-center justify-between">
+                                        <div className="space-y-3 bg-dark-950/60 border border-white/[0.08] p-4 sm:p-5 rounded-2xl sm:rounded-3xl">
+                                            <label className="text-xs sm:text-sm font-bold text-slate-300 flex items-center justify-between select-none">
                                                 <span className="flex items-center gap-2">
                                                     {formData.paymentMethod === 'wallet' ? (
-                                                        <Wallet size={14} className="text-emerald-400" />
+                                                        <Wallet size={14} className="text-emerald-400 shrink-0" />
                                                     ) : (
-                                                        <Smartphone size={14} className="text-primary" />
+                                                        <Smartphone size={14} className="text-primary shrink-0" />
                                                     )}
-                                                    {formData.paymentMethod === 'wallet' ? 'رقم المحفظة المحول منها' : 'معرف / حساب إنستاباي المحول منه'}
+                                                    <span>{formData.paymentMethod === 'wallet' ? 'رقم المحفظة المحول منها' : 'معرف / حساب إنستاباي المحول منه'}</span>
                                                     <span className="text-red-400 font-bold">*</span>
                                                 </span>
                                                 <span className="text-[10px] text-amber-400/90 font-medium">مطلوب للتحقق</span>
@@ -748,18 +768,19 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                         : 'مثال: username@instapay أو رقم الهاتف'
                                                 }
                                                 className={`w-full bg-dark-900 border ${
-                                                    errors.senderAccount ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/10'
-                                                } text-white px-4 py-3.5 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm transition-all font-mono`}
+                                                    errors.senderAccount ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'
+                                                } text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-mono`}
                                             />
                                             {errors.senderAccount && (
-                                                <p className="text-red-500 text-xs pr-1 flex items-center gap-1 animate-in slide-in-from-top-1">
-                                                    <AlertCircle size={12} /> {errors.senderAccount}
+                                                <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
+                                                    <AlertCircle size={12} className="shrink-0" />
+                                                    <span>{errors.senderAccount}</span>
                                                 </p>
                                             )}
 
                                             {/* Warning notice & Checkbox */}
-                                            <div className="pt-2 border-t border-white/5 space-y-3">
-                                                <div className="flex items-start gap-2 text-[11px] sm:text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-2xl">
+                                            <div className="pt-2 border-t border-white/5 space-y-2.5 sm:space-y-3">
+                                                <div className="flex items-start gap-2 text-[11px] sm:text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl sm:rounded-2xl">
                                                     <AlertCircle size={15} className="shrink-0 text-amber-400 mt-0.5" />
                                                     <p className="leading-relaxed">
                                                         {formData.paymentMethod === 'wallet'
@@ -768,7 +789,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                     </p>
                                                 </div>
 
-                                                <label className="flex items-start sm:items-center gap-3 cursor-pointer select-none text-xs sm:text-sm text-slate-300 group p-1">
+                                                <label className="flex items-start sm:items-center gap-2.5 sm:gap-3 cursor-pointer select-none text-xs sm:text-sm text-slate-300 group p-1">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.isConfirmedSender}
@@ -778,7 +799,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                                         }}
                                                         className="w-4 h-4 mt-0.5 sm:mt-0 rounded border-white/20 bg-dark-900 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer accent-primary shrink-0"
                                                     />
-                                                    <span className="group-hover:text-white transition-colors font-medium leading-tight">
+                                                    <span className="group-hover:text-white transition-colors font-medium leading-tight text-xs sm:text-sm">
                                                         {formData.paymentMethod === 'wallet'
                                                             ? 'أؤكد أنه تم التحويل من رقم المحفظة المسجل أعلاه'
                                                             : 'أؤكد أنه تم التحويل من حساب إنستاباي المسجل أعلاه'}
@@ -791,24 +812,25 @@ const ReservationModal = ({ isOpen, onClose }) => {
                             })()}
 
                             {/* Upload Section */}
-                            <div className="space-y-3">
-                                <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                    <Upload size={14} className="text-primary" /> أرفع صورة إيصال الدفع
+                            <div className="space-y-1.5 sm:space-y-2">
+                                <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                    <Upload size={14} className="text-primary shrink-0" /> 
+                                    <span>أرفع صورة إيصال الدفع</span>
                                 </label>
 
                                 <div className="relative group">
                                     {formData.paymentProofPreview ? (
-                                        <div className="relative rounded-3xl overflow-hidden aspect-video border-2 border-primary shadow-2xl shadow-primary/10">
+                                        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-video border-2 border-primary shadow-2xl shadow-primary/10">
                                             <img src={formData.paymentProofPreview} className="w-full h-full object-cover" alt="Proof" />
                                             <button
                                                 onClick={() => setFormData(p => ({ ...p, paymentProof: null, paymentProofPreview: null }))}
-                                                className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-xl shadow-lg transition-transform hover:scale-110"
+                                                className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-xl shadow-lg transition-transform hover:scale-110 active:scale-95"
                                             >
                                                 <X size={16} />
                                             </button>
                                         </div>
                                     ) : (
-                                        <label className="flex flex-col items-center justify-center gap-3 sm:gap-4 bg-dark-950/50 border-2 border-dashed border-white/10 hover:border-primary/50 rounded-3xl p-6 sm:p-8 cursor-pointer transition-all hover:bg-dark-950">
+                                        <label className="flex flex-col items-center justify-center gap-3 sm:gap-4 bg-dark-950/60 border-2 border-dashed border-white/[0.08] hover:border-primary/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 cursor-pointer transition-all hover:bg-dark-950">
                                             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                                                 <Upload size={24} className="sm:w-7 sm:h-7" />
                                             </div>
@@ -829,9 +851,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                             />
 
                             {error && (
-                                <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-2xl flex items-center gap-3 text-red-500 text-xs sm:text-sm">
+                                <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl flex items-center gap-3 text-red-400 text-xs sm:text-sm animate-in fade-in">
                                     <AlertCircle size={18} className="shrink-0" />
-                                    <p>{error}</p>
+                                    <p className="font-bold leading-relaxed">{error}</p>
                                 </div>
                             )}
                         </div>
@@ -839,12 +861,12 @@ const ReservationModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-6 border-t border-white/5 bg-dark-800/20 flex gap-4">
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-t border-white/[0.06] bg-dark-950/70 shrink-0 flex gap-3 sm:gap-4">
                     {step === 1 ? (
                         <button
                             form="reservation-form"
                             type="submit"
-                            className="flex-1 bg-primary hover:bg-orange-600 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                            className="flex-1 bg-primary hover:bg-orange-600 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
                         >
                             <span>التالي: خطوة العربون</span>
                         </button>
@@ -856,18 +878,18 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     e.preventDefault();
                                     setStep(1);
                                 }}
-                                className="w-1/3 bg-dark-800 hover:bg-dark-700 text-slate-300 font-bold py-4 rounded-2xl transition-all active:scale-95"
+                                className="w-1/3 bg-dark-800 hover:bg-dark-700 text-slate-300 font-bold py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] border border-white/5 text-xs sm:text-sm md:text-base"
                             >
                                 رجوع
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="flex-1 bg-primary hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                                className="flex-1 bg-primary hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="animate-spin" size={20} />
+                                        <Loader2 className="animate-spin" size={18} />
                                         <span>جاري الإرسال...</span>
                                     </>
                                 ) : (

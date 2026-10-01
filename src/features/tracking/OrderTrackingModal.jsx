@@ -315,34 +315,34 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
             aria-modal="true"
             aria-labelledby="tracking-modal-title"
             dir="rtl"
-            className="fixed inset-0 z-[200] bg-dark-950/85 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 md:p-6 animate-in fade-in duration-200"
             onClick={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="relative w-full max-w-lg bg-dark-900 border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-300">
+            <div className="relative w-full max-w-lg bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] shadow-2xl overflow-hidden flex flex-col max-h-[min(90dvh,720px)] animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-dark-950/70">
-                    <div className="flex items-center gap-2.5">
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/30 shrink-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
                         {selectedOrder ? (
                             <button
                                 type="button"
                                 onClick={() => setSelectedOrder(null)}
-                                className="w-10 h-10 rounded-2xl bg-dark-800 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all active:scale-95"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-dark-800/80 border border-white/5 flex items-center justify-center text-slate-300 hover:text-white transition-all active:scale-95 shrink-0"
                                 title="العودة لقائمة الطلبات"
                             >
-                                <ArrowRight size={18} />
+                                <ArrowRight size={18} className="sm:w-5 sm:h-5" />
                             </button>
                         ) : (
-                            <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                                <Bike size={20} />
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                                <Bike size={18} className="sm:w-5 sm:h-5" />
                             </div>
                         )}
                         <div>
-                            <h2 id="tracking-modal-title" className="text-lg sm:text-xl font-black text-white">
+                            <h2 id="tracking-modal-title" className="text-base sm:text-lg font-black text-white leading-tight">
                                 {selectedOrder ? `تفاصيل ${selectedOrder.order_number}` : 'متابعة وتتبع الطلبات'}
                             </h2>
-                            <p className="text-[11px] text-slate-400 font-bold">
+                            <p className="text-[11px] sm:text-xs text-slate-400 font-bold mt-0.5">
                                 {selectedOrder
                                     ? (isActive ? '🔴 تتبع مباشر وحي لحالة طلبك' : (isDelivered ? '✅ طلب مكتمل ومغلق' : 'طلب ملغي'))
                                     : 'أدخل رقم هاتفك لعرض ومتابعة آخر طلباتك'}
@@ -352,15 +352,15 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-10 h-10 rounded-xl bg-dark-800 text-slate-400 hover:text-white flex items-center justify-center transition-all active:scale-95"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-dark-800/80 border border-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all active:scale-95 shrink-0"
                         aria-label="إغلاق"
                     >
-                        <X size={20} />
+                        <X size={18} className="sm:w-5 sm:h-5" />
                     </button>
                 </div>
 
                 {/* Content Container */}
-                <div className="p-5 sm:p-6 space-y-5 overflow-y-auto">
+                <div className="flex-1 p-4 sm:p-6 md:p-7 space-y-4 sm:space-y-5 overflow-y-auto custom-scrollbar overscroll-contain">
                     {/* Search Form (Always accessible or when no order selected) */}
                     {!selectedOrder && (
                         <form
@@ -368,11 +368,11 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                 e.preventDefault();
                                 performSearch(phone, orderNumber);
                             }}
-                            className="space-y-3.5 bg-dark-950/60 p-4 rounded-3xl border border-white/5"
+                            className="space-y-3.5 sm:space-y-4 bg-dark-950/60 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/[0.08]"
                         >
-                            <div>
-                                <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                                    <Phone size={14} className="text-primary" />
+                            <div className="space-y-1.5 sm:space-y-2">
+                                <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                    <Phone size={14} className="text-primary shrink-0" />
                                     <span>رقم هاتف العميل (نقطة البحث الأساسية)</span>
                                 </label>
                                 <div className="relative">
@@ -381,14 +381,14 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                         placeholder="مثال: 01012345678"
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
-                                        className="w-full px-4 py-3 bg-dark-900 border border-white/10 rounded-2xl text-white placeholder-slate-500 text-sm focus:border-primary focus:outline-none text-right font-mono"
+                                        className="w-full px-4 py-3 sm:py-3.5 bg-dark-900 border border-white/[0.08] focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl sm:rounded-2xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none transition-all text-right font-mono"
                                         dir="ltr"
                                     />
                                     {phone && (
                                         <button
                                             type="button"
                                             onClick={() => setPhone('')}
-                                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs"
+                                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs p-1"
                                         >
                                             ✕
                                         </button>
@@ -402,13 +402,13 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                     <button
                                         type="button"
                                         onClick={() => setShowOrderNumInput(true)}
-                                        className="text-[11px] text-primary hover:underline font-bold flex items-center gap-1"
+                                        className="text-[11px] sm:text-xs text-primary hover:underline font-bold flex items-center gap-1 transition-all"
                                     >
                                         + البحث برقم طلب محدد (اختياري)
                                     </button>
                                 ) : (
-                                    <div className="animate-in fade-in duration-200">
-                                        <label className="block text-[11px] font-bold text-slate-400 mb-1">
+                                    <div className="space-y-1.5 sm:space-y-2 animate-in fade-in duration-200">
+                                        <label className="text-[11px] sm:text-xs font-bold text-slate-400 pr-1 select-none">
                                             رقم الطلب (اختياري)
                                         </label>
                                         <input
@@ -416,7 +416,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                             placeholder="مثال: 1042 أو #1042"
                                             value={orderNumber}
                                             onChange={(e) => setOrderNumber(e.target.value)}
-                                            className="w-full px-4 py-2.5 bg-dark-900 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:border-primary focus:outline-none text-center font-mono"
+                                            className="w-full px-4 py-2.5 sm:py-3 bg-dark-900 border border-white/[0.08] focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl sm:rounded-2xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none text-center font-mono transition-all"
                                         />
                                     </div>
                                 )}
@@ -426,11 +426,12 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                             <TurnstileWidget
                                 onVerify={(token) => setTurnstileToken(token)}
                                 onExpire={() => setTurnstileToken(null)}
+                                theme="dark"
                             />
 
                             {/* Cooldown / Lockout Notice */}
                             {cooldownSeconds > 0 && (
-                                <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-2.5 text-amber-300 text-xs font-bold animate-in fade-in">
+                                <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-amber-300 text-xs font-bold animate-in fade-in">
                                     <Clock size={16} className="text-amber-400 shrink-0 animate-pulse" />
                                     <span>
                                         {isSuspiciousLocked
@@ -443,7 +444,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                             <button
                                 type="submit"
                                 disabled={loading || cooldownSeconds > 0 || (!phone && !orderNumber)}
-                                className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/25"
+                                className="w-full py-3.5 sm:py-4 bg-primary hover:bg-orange-600 text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm md:text-base flex items-center justify-center gap-2.5 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/20"
                             >
                                 {cooldownSeconds > 0 ? (
                                     <>
@@ -467,8 +468,8 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                     {/* Error Notice */}
                     {error && (
-                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-xs animate-in shake">
-                            <AlertCircle size={20} className="shrink-0" />
+                        <div className="p-3.5 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-xl sm:rounded-2xl flex items-center gap-3 text-red-400 text-xs sm:text-sm animate-in fade-in">
+                            <AlertCircle size={18} className="shrink-0" />
                             <span className="font-bold leading-relaxed">{error}</span>
                         </div>
                     )}
@@ -483,7 +484,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                     <History size={14} className="text-primary" />
                                     <span>آخر الطلبات المسجلة ({recentOrders.length})</span>
                                 </h3>
-                                <span className="text-[10px] text-slate-500 font-bold">اضغط على أي طلب للتفاصيل</span>
+                                <span className="text-[10px] sm:text-[11px] text-slate-500 font-bold">اضغط على أي طلب للتفاصيل</span>
                             </div>
 
                             <div className="space-y-2.5">
@@ -496,7 +497,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                         <div
                                             key={ord.order_id}
                                             onClick={() => setSelectedOrder(ord)}
-                                            className={`p-4 rounded-3xl border transition-all cursor-pointer text-right flex flex-col gap-3 group active:scale-[0.99] ${
+                                            className={`p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer text-right flex flex-col gap-2.5 sm:gap-3 group active:scale-[0.99] ${
                                                 ordActive
                                                     ? 'bg-primary/5 border-primary/40 hover:border-primary shadow-lg shadow-primary/10 ring-1 ring-primary/20'
                                                     : 'bg-dark-950/70 border-white/5 hover:border-white/15'
@@ -505,10 +506,10 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                             {/* Card Top: Order Number & Status Badge */}
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-white font-mono font-black text-base">
+                                                    <span className="text-white font-mono font-black text-sm sm:text-base">
                                                         {ord.order_number}
                                                     </span>
-                                                    <span className="text-[11px] text-slate-400 font-medium">
+                                                    <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">
                                                         ({ord.order_type === 'delivery' ? 'توصيل' : 'استلام'})
                                                     </span>
                                                 </div>
@@ -516,17 +517,17 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                                 {/* Status Badge */}
                                                 <div>
                                                     {ordActive ? (
-                                                        <span className="inline-flex items-center gap-1.5 text-[11px] font-black text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 animate-pulse">
-                                                            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                                        <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-black text-amber-400 bg-amber-500/10 px-2.5 sm:px-3 py-1 rounded-full border border-amber-500/30 animate-pulse">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                                                             {ord.status_label_ar} (نشط)
                                                         </span>
                                                     ) : ordDelivered ? (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                                                        <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                                                             <CheckCircle2 size={12} />
                                                             <span>مكتمل</span>
                                                         </span>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
+                                                        <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
                                                             <XCircle size={12} />
                                                             <span>ملغي</span>
                                                         </span>
@@ -535,16 +536,16 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                             </div>
 
                                             {/* Card Middle: Price, Time & Item Count */}
-                                            <div className="flex items-center justify-between text-xs border-t border-white/5 pt-2.5">
-                                                <div className="text-slate-400 text-[11px] flex items-center gap-1">
+                                            <div className="flex items-center justify-between text-xs border-t border-white/5 pt-2 sm:pt-2.5">
+                                                <div className="text-slate-400 text-[10px] sm:text-[11px] flex items-center gap-1">
                                                     <Clock size={12} />
                                                     <span>{formatOrderDate(ord.created_at)}</span>
                                                 </div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-slate-400 text-[11px]">
+                                                <div className="flex items-center gap-2.5 sm:gap-3">
+                                                    <span className="text-slate-400 text-[10px] sm:text-[11px]">
                                                         {ord.items_count > 0 ? `${ord.items_count} أصناف` : ''}
                                                     </span>
-                                                    <span className="text-primary font-black font-mono text-sm">
+                                                    <span className="text-primary font-black font-mono text-xs sm:text-sm">
                                                         {formatCurrency(ord.total_amount)}
                                                     </span>
                                                     <ChevronLeft size={16} className="text-slate-500 group-hover:text-primary transition-colors -mr-1" />
@@ -576,17 +577,17 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                             {/* 1. If COMPLETED/DELIVERED: Clear Final Conclusion Banner */}
                             {isDelivered && (
-                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-3xl p-5 text-center space-y-2.5 shadow-lg shadow-emerald-500/5 animate-in zoom-in-95 duration-300">
-                                    <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                                        <CheckCircle2 size={28} />
+                                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-5 text-center space-y-2 shadow-lg shadow-emerald-500/5 animate-in zoom-in-95 duration-300">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-xl sm:rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                        <CheckCircle2 size={24} className="sm:w-7 sm:h-7" />
                                     </div>
-                                    <h3 className="text-base sm:text-lg font-black text-emerald-400">
+                                    <h3 className="text-sm sm:text-base md:text-lg font-black text-emerald-400">
                                         تم تسليم الطلب بنجاح! 🎉
                                     </h3>
-                                    <p className="text-xs text-slate-300 font-medium leading-relaxed max-w-sm mx-auto">
+                                    <p className="text-[11px] sm:text-xs text-slate-300 font-medium leading-relaxed max-w-sm mx-auto">
                                         بالهناء والشفاء من أسرة <strong className="text-white">مطعم وكافيه أبو خاطر</strong>. نتمنى لك تجربة ممتعة!
                                     </p>
-                                    <div className="pt-2 text-[11px] text-emerald-300/70 font-bold border-t border-emerald-500/20">
+                                    <div className="pt-2 text-[10px] sm:text-[11px] text-emerald-300/70 font-bold border-t border-emerald-500/20">
                                         هذا الطلب مغلق ومكتمل كسجل سابق.
                                     </div>
                                 </div>
@@ -594,11 +595,11 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                             {/* 2. If CANCELLED: Clear Cancellation Banner */}
                             {isCancelled && (
-                                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-3xl flex items-center gap-3.5 text-red-400">
-                                    <XCircle size={28} className="shrink-0" />
+                                <div className="p-3.5 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-2xl sm:rounded-3xl flex items-center gap-3 text-red-400">
+                                    <XCircle size={24} className="shrink-0" />
                                     <div>
-                                        <h4 className="font-black text-sm">تم إلغاء هذا الطلب</h4>
-                                        <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">
+                                        <h4 className="font-black text-xs sm:text-sm">تم إلغاء هذا الطلب</h4>
+                                        <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5 leading-relaxed">
                                             {selectedOrder.cancellation_reason
                                                 ? `سبب الإلغاء: ${selectedOrder.cancellation_reason}`
                                                 : 'يرجى التواصل مع إدارة المطعم للاستفسار أو لإعادة الطلب.'}
@@ -608,30 +609,30 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                             )}
 
                             {/* Summary Card */}
-                            <div className="bg-dark-950/70 rounded-3xl p-4 sm:p-5 border border-white/5 space-y-3.5">
-                                <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                            <div className="bg-dark-950/70 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-white/5 space-y-3">
+                                <div className="flex justify-between items-center border-b border-white/5 pb-2.5 sm:pb-3">
                                     <div>
                                         <span className="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">طلب رقم</span>
-                                        <span className="text-white font-mono font-black text-lg sm:text-xl">{selectedOrder.order_number}</span>
+                                        <span className="text-white font-mono font-black text-base sm:text-lg">{selectedOrder.order_number}</span>
                                     </div>
                                     <div className="text-left">
                                         <span className="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">المبلغ الإجمالي</span>
-                                        <span className="text-primary font-black text-lg sm:text-xl font-mono">{formatCurrency(selectedOrder.total_amount)}</span>
+                                        <span className="text-primary font-black text-base sm:text-lg font-mono">{formatCurrency(selectedOrder.total_amount)}</span>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     <div className="flex items-center gap-1.5 text-slate-400">
-                                        <Receipt size={14} />
+                                        <Receipt size={14} className="shrink-0" />
                                         <span>النوع:</span>
                                         <strong className="text-white font-bold">
                                             {selectedOrder.order_type === 'delivery' ? 'توصيل منزلي' : 'استلام من المطعم'}
                                         </strong>
                                     </div>
                                     <div className="flex items-center gap-1.5 text-left justify-end">
-                                        <Wallet size={14} className="text-slate-400" />
+                                        <Wallet size={14} className="text-slate-400 shrink-0" />
                                         <span className="text-slate-400">الدفع:</span>
-                                        <span className="text-emerald-400 font-bold text-[11px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                        <span className="text-emerald-400 font-bold text-[10px] sm:text-[11px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                                             {selectedOrder.payment_status_label_ar || 'تم'}
                                         </span>
                                     </div>
@@ -645,9 +646,9 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                 )}
 
                                 {selectedOrder.pilot_name && (
-                                    <div className="p-3 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-between">
+                                    <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl sm:rounded-2xl flex items-center justify-between">
                                         <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center">
+                                            <div className="w-8 h-8 rounded-lg sm:rounded-xl bg-primary text-white flex items-center justify-center">
                                                 <Bike size={16} />
                                             </div>
                                             <div>
@@ -664,7 +665,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                             {/* Status Timeline (Shown prominently for active and closed orders) */}
                             {!isCancelled && (
-                                <div className="bg-dark-950/40 rounded-3xl p-5 border border-white/5 space-y-4">
+                                <div className="bg-dark-950/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-white/5 space-y-3.5 sm:space-y-4">
                                     <div className="flex items-center justify-between">
                                         <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider">
                                             مراحل دورة الطلب
@@ -677,16 +678,16 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                         )}
                                     </div>
 
-                                    <div className="relative space-y-6 before:absolute before:right-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-dark-800">
+                                    <div className="relative space-y-5 sm:space-y-6 before:absolute before:right-3.5 sm:before:right-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-dark-800">
                                         {STATUS_STEPS.map((step, idx) => {
                                             const isDone = idx < currentStepIndex || isDelivered;
                                             const isCurrent = idx === currentStepIndex && !isDelivered;
                                             const StepIcon = step.icon;
 
                                             return (
-                                                <div key={step.key} className="relative flex items-start gap-4">
+                                                <div key={step.key} className="relative flex items-start gap-3.5 sm:gap-4">
                                                     <div
-                                                        className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                                                        className={`relative z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all shrink-0 ${
                                                             isDone
                                                                 ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30 ring-2 ring-emerald-500/20'
                                                                 : isCurrent
@@ -695,16 +696,16 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                                         }`}
                                                     >
                                                         {isDone ? (
-                                                            <CheckCircle2 size={16} />
+                                                            <CheckCircle2 size={14} className="sm:w-4 sm:h-4" />
                                                         ) : (
-                                                            <StepIcon size={15} />
+                                                            <StepIcon size={13} className="sm:w-3.5 sm:h-3.5" />
                                                         )}
                                                     </div>
 
                                                     <div className="flex-1 min-w-0 pt-0.5">
                                                         <div className="flex items-center justify-between">
                                                             <h4
-                                                                className={`text-sm font-bold leading-none ${
+                                                                className={`text-xs sm:text-sm font-bold leading-none ${
                                                                     isCurrent
                                                                         ? 'text-primary font-black'
                                                                         : isDone
@@ -725,7 +726,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                                                        <p className="text-[10px] sm:text-[11px] text-slate-400 mt-1 leading-relaxed">
                                                             {step.desc}
                                                         </p>
                                                     </div>
@@ -742,7 +743,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-primary/20"
+                                        className="w-full py-3.5 sm:py-4 bg-primary hover:bg-orange-600 text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-primary/20"
                                     >
                                         <Utensils size={16} />
                                         <span>تصفح المنيو لطلب وجبة جديدة</span>
@@ -751,7 +752,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                                 <a
                                     href="tel:01038035884"
-                                    className="w-full py-3 bg-dark-800 hover:bg-dark-700 text-slate-300 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-white/5 transition-all"
+                                    className="w-full py-3 sm:py-3.5 bg-dark-800 hover:bg-dark-700 text-slate-300 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-white/5 transition-all active:scale-[0.98]"
                                 >
                                     <Phone size={14} className="text-primary" />
                                     <span>الاتصال بإدارة المطعم للمساعدة</span>

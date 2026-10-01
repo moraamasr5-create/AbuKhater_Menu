@@ -117,18 +117,18 @@ const FeedbackModal = ({ isOpen, onClose }) => {
 
     if (success) {
         return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
-                <div className="bg-dark-900 border border-white/[0.08] rounded-[2rem] p-8 w-full max-w-md text-center shadow-2xl">
-                    <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="text-emerald-500 w-10 h-10" />
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <CheckCircle className="text-emerald-500 w-8 h-8 sm:w-10 sm:h-10" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-3">شكراً لاهتمامك!</h2>
-                    <p className="text-slate-400 mb-8 leading-relaxed">
+                    <h2 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">شكراً لاهتمامك!</h2>
+                    <p className="text-slate-400 text-xs sm:text-sm mb-6 sm:mb-8 leading-relaxed">
                         تم استلام رسالتك بنجاح. نحن نقدر تواصلك وسنعمل على تحسين خدماتنا بناءً على ملاحظاتك.
                     </p>
                     <button
                         onClick={onClose}
-                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm"
                     >
                         إغلاق
                     </button>
@@ -138,49 +138,68 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     }
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in">
-            <div className="bg-dark-900 border border-white/[0.08] rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-lg max-h-[min(90dvh,680px)] overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/25">
-                    <button onClick={onClose} className="p-2 bg-dark-700/50 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-xl transition-all">
-                        <X size={20} />
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/30 shrink-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                            <MessageSquare size={18} className="sm:w-5 sm:h-5" />
+                        </div>
+                        <div>
+                            <h2 className="text-base sm:text-lg font-black text-white leading-tight">
+                                الشكاوى والمقترحات
+                            </h2>
+                            <p className="text-[11px] sm:text-xs text-slate-400 font-bold mt-0.5">
+                                رأيك يهمنا لتطوير وتجويد خدماتنا
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-dark-800/80 border border-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all active:scale-95 shrink-0"
+                        aria-label="إغلاق"
+                    >
+                        <X size={18} className="sm:w-5 sm:h-5" />
                     </button>
-                    <h2 className="text-xl font-black text-white flex items-center gap-3">
-                        الشكاوي والمقترحات
-                        <MessageSquare className="text-primary" size={24} />
-                    </h2>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar" dir="rtl">
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-7 custom-scrollbar space-y-4 sm:space-y-5 overscroll-contain" dir="rtl">
+                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                         {/* Type Toggle */}
-                        <div className="grid grid-cols-2 gap-3 mb-6">
+                        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-2 sm:mb-4">
                             <button
                                 type="button"
                                 onClick={() => setFormData(p => ({ ...p, type: 'suggestion' }))}
-                                className={`flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold transition-all border-2 ${formData.type === 'suggestion' 
-                                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400' 
-                                    : 'bg-dark-950/50 border-white/5 text-slate-500'}`}
+                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
+                                    formData.type === 'suggestion' 
+                                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-md shadow-emerald-500/10' 
+                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                }`}
                             >
-                                <ThumbsUp size={18} />
+                                <ThumbsUp size={16} className="shrink-0" />
                                 <span>مقترح</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setFormData(p => ({ ...p, type: 'complaint' }))}
-                                className={`flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold transition-all border-2 ${formData.type === 'complaint' 
-                                    ? 'bg-red-500/15 border-red-500 text-red-400' 
-                                    : 'bg-dark-950/50 border-white/5 text-slate-500'}`}
+                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
+                                    formData.type === 'complaint' 
+                                        ? 'bg-red-500/15 border-red-500 text-red-400 shadow-md shadow-red-500/10' 
+                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                }`}
                             >
-                                <ThumbsDown size={18} />
+                                <ThumbsDown size={16} className="shrink-0" />
                                 <span>شكوى</span>
                             </button>
                         </div>
 
                         {/* Name */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                <User size={14} className="text-primary" /> الاسم
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                <User size={14} className="text-primary shrink-0" /> 
+                                <span>الاسم</span>
                             </label>
                             <input
                                 required
@@ -188,11 +207,11 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleInputChange}
-                                placeholder="أدخل اسمك..."
-                                className={`w-full bg-dark-950/50 border ${errors.fullName ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
+                                placeholder="أدخل اسمك الكريم..."
+                                className={`w-full bg-dark-950/60 border ${errors.fullName ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all`}
                             />
                             {errors.fullName && (
-                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
                                     <AlertCircle size={12} className="shrink-0" />
                                     <span>{errors.fullName}</span>
                                 </p>
@@ -200,9 +219,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         </div>
 
                         {/* Phone */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                <Phone size={14} className="text-primary" /> رقم الهاتف
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                <Phone size={14} className="text-primary shrink-0" /> 
+                                <span>رقم الهاتف</span>
                             </label>
                             <input
                                 required
@@ -212,10 +232,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 onChange={handleInputChange}
                                 placeholder="01xxxxxxxxx"
                                 maxLength={11}
-                                className={`w-full bg-dark-950/50 border ${errors.phone ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
+                                className={`w-full bg-dark-950/60 border ${errors.phone ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-mono`}
                             />
                             {errors.phone && (
-                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
                                     <AlertCircle size={12} className="shrink-0" />
                                     <span>{errors.phone}</span>
                                 </p>
@@ -223,9 +243,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         </div>
 
                         {/* Message */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                <FileText size={14} className="text-primary" /> تفاصيل الرسالة
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                <FileText size={14} className="text-primary shrink-0" /> 
+                                <span>تفاصيل الرسالة</span>
                             </label>
                             <textarea
                                 required
@@ -233,10 +254,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 value={formData.message}
                                 onChange={handleInputChange}
                                 placeholder="اكتب مقترحك أو تفاصيل الشكوى هنا..."
-                                className={`w-full bg-dark-950/50 border ${errors.message ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all min-h-[140px] resize-none`}
+                                className={`w-full bg-dark-950/60 border ${errors.message ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all min-h-[110px] sm:min-h-[130px] resize-none leading-relaxed`}
                             ></textarea>
                             {errors.message && (
-                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
                                     <AlertCircle size={12} className="shrink-0" />
                                     <span>{errors.message}</span>
                                 </p>
@@ -244,9 +265,9 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         </div>
 
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-2xl flex items-center gap-3 text-red-500 text-xs sm:text-sm">
+                            <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl flex items-center gap-3 text-red-400 text-xs sm:text-sm animate-in fade-in">
                                 <AlertCircle size={18} className="shrink-0" />
-                                <p>{error}</p>
+                                <p className="font-bold leading-relaxed">{error}</p>
                             </div>
                         )}
 
@@ -259,7 +280,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-orange-600 disabled:opacity-50 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-3 mt-4 sm:mt-6"
+                            className="w-full bg-primary hover:bg-orange-600 disabled:opacity-50 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2.5 text-xs sm:text-sm md:text-base mt-2"
                         >
                             {loading ? (
                                 <Loader2 className="animate-spin" size={20} />
