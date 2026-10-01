@@ -331,31 +331,29 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
                                         <Clock size={14} className="text-primary" /> الوقت
                                     </label>
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="grid grid-cols-3 gap-2 items-start">
                                         {[
                                             { name: 'timeHour', label: 'الساعة', values: [...Array(12)].map((_, i) => String(i + 1)) },
                                             { name: 'timeMinute', label: 'الدقيقة', values: ['00', '30'] },
                                             { name: 'timeAmPm', label: 'الفترة', values: ['AM', 'PM'] }
                                         ].map(({ name, label, values }) => (
-                                            <div key={name} className="space-y-1">
-                                                <label htmlFor={name} className="block text-center text-xs font-bold text-slate-500">
-                                                    {label}
-                                                </label>
-                                                <select
-                                                    id={name}
-                                                    name={name}
-                                                    value={formData[name]}
-                                                    onChange={handleTimeChange}
-                                                    className={`w-full min-h-11 rounded-xl border px-2 bg-dark-950/50 text-center text-sm font-bold text-white focus:ring-2 focus:ring-primary/40 focus:outline-none [color-scheme:dark] ${errors.time ? 'border-red-500/60' : 'border-white/5'
-                                                        }`}
-                                                >
-                                                    <option value="">اختر</option>
+                                            <div key={name} className="space-y-2">
+                                                <span className="block text-center text-xs font-bold text-slate-500">{label}</span>
+                                                <div className={name === 'timeHour' ? 'grid grid-cols-3 gap-1' : 'grid grid-cols-1 gap-1'}>
                                                     {values.map(value => (
-                                                        <option key={value} value={value}>
+                                                        <button
+                                                            key={value}
+                                                            type="button"
+                                                            aria-pressed={formData[name] === value}
+                                                            onClick={() => handleTimeChange({ target: { name, value } })}
+                                                            className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData[name] === value
+                                                                ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
+                                                                : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                        >
                                                             {name === 'timeAmPm' ? (value === 'AM' ? 'صباحًا' : 'مساءً') : value}
-                                                        </option>
+                                                        </button>
                                                     ))}
-                                                </select>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
