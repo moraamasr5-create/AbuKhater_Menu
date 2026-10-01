@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     ArrowRight,
     Clock,
@@ -13,15 +13,14 @@ import {
     Home,
     ShoppingBag,
     Utensils,
-    Layers
+    Layers,
+    LogOut,
+    ShieldCheck
 } from 'lucide-react';
 import { supabase } from '../services/supabase/supabaseClient';
 import { formatCurrency } from '../core/utils/formatters';
-import {
-    fetchDeviceRecentOrders,
-    saveDeviceOrder,
-    getStoredDeviceOrders
-} from '../core/utils/deviceTracker';
+import { orderService } from '../services/api';
+import PhoneOtpModal from '../components/common/PhoneOtpModal';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
@@ -70,14 +69,15 @@ const formatOrderTime = (isoString) => {
 
 const TrackPage = () => {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+    const [user, setUser] = useState(null);
     const [orders, setOrders] = useState([]);
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [loading, setLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
 
-    // Initial load: save params if passed from checkout, then fetch up to 2 recent device orders
-    const loadDeviceOrders = useCallback(async (isManualRefresh = false) => {
+    // Load authenticated user and their 2 recent orders
+    const loadUserOrders = useCallback(async (isManualRefresh = false) => {
         if (isManualRefresh) {
             setIsRefreshing(true);
         } else {
@@ -85,41 +85,58 @@ const TrackPage = () => {
         }
 
         try {
-            // Check if query params provided from previous confirmation
-            const paramOrder = searchParams.get('order') || searchParams.get('orderNumber');
-            const paramPhone = searchParams.get('phone');
-            if (paramOrder || paramPhone) {
-                saveDeviceOrder({
-                    order_number: paramOrder,
-                    phone: paramPhone
-                });
+            const { data: { user: authUser } } = await supabase.auth.getUser();
+            setUser(authUser || null);
+
+            if (!authUser) {
+                setOrders([]);
+                return;
             }
 
-            const recentOrders = await fetchDeviceRecentOrders();
-            setOrders(recentOrders || []);
+            // Fetch up to 2 recent orders strictly for this authenticated user (auth.uid)
+            const result = await orderService.fetchRecentOrders({ limit: 2 });
+            if (result?.found && Array.isArray(result.orders)) {
+                setOrders(result.orders);
+            } else {
+                setOrders([]);
+            }
             setSelectedIdx(0);
         } catch (err) {
-            console.error('Error loading device recent orders:', err);
+            console.error('Error loading authenticated user recent orders:', err);
             setOrders([]);
         } finally {
             setLoading(false);
             setIsRefreshing(false);
         }
-    }, [searchParams]);
+    }, []);
 
     useEffect(() => {
-        loadDeviceOrders();
-    }, [loadDeviceOrders]);
+        loadUserOrders();
 
-    // Supabase Realtime Subscription for active orders
+        // Listen for auth state changes (e.g. login/logout)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user || null);
+            if (session?.user) {
+                loadUserOrders(true);
+            } else {
+                setOrders([]);
+            }
+        });
+
+        return () => {
+            subscription?.unsubscribe();
+        };
+    }, [loadUserOrders]);
+
+    // Supabase Realtime Subscription for active user orders
     useEffect(() => {
         const activeIds = orders
-            .map(o => o.order_id)
+            .map((o) => o.order_id)
             .filter(Boolean);
 
         if (activeIds.length === 0) return;
 
-        const channels = activeIds.map(orderId => {
+        const channels = activeIds.map((orderId) => {
             return supabase
                 .channel(`track-page-order-${orderId}`)
                 .on(
@@ -132,16 +149,26 @@ const TrackPage = () => {
                     },
                     () => {
                         console.log(`⚡ Realtime update received for order ${orderId}`);
-                        loadDeviceOrders(true);
+                        loadUserOrders(true);
                     }
                 )
                 .subscribe();
         });
 
         return () => {
-            channels.forEach(ch => supabase.removeChannel(ch));
+            channels.forEach((ch) => supabase.removeChannel(ch));
         };
-    }, [orders, loadDeviceOrders]);
+    }, [orders, loadUserOrders]);
+
+    const handleSignOut = async () => {
+        try {
+            await supabase.auth.signOut();
+            setUser(null);
+            setOrders([]);
+        } catch (err) {
+            console.error('Error signing out:', err);
+        }
+    };
 
     const currentOrder = orders[selectedIdx] || null;
     const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status) : -1;
@@ -163,14 +190,25 @@ const TrackPage = () => {
                     </button>
 
                     <h1 className="text-base font-black text-white flex items-center gap-2">
-                        <span>متابعة الطلب</span>
+                        <span>متابعة الطلبات</span>
                         <Bike size={18} className="text-primary" />
                     </h1>
 
                     <div className="flex items-center gap-1.5">
+                        {user && (
+                            <button
+                                type="button"
+                                onClick={handleSignOut}
+                                className="w-9 h-9 rounded-xl bg-dark-800 text-slate-400 hover:text-red-400 flex items-center justify-center hover:bg-dark-700 transition-all"
+                                aria-label="تسجيل الخروج"
+                                title="تسجيل الخروج"
+                            >
+                                <LogOut size={16} />
+                            </button>
+                        )}
                         <button
                             type="button"
-                            onClick={() => loadDeviceOrders(true)}
+                            onClick={() => loadUserOrders(true)}
                             disabled={loading || isRefreshing}
                             className="w-9 h-9 rounded-xl bg-dark-800 text-slate-300 hover:text-white flex items-center justify-center hover:bg-dark-700 transition-all disabled:opacity-50"
                             aria-label="تحديث الحالة"
@@ -192,6 +230,18 @@ const TrackPage = () => {
             </header>
 
             <main className="max-w-xl mx-auto px-4 pt-6 space-y-5">
+                {/* OTP Modal */}
+                <PhoneOtpModal
+                    isOpen={showOtpModal}
+                    onClose={() => setShowOtpModal(false)}
+                    onSuccess={() => {
+                        setShowOtpModal(false);
+                        loadUserOrders(true);
+                    }}
+                    title="تسجيل الدخول بالهاتف"
+                    description="أدخل رقم هاتفك لعرض أحدث طلباتك ومتابعة حالتها مباشرة"
+                />
+
                 {/* Loading Skeleton */}
                 {loading && (
                     <div className="bg-dark-900 border border-white/10 rounded-3xl p-8 text-center space-y-4 shadow-xl animate-pulse">
@@ -199,14 +249,49 @@ const TrackPage = () => {
                             <RotateCcw size={26} className="animate-spin" />
                         </div>
                         <div className="space-y-2">
-                            <h2 className="text-base font-bold text-white">جاري مزامنة بيانات طلبك...</h2>
-                            <p className="text-xs text-slate-400">نستعرض أحدث الطلبات الخاصة بهذا الجهاز من النظام</p>
+                            <h2 className="text-base font-bold text-white">جاري مزامنة بيانات طلباتك...</h2>
+                            <p className="text-xs text-slate-400">نستعرض أحدث الطلبات المسجلة لحسابك من النظام</p>
                         </div>
                     </div>
                 )}
 
-                {/* Empty State: No Recent Orders on this Device */}
-                {!loading && orders.length === 0 && (
+                {/* Unauthenticated State: Prompt Phone OTP Login */}
+                {!loading && !user && (
+                    <div className="bg-dark-900 border border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary shadow-inner">
+                            <ShieldCheck size={36} />
+                        </div>
+
+                        <div className="space-y-2">
+                            <h2 className="text-lg font-black text-white">تسجيل الدخول لمتابعة طلباتك</h2>
+                            <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+                                أدخل رقم هاتفك المسجل برمز التحقق (OTP) للاطلاع على تفاصيل ومراحل تحضير وتوصيل آخر طلبين لك فوراً.
+                            </p>
+                        </div>
+
+                        <div className="space-y-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowOtpModal(true)}
+                                className="w-full py-4 bg-gradient-to-r from-primary to-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-xl shadow-primary/25 hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2"
+                            >
+                                <Phone size={18} />
+                                <span>تسجيل الدخول برمز OTP</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => navigate('/')}
+                                className="w-full py-3.5 bg-dark-800 hover:bg-dark-700 text-slate-300 rounded-2xl font-bold text-xs transition-all border border-white/5"
+                            >
+                                تصفح المنيو
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Empty State: Authenticated but No Recent Orders */}
+                {!loading && user && orders.length === 0 && (
                     <div className="bg-dark-900 border border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-300">
                         <div className="w-20 h-20 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary shadow-inner">
                             <ShoppingBag size={34} />
@@ -215,7 +300,7 @@ const TrackPage = () => {
                         <div className="space-y-2">
                             <h2 className="text-lg font-black text-white">لا توجد طلبات جارية حالياً</h2>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
-                                عند قيامك بتأكيد أي طلب جديد من هذا الجهاز، ستظهر هنا جميع مراحل التحضير والتوصيل مباشرة وبشكل فوري دون الحاجة للبحث.
+                                حسابك الموثق ({user.phone || 'هاتفك'}) لا يحتوي على طلبات نشطة حالياً. عند إتمام أي طلب جديد ستظهر مراحله مباشرة هنا.
                             </p>
                         </div>
 
@@ -230,8 +315,8 @@ const TrackPage = () => {
                     </div>
                 )}
 
-                {/* Orders Content */}
-                {!loading && orders.length > 0 && currentOrder && (
+                {/* Orders Content for Authenticated User */}
+                {!loading && user && orders.length > 0 && currentOrder && (
                     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
                         {/* Two-Order Switcher Tabs if 2 recent orders exist */}
                         {orders.length > 1 && (

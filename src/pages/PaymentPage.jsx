@@ -11,19 +11,19 @@ import {
     Info,
     Upload,
     X,
-    Image as ImageIcon,
     Check,
     Wallet
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
 import ProgressSteps from '../features/checkout/ProgressSteps';
-import { formatCurrency } from '../core/utils/formatters';
+import { formatCurrency, normalizePhoneToE164 } from '../core/utils/formatters';
 import { calculateServiceFee } from '../core/utils/calculations';
 import { orderService } from '../services/api';
+import { supabase } from '../services/supabase/supabaseClient';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import OrderConfirmation from '../features/checkout/OrderConfirmation';
 import TurnstileWidget from '../components/common/TurnstileWidget';
-import { saveDeviceOrder } from '../core/utils/deviceTracker';
+import PhoneOtpModal from '../components/common/PhoneOtpModal';
 
 const PaymentPage = () => {
     const {
@@ -42,6 +42,7 @@ const PaymentPage = () => {
     const [isProcessingFile, setIsProcessingFile] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState(null);
     const [copied, setCopied] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
 
     // Calculations
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -99,7 +100,6 @@ const PaymentPage = () => {
 
     /**
      * 🔴 الدالة المسؤولة عن معالجة صورة إثبات الدفع (Screenshot)
-     * بتتأكد إن الحجم مناسب وبتحولها لـ Base64 عشان نقدر نعرضها أو نبعتها
      */
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -128,26 +128,15 @@ const PaymentPage = () => {
     };
 
     /**
-     * 🔴 الدالة الأساسية لتأكيد الطلب وإرساله إلى Supabase Core (create_order RPC)
-     * بتجمع بيانات العميل، الأصناف، وصورة الدفع وبتبعتهم في طلب واحد
+     * Execute Order Submission after Auth verification
      */
-    const handleConfirmPayment = async () => {
-        if (isSubmitting) return; // حماية ضد الضغط المتكرر
-
-        if (!isCash && !screenshot) {
-            setSubmitError('يرجى رفع صورة أسكرين شوت التحويل (Screenshot) للمتابعة.');
-            return;
-        }
-
-        if (!turnstileToken && TURNSTILE_SITE_KEY) {
-            setSubmitError('يرجى إكمال اختبار التحقق الأمني (التحقق من أنك لست روبوت) للمتابعة.');
-            return;
-        }
+    const executeOrderSubmission = async () => {
+        if (isSubmitting) return;
 
         setIsSubmitting(true);
         const clientMutationKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : null;
 
-        // Data structure for submission (server calculates authoritative totals)
+        // Data structure for submission (server calculates authoritative totals and binds auth.uid())
         const orderData = {
             restaurant: "مطعم أبو خاطر",
             order_type: orderType,
@@ -209,22 +198,6 @@ const PaymentPage = () => {
             });
 
             setIsSuccess(true);
-
-            try {
-                saveDeviceOrder({
-                    id: result.order_id,
-                    order_number: authoritativeOrderNumber,
-                    phone: customerData?.phone1,
-                    created_at: new Date().toISOString()
-                });
-
-                localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
-                    order: { ...orderData, order_number: authoritativeOrderNumber, order_id: result.order_id },
-                    timestamp: new Date().toISOString()
-                }));
-            } catch (e) {
-                console.error('Failed to save to localStorage', e);
-            }
         } catch (error) {
             console.error('💀 خطأ في تأكيد الطلب:', error);
             const errMsg = error?.message != null ? String(error.message) : String(error);
@@ -240,19 +213,59 @@ const PaymentPage = () => {
             }
 
             setSubmitError(userMessage);
-
-            try {
-                localStorage.setItem('pendingOrder', JSON.stringify({
-                    data: orderData,
-                    error: errMsg,
-                    timestamp: new Date().toISOString()
-                }));
-            } catch (storageError) {
-                console.error('❌ فشل حفظ الطلب محلياً:', storageError);
-            }
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    /**
+     * 🔴 الدالة الأساسية لتأكيد الطلب
+     * تفحص أولاً وجود جلسة موثقة بالهاتف؛ إذا لم توجد تفتح نافذة OTP
+     */
+    const handleConfirmPayment = async () => {
+        if (isSubmitting) return;
+
+        if (!isCash && !screenshot) {
+            setSubmitError('يرجى رفع صورة أسكرين شوت التحويل (Screenshot) للمتابعة.');
+            return;
+        }
+
+        const turnstileKey = import.meta.env?.VITE_TURNSTILE_SITE_KEY;
+        if (!turnstileToken && turnstileKey) {
+            setSubmitError('يرجى إكمال اختبار التحقق الأمني (التحقق من أنك لست روبوت) للمتابعة.');
+            return;
+        }
+
+        // Check customer phone validity
+        const inputPhone = customerData?.phone1;
+        if (!inputPhone || inputPhone.replace(/\D/g, '').length < 10) {
+            setSubmitError('يرجى إدخال رقم هاتف صحيح في بيانات العميل.');
+            return;
+        }
+
+        try {
+            // Check Supabase Auth user session
+            const { data: { user } } = await supabase.auth.getUser();
+            const normalizedInput = normalizePhoneToE164(inputPhone);
+            const normalizedUserPhone = user?.phone ? normalizePhoneToE164(user.phone) : null;
+
+            if (!user || !user.id || (normalizedInput && normalizedUserPhone !== normalizedInput)) {
+                // Trigger Phone OTP Modal
+                setShowOtpModal(true);
+                return;
+            }
+
+            // User session is valid and verified -> submit order directly
+            await executeOrderSubmission();
+        } catch (err) {
+            console.error('Error checking auth session:', err);
+            setShowOtpModal(true);
+        }
+    };
+
+    const handleOtpSuccess = async () => {
+        setShowOtpModal(false);
+        await executeOrderSubmission();
     };
 
     const copyToClipboard = (text) => {
@@ -268,14 +281,16 @@ const PaymentPage = () => {
 
     const handleCloseOrder = useCallback(() => {
         clearCart();
-        navigate('/');
+        navigate('/track');
     }, [clearCart, navigate]);
 
     const handleViewOrderDetails = useCallback(() => {
         if (successData) {
             console.log('Viewing details for:', successData.orderId);
+            clearCart();
+            navigate('/track');
         }
-    }, [successData]);
+    }, [successData, clearCart, navigate]);
 
     const instapayIpa = restaurantSettings?.payment_instapay_ipa || 'abu_khatar@instapay';
     const walletNumber = restaurantSettings?.payment_wallet_number || '01144423700';
@@ -302,6 +317,16 @@ const PaymentPage = () => {
                         onViewDetails={handleViewOrderDetails}
                     />
                 )}
+
+                {/* Phone OTP Modal */}
+                <PhoneOtpModal
+                    isOpen={showOtpModal}
+                    onClose={() => setShowOtpModal(false)}
+                    onSuccess={handleOtpSuccess}
+                    initialPhone={customerData?.phone1 || ''}
+                    title="تأكيد رقم الهاتف للطلب"
+                    description="لتأكيد طلبك وتتبعه بسهولة، يرجى إدخال رمز التحقق المرسل لهاتفك"
+                />
 
                 {/* Amount Card */}
                 <div className="rounded-2xl sm:rounded-[1.5rem] overflow-hidden bg-gradient-to-br from-primary via-orange-600 to-orange-700 p-5 sm:p-6 text-center text-white relative shadow-lg shadow-primary/25 border border-white/10">
@@ -518,5 +543,3 @@ const PaymentPage = () => {
 };
 
 export default PaymentPage;
-
-

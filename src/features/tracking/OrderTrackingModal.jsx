@@ -8,19 +8,17 @@ import {
     CheckCircle2,
     XCircle,
     Phone,
-    AlertCircle,
     RotateCcw,
     ShoppingBag,
     Utensils,
     Sparkles,
-    Layers
+    Layers,
+    ShieldCheck
 } from 'lucide-react';
 import { supabase } from '../../services/supabase/supabaseClient';
 import { formatCurrency } from '../../core/utils/formatters';
-import {
-    fetchDeviceRecentOrders,
-    saveDeviceOrder
-} from '../../core/utils/deviceTracker';
+import { orderService } from '../../services/api';
+import PhoneOtpModal from '../../components/common/PhoneOtpModal';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك ومراجعته في النظام', icon: Clock },
@@ -67,35 +65,42 @@ const formatOrderTime = (isoString) => {
     }
 };
 
-const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone }) => {
+const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
+    const [user, setUser] = useState(null);
     const [orders, setOrders] = useState([]);
     const [selectedIdx, setSelectedIdx] = useState(0);
     const [loading, setLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [showOtpModal, setShowOtpModal] = useState(false);
 
     const loadOrders = useCallback(async (isManual = false) => {
         if (isManual) setIsRefreshing(true);
         else setLoading(true);
 
         try {
-            if (initialOrderNumber || initialPhone) {
-                saveDeviceOrder({
-                    order_number: initialOrderNumber,
-                    phone: initialPhone
-                });
+            const { data: { user: authUser } } = await supabase.auth.getUser();
+            setUser(authUser || null);
+
+            if (!authUser) {
+                setOrders([]);
+                return;
             }
 
-            const recentOrders = await fetchDeviceRecentOrders();
-            setOrders(recentOrders || []);
+            const res = await orderService.fetchRecentOrders({ limit: 2 });
+            if (res?.found && Array.isArray(res.orders)) {
+                setOrders(res.orders);
+            } else {
+                setOrders([]);
+            }
             setSelectedIdx(0);
         } catch (err) {
-            console.error('Error fetching device orders in modal:', err);
+            console.error('Error fetching authenticated user orders in modal:', err);
             setOrders([]);
         } finally {
             setLoading(false);
             setIsRefreshing(false);
         }
-    }, [initialOrderNumber, initialPhone]);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -108,12 +113,12 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
         if (!isOpen) return;
 
         const activeIds = orders
-            .map(o => o.order_id)
+            .map((o) => o.order_id)
             .filter(Boolean);
 
         if (activeIds.length === 0) return;
 
-        const channels = activeIds.map(orderId => {
+        const channels = activeIds.map((orderId) => {
             return supabase
                 .channel(`modal-track-order-${orderId}`)
                 .on(
@@ -133,7 +138,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
         });
 
         return () => {
-            channels.forEach(ch => supabase.removeChannel(ch));
+            channels.forEach((ch) => supabase.removeChannel(ch));
         };
     }, [isOpen, orders, loadOrders]);
 
@@ -183,6 +188,19 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 
                 {/* Body Content */}
                 <div className="flex-1 overflow-y-auto p-5 sm:p-6 custom-scrollbar space-y-4">
+                    {/* OTP Modal */}
+                    <PhoneOtpModal
+                        isOpen={showOtpModal}
+                        onClose={() => setShowOtpModal(false)}
+                        onSuccess={() => {
+                            setShowOtpModal(false);
+                            loadOrders(true);
+                        }}
+                        initialPhone={initialPhone}
+                        title="تسجيل الدخول بالهاتف"
+                        description="أدخل رقم هاتفك لعرض أحدث طلباتك ومتابعتها مباشرة"
+                    />
+
                     {/* Loading State */}
                     {loading && (
                         <div className="py-12 text-center space-y-4">
@@ -191,13 +209,36 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                             </div>
                             <div className="space-y-1">
                                 <h3 className="text-base font-bold text-white">جاري مزامنة بيانات طلبك...</h3>
-                                <p className="text-xs text-slate-400">نستعرض أحدث الطلبات الخاصة بهذا الجهاز</p>
+                                <p className="text-xs text-slate-400">نستعرض أحدث الطلبات الخاصة بحسابك</p>
                             </div>
                         </div>
                     )}
 
-                    {/* Empty State: No Recent Orders on this Device */}
-                    {!loading && orders.length === 0 && (
+                    {/* Unauthenticated State: Prompt Phone OTP */}
+                    {!loading && !user && (
+                        <div className="py-8 text-center space-y-5">
+                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary">
+                                <ShieldCheck size={32} />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-lg font-black text-white">تسجيل الدخول لمتابعة طلباتك</h3>
+                                <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+                                    سجل دخولك برقم هاتفك المسجل لعرض حالة ومراحل تجهيز آخر طلبين لك فوراً وبشكل حي.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowOtpModal(true)}
+                                className="w-full py-3.5 bg-gradient-to-r from-primary to-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                            >
+                                <Phone size={16} />
+                                <span>تسجيل الدخول برمز OTP</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Empty State: Authenticated but No Recent Orders */}
+                    {!loading && user && orders.length === 0 && (
                         <div className="py-8 text-center space-y-5">
                             <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary">
                                 <ShoppingBag size={30} />
@@ -205,7 +246,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                             <div className="space-y-2">
                                 <h3 className="text-lg font-black text-white">لا توجد طلبات جارية حالياً</h3>
                                 <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
-                                    عند تأكيد أي طلب جديد من هذا الجهاز، ستظهر هنا جميع مراحل التحضير والتوصيل مباشرة وتلقائياً دون الحاجة لكتابة أي بيانات.
+                                    حسابك ({user.phone || 'الهاتف'}) لا يحتوي على طلبات نشطة حالياً. عند تأكيد أي طلب جديد ستظهر مراحله مباشرة هنا.
                                 </p>
                             </div>
                             <button
@@ -220,7 +261,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                     )}
 
                     {/* Order Details View */}
-                    {!loading && orders.length > 0 && currentOrder && (
+                    {!loading && user && orders.length > 0 && currentOrder && (
                         <div className="space-y-4">
                             {/* Two-Order Switcher Tabs if 2 orders exist */}
                             {orders.length > 1 && (
@@ -411,7 +452,6 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
 OrderTrackingModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    initialOrderNumber: PropTypes.string,
     initialPhone: PropTypes.string
 };
 
