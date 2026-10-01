@@ -1,6 +1,7 @@
 {
   "appId": "com.abukhater.menu",
-  "appName": "Abu Khater Menu",
+  "appName": "Abu Khater",
   "webDir": "dist",
+  "server": {"url": https://abu-khater-menu.vercel.app","cleartext":true, "allowNavigation": ["abu-khater-menu.vercel.app"]},
   "bundledWebRuntime": false
 }
