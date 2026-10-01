@@ -267,6 +267,31 @@ const MenuPage = () => {
         setLogoTouchMoveY(0);
     };
 
+    const hasScrolledCategoriesRef = useRef(false);
+
+    useEffect(() => {
+        if (categories.length > 2 && !hasScrolledCategoriesRef.current) {
+            hasScrolledCategoriesRef.current = true;
+            
+            const timer = setTimeout(() => {
+                const container = document.getElementById('categories-scroll');
+                const firstTab = document.getElementById('tab-cat-all');
+                
+                if (container && firstTab) {
+                    const isRTL = container.dir === 'rtl' || getComputedStyle(container).direction === 'rtl';
+                    const initialOffset = isRTL ? -200 : 200;
+                    container.scrollLeft = initialOffset;
+
+                    setTimeout(() => {
+                        firstTab.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                    }, 350);
+                }
+            }, 150);
+
+            return () => clearTimeout(timer);
+        }
+    }, [categories]);
+
     useEffect(() => {
         if (skipCategoryScrollRef.current) {
             skipCategoryScrollRef.current = false;
@@ -547,7 +572,7 @@ const MenuPage = () => {
                             id="categories-scroll"
                             role="tablist"
                             aria-label="تصنيفات القائمة"
-                            className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 -mx-0.5 px-0.5 scrollbar-hide mask-fade flex-1 scroll-smooth snap-x snap-mandatory animate-scroll-hint"
+                            className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 -mx-0.5 px-0.5 scrollbar-hide mask-fade flex-1 scroll-smooth snap-x snap-mandatory"
                             dir="rtl"
                         >
                             {categories.map((catId) => {

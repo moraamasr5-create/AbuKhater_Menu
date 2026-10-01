@@ -164,22 +164,6 @@
   }
 }
 
-@keyframes scroll-hint {
-  0% {
-    transform: translateX(-90px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.animate-scroll-hint {
-  animation: scroll-hint 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s 1 normal both;
-}
-
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -187,8 +171,7 @@
 @media (prefers-reduced-motion: reduce) {
 
   .shimmer,
-  .animate-float,
-  .animate-scroll-hint {
+  .animate-float {
     animation: none !important;
   }
 }
