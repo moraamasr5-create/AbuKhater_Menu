@@ -6,6 +6,8 @@ import StickyCartBar from '../features/cart/StickyCartBar';
 import ProgressSteps from '../features/checkout/ProgressSteps';
 import ReservationModal from '../features/reservation/ReservationModal';
 import FeedbackModal from '../features/feedback/FeedbackModal';
+import DishDetailModal from '../features/menu/DishDetailModal';
+import OrderTrackingModal from '../features/tracking/OrderTrackingModal';
 import {
     Search,
     RefreshCcw,
@@ -16,97 +18,157 @@ import {
     ChevronRight,
     Calendar,
     MessageSquare,
-    X
+    X,
+    Bike,
+    Sparkles,
+    Layers,
+    Utensils,
+    UtensilsCrossed,
+    Coffee,
+    Salad,
+    Gift,
+    ChefHat,
+    LayoutGrid,
+    ZoomIn
 } from 'lucide-react';
 import restaurantLogo from '../assets/logo.png';
 import restaurantBanner from '../assets/banner.png';
 import { normalizeCategoryKey } from '../core/utils/menuItem';
 
 const CATEGORY_MAP = {
-    all: { label: 'الكل', icon: '🍽️' },
-    grills: { label: 'المشويات', icon: '🔥' },
-    'مشويات': { label: 'المشويات', icon: '🔥' },
-    'مشويـات': { label: 'المشويات', icon: '🔥' },
-    trays: { label: 'الصواني', icon: '🍱' },
-    'صواني': { label: 'الصواني', icon: '🍱' },
-    'صـوانـي': { label: 'الصواني', icon: '🍱' },
-    meals: { label: 'الوجبات', icon: '🍛' },
-    'وجبات': { label: 'الوجبات', icon: '🍛' },
-    'وجـبات': { label: 'الوجبات', icon: '🍛' },
-    casseroles: { label: 'الطواجن', icon: '🥘' },
-    'طواجن': { label: 'الطواجن', icon: '🥘' },
-    'طـواجـن': { label: 'الطواجن', icon: '🥘' },
-    crepes: { label: 'كريب', icon: '🥞' },
-    'كريب': { label: 'كريب', icon: '🥞' },
-    'كـريب': { label: 'كريب', icon: '🥞' },
-    sandwiches: { label: 'ساندوتشات', icon: '🥪' },
-    'سندوتشات': { label: 'ساندوتشات', icon: '🥪' },
-    'ساندوتشات': { label: 'ساندوتشات', icon: '🥪' },
-    rise: { label: 'الأرز', icon: '🍚' },
-    'الرز': { label: 'الأرز', icon: '🍚' },
-    'الـرز': { label: 'الأرز', icon: '🍚' },
-    cass: { label: 'المكرونات', icon: '🍝' },
-    'مكرونات': { label: 'المكرونات', icon: '🍝' },
-    drinks: { label: 'مشروبات', icon: '🥤' },
-    'مشروبات': { label: 'مشروبات', icon: '🥤' },
-    sides: { label: 'مقبلات', icon: '🍟' },
-    'مقبلات': { label: 'مقبلات', icon: '🍟' },
-    combos: { label: 'عروض', icon: '🎁' },
-    'عروض': { label: 'عروض', icon: '🎁' },
-    'top': { label: 'عروض خاصة', icon: '⭐' }
+    all: { label: 'الكل', icon: LayoutGrid },
+    grills: { label: 'المشويات', icon: Flame },
+    'مشويات': { label: 'المشويات', icon: Flame },
+    'مشويـات': { label: 'المشويات', icon: Flame },
+    trays: { label: 'الصواني', icon: Layers },
+    'صواني': { label: 'الصواني', icon: Layers },
+    'صـوانـي': { label: 'الصواني', icon: Layers },
+    meals: { label: 'الوجبات', icon: Utensils },
+    'وجبات': { label: 'الوجبات', icon: Utensils },
+    'وجـبات': { label: 'الوجبات', icon: Utensils },
+    casseroles: { label: 'الطواجن', icon: ChefHat },
+    'طواجن': { label: 'الطواجن', icon: ChefHat },
+    'طـواجـن': { label: 'الطواجن', icon: ChefHat },
+    crepes: { label: 'كريب', icon: Layers },
+    'كريب': { label: 'كريب', icon: Layers },
+    'كـريب': { label: 'كريب', icon: Layers },
+    sandwiches: { label: 'ساندوتشات', icon: UtensilsCrossed },
+    'سندوتشات': { label: 'ساندوتشات', icon: UtensilsCrossed },
+    'ساندوتشات': { label: 'ساندوتشات', icon: UtensilsCrossed },
+    rise: { label: 'الأرز', icon: Sparkles },
+    'الرز': { label: 'الأرز', icon: Sparkles },
+    'الـرز': { label: 'الأرز', icon: Sparkles },
+    cass: { label: 'المكرونات', icon: Utensils },
+    'مكرونات': { label: 'المكرونات', icon: Utensils },
+    drinks: { label: 'مشروبات', icon: Coffee },
+    'مشروبات': { label: 'مشروبات', icon: Coffee },
+    sides: { label: 'مقبلات', icon: Salad },
+    'مقبلات': { label: 'مقبلات', icon: Salad },
+    combos: { label: 'عروض', icon: Gift },
+    'عروض': { label: 'عروض', icon: Gift },
+    top: { label: 'عروض خاصة', icon: Sparkles }
 };
 
-const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage, addToCart, updateQuantity }) {
+const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage, addToCart, updateQuantity, onOpenDetail }) {
     const isAvailable = item.status === 'available';
     const isOutOfStock = item.status === 'out_of_stock';
     const isPaused = item.status === 'paused';
-
     const statusLabel = isOutOfStock ? 'نفذت الكمية' : (isPaused ? 'غير متاح مؤقتاً' : 'غير متاح');
+
+    const hasRealImage = Boolean(item.image && item.image !== '/logo.jpg');
+
+    const handleAdd = (e) => {
+        e.stopPropagation();
+        if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+        addToCart(item);
+    };
+
+    const handleUpdateQty = (e, delta) => {
+        e.stopPropagation();
+        if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+        updateQuantity(item.id, delta);
+    };
 
     return (
         <div
-            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-2 ${!isAvailable ? 'opacity-60 grayscale-[40%]' : ''}`}
+            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-1.5 ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
         >
-            <div className="relative w-[88px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden">
-                <img
-                    src={item.image || fallbackImage}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-110"
-                    loading="lazy"
-                    decoding="async"
-                    onError={(e) => { e.currentTarget.src = fallbackImage; }}
-                />
-                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60" />
+            {/* Image / Thumbnail Container */}
+            <div 
+                onClick={() => onOpenDetail(item)}
+                className="relative w-[96px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden bg-dark-950 cursor-pointer"
+            >
+                {hasRealImage ? (
+                    <>
+                        <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-110"
+                            loading="lazy"
+                            decoding="async"
+                            onError={(e) => { e.currentTarget.src = fallbackImage; }}
+                        />
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onOpenDetail(item);
+                            }}
+                            className="absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-dark-950/75 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center border border-white/10 hover:bg-primary transition-all active:scale-90"
+                            title="تكبير الصورة"
+                            aria-label={`تكبير صورة ${item.name}`}
+                        >
+                            <ZoomIn size={13} />
+                        </button>
+                    </>
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-dark-900 via-dark-850 to-dark-800 p-2 text-center select-none border-b border-white/5">
+                        <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1 shadow-inner">
+                            <Utensils size={18} />
+                        </div>
+                        <span className="text-[9px] md:text-[11px] text-slate-400 font-bold truncate max-w-full px-1">
+                            {item.category || 'أبو خاطر'}
+                        </span>
+                    </div>
+                )}
+
+                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60 pointer-events-none" />
 
                 {!isAvailable && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px]">
                         <span className={`text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'}`}>
                             {statusLabel}
                         </span>
                     </div>
                 )}
 
-                <div className="hidden md:block absolute bottom-4 right-4 bg-primary/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg">
+                <div className="hidden md:block absolute bottom-4 right-4 bg-primary/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg pointer-events-none">
                     <span className="text-white font-black text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-85 uppercase">ج.م</small></span>
                 </div>
             </div>
 
-            <div className="flex-1 p-2.5 md:p-6 flex flex-col min-w-0 min-h-0">
+            {/* Content Details */}
+            <div className="flex-1 p-3 md:p-6 flex flex-col min-w-0 min-h-0">
                 <div className="mb-0 md:mb-4">
-                    <div className="flex items-center justify-between gap-1 mb-0.5 md:mb-2">
-                        <h3 className="text-sm md:text-xl font-bold text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none">{item.name}</h3>
+                    <div className="flex items-center justify-between gap-1 mb-1 md:mb-2">
+                        <h3 
+                            onClick={() => onOpenDetail(item)}
+                            className="text-sm md:text-xl font-bold text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
+                        >
+                            {item.name}
+                        </h3>
                         {item.is_popular && (
                             <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
                                 ⭐ مميز
                             </span>
                         )}
                     </div>
-                    <p className="text-slate-400/95 text-xs md:text-sm line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.5rem]">
-                        {item.description || 'صنف طازج ومميز من مطعم أبو خاطر.'}
+                    <p className="text-slate-400/90 text-xs md:text-sm line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.5rem]">
+                        {item.description || 'صنف طازج ومميز محضّر يومياً بأجود المكونات في مطعم أبو خاطر.'}
                     </p>
                 </div>
 
-                <div className="mt-auto pt-1.5 md:pt-4 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
+                <div className="mt-auto pt-2 md:pt-4 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
                     <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
                         {item.price} <small className="text-[9px] font-bold opacity-85">ج.م</small>
                     </span>
@@ -114,10 +176,10 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     <div className="shrink-0 md:w-full">
                         {isAvailable ? (
                             qty > 0 ? (
-                                <div className="flex items-center bg-dark-800/55 p-0.5 md:p-1.5 rounded-lg md:rounded-2xl border border-white/[0.06] shadow-inner gap-0 md:gap-1 md:justify-between md:w-full">
+                                <div className="flex items-center bg-dark-800/80 p-0.5 md:p-1.5 rounded-lg md:rounded-2xl border border-white/[0.08] shadow-inner gap-0 md:gap-1 md:justify-between md:w-full">
                                     <button
                                         type="button"
-                                        onClick={() => updateQuantity(item.id, -1)}
+                                        onClick={(e) => handleUpdateQty(e, -1)}
                                         className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-dark-700/60 hover:bg-dark-600 text-white rounded-md md:rounded-xl transition-all active:scale-90"
                                         aria-label={`تقليل كمية ${item.name}`}
                                     >
@@ -126,7 +188,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                     <span className="text-sm md:text-lg font-black text-white w-7 md:w-12 text-center tabular-nums" aria-live="polite">{qty}</span>
                                     <button
                                         type="button"
-                                        onClick={() => updateQuantity(item.id, 1)}
+                                        onClick={(e) => handleUpdateQty(e, 1)}
                                         className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-primary hover:bg-orange-600 text-white rounded-md md:rounded-xl shadow-md shadow-primary/25 transition-all active:scale-90"
                                         aria-label={`زيادة كمية ${item.name}`}
                                     >
@@ -136,8 +198,8 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                             ) : (
                                 <button
                                     type="button"
-                                    onClick={() => addToCart(item)}
-                                    className="w-9 h-9 md:w-full md:min-h-[48px] md:py-3.5 bg-dark-800/85 hover:bg-primary text-slate-100 hover:text-white rounded-lg md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 md:gap-3 border border-white/[0.08] hover:border-primary active:scale-[0.98] shadow-md md:group-hover:shadow-primary/20 text-[15px] md:text-base"
+                                    onClick={handleAdd}
+                                    className="w-9 h-9 md:w-full md:min-h-[48px] md:py-3.5 bg-dark-800 hover:bg-primary text-slate-100 hover:text-white rounded-lg md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 md:gap-3 border border-white/[0.08] hover:border-primary active:scale-[0.98] shadow-md md:group-hover:shadow-primary/20 text-[15px] md:text-base"
                                     aria-label={`أضف ${item.name} إلى السلة`}
                                 >
                                     <span className="md:hidden text-xl font-bold leading-none" aria-hidden>+</span>
@@ -169,6 +231,8 @@ const MenuPage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [showReservation, setShowReservation] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
+    const [selectedDish, setSelectedDish] = useState(null);
+    const [showTracking, setShowTracking] = useState(false);
     const menuProductsRef = useRef(null);
     const skipCategoryScrollRef = useRef(true);
 
@@ -337,25 +401,35 @@ const MenuPage = () => {
             </div>
 
             {/* Action Buttons Container */}
-            <div className="max-w-3xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5 mb-2 z-30 relative flex items-center gap-3">
+            <div className="max-w-3xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5 mb-2 z-30 relative grid grid-cols-3 gap-2 sm:gap-3">
                 <button
                     type="button"
                     onClick={() => setShowReservation(true)}
-                    className="flex-1 bg-teal-600/95 hover:bg-teal-500 text-white py-3 sm:py-3.5 rounded-[1.25rem] sm:rounded-2xl font-black text-xs sm:text-sm shadow-lg shadow-teal-900/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-teal-400/20"
+                    className="bg-teal-600/95 hover:bg-teal-500 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-teal-900/30 flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-teal-400/20"
                     aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
                 >
-                    <Calendar size={20} className="shrink-0 animate-pulse" />
-                    <span className="leading-tight truncate"> أحجز طاولتك الآن </span>
+                    <Calendar size={17} className="shrink-0 animate-pulse" />
+                    <span className="leading-tight truncate">حجز طاولة</span>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setShowTracking(true)}
+                    className="bg-emerald-600/95 hover:bg-emerald-500 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-emerald-400/20"
+                    aria-label="تتبع حالة طلبك"
+                >
+                    <Bike size={17} className="shrink-0" />
+                    <span className="leading-tight truncate">تتبع طلبك</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => setShowFeedback(true)}
-                    className="flex-1 bg-primary/95 hover:bg-primary text-white py-3 sm:py-3.5 rounded-[1.25rem] sm:rounded-2xl font-black text-xs sm:text-sm shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/10"
+                    className="bg-dark-800 hover:bg-primary text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-md flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/10"
                     aria-label="إرسال شكوى أو مقترح للمطعم"
                 >
-                    <MessageSquare size={20} className="shrink-0" />
-                    <span className="leading-tight truncate">الشكاوي والمقترحات</span>
+                    <MessageSquare size={17} className="shrink-0" />
+                    <span className="leading-tight truncate">الشكاوى</span>
                 </button>
             </div>
 
@@ -422,28 +496,36 @@ const MenuPage = () => {
                             dir="rtl"
                         >
                             {categories.map((catId) => {
-                                const mapped = CATEGORY_MAP[catId] || CATEGORY_MAP[normalizeCategoryKey(catId)] || { label: catId, icon: '🍽️' };
+                                const mapped = CATEGORY_MAP[catId] || CATEGORY_MAP[normalizeCategoryKey(catId)] || { label: catId, icon: Utensils };
+                                const IconComp = typeof mapped.icon === 'function' || typeof mapped.icon === 'object' ? mapped.icon : Utensils;
                                 const count = catId === 'all'
                                     ? menuItems.length
                                     : menuItems.filter(
                                         (i) => normalizeCategoryKey(i.category_slug || i.category) === normalizeCategoryKey(catId)
                                     ).length;
 
+                                const isActive = activeCategory === catId;
+
                                 return (
                                     <button
                                         key={catId}
                                         type="button"
                                         role="tab"
-                                        aria-selected={activeCategory === catId}
+                                        aria-selected={isActive}
                                         id={`tab-cat-${catId}`}
-                                        onClick={() => setActiveCategory(catId)}
-                                        className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all whitespace-nowrap border shrink-0 snap-start min-h-[40px] ${activeCategory === catId
-                                            ? 'bg-primary border-primary text-white shadow-md shadow-primary/25'
-                                            : 'bg-dark-800/55 border-white/[0.06] text-slate-500 hover:bg-dark-800 hover:text-slate-300'}`}
+                                        onClick={() => {
+                                            if (navigator.vibrate) navigator.vibrate(10);
+                                            setActiveCategory(catId);
+                                        }}
+                                        className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-black transition-all whitespace-nowrap border shrink-0 snap-start min-h-[40px] ${
+                                            isActive
+                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25 scale-[1.02]'
+                                                : 'bg-dark-800/60 border-white/[0.06] text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                        }`}
                                     >
-                                        <span aria-hidden>{mapped.icon}</span>
+                                        <IconComp size={15} className={`shrink-0 ${isActive ? 'text-white' : 'text-primary'}`} />
                                         <span>{mapped.label}</span>
-                                        <span className={`text-[8px] px-1 rounded-md tabular-nums ${activeCategory === catId ? 'bg-white/20' : 'bg-dark-700/50'}`} aria-label={`${count} صنف`}>
+                                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md tabular-nums ${isActive ? 'bg-white/20 text-white' : 'bg-dark-700/60 text-slate-400'}`} aria-label={`${count} صنف`}>
                                             {count}
                                         </span>
                                     </button>
@@ -499,7 +581,15 @@ const MenuPage = () => {
                 {loading && menuItems.length === 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                         {[1, 2, 3, 4, 5, 6].map((n) => (
-                            <div key={n} className="bg-dark-900/50 rounded-xl md:rounded-3xl p-4 border border-white/[0.04] animate-pulse h-36 md:h-80" />
+                            <div key={n} className="glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col border border-white/5">
+                                <div className="w-[96px] md:w-full h-28 md:h-52 bg-dark-800 shimmer shrink-0" />
+                                <div className="p-3 md:p-6 flex-1 space-y-2.5">
+                                    <div className="h-4 bg-dark-800 rounded-md w-3/4 shimmer" />
+                                    <div className="h-3 bg-dark-800/60 rounded-md w-full shimmer" />
+                                    <div className="h-3 bg-dark-800/60 rounded-md w-1/2 shimmer" />
+                                    <div className="h-8 bg-dark-800/80 rounded-xl w-full shimmer mt-3" />
+                                </div>
+                            </div>
                         ))}
                     </div>
                 ) : filteredItems.length > 0 ? (
@@ -512,14 +602,27 @@ const MenuPage = () => {
                                 fallbackImage="/logo.jpg"
                                 addToCart={addToCart}
                                 updateQuantity={updateQuantity}
+                                onOpenDetail={setSelectedDish}
                             />
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-16 sm:py-20 px-4 bg-dark-900/30 rounded-3xl border border-white/[0.04] mt-4">
-                        <Inbox size={48} className="mx-auto text-slate-600 mb-3" />
-                        <h3 className="text-base sm:text-lg font-bold text-slate-300 mb-1">لا توجد نتائج مطابقة</h3>
+                    <div className="text-center py-16 sm:py-20 px-4 bg-dark-900/30 rounded-3xl border border-white/[0.04] mt-4 space-y-3">
+                        <Inbox size={48} className="mx-auto text-slate-600 mb-1" />
+                        <h3 className="text-base sm:text-lg font-bold text-slate-300">لا توجد نتائج مطابقة</h3>
                         <p className="text-xs text-slate-500 max-w-xs mx-auto">لم نتمكن من العثور على أي أصناف مطابقة لبحثك أو التصنيف المختار.</p>
+                        {(searchQuery || activeCategory !== 'all') && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSearchQuery('');
+                                    setActiveCategory('all');
+                                }}
+                                className="mt-2 px-4 py-2 bg-dark-800 hover:bg-primary text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95"
+                            >
+                                مسح الفلاتر وعرض القائمة كاملة
+                            </button>
+                        )}
                     </div>
                 )}
             </main>
@@ -532,6 +635,24 @@ const MenuPage = () => {
 
             {showFeedback && (
                 <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
+            )}
+
+            {selectedDish && (
+                <DishDetailModal
+                    item={selectedDish}
+                    isOpen={Boolean(selectedDish)}
+                    onClose={() => setSelectedDish(null)}
+                    currentQty={qtyByItemId.get(selectedDish.id) || 0}
+                    onAddToCart={addToCart}
+                    onUpdateQuantity={updateQuantity}
+                />
+            )}
+
+            {showTracking && (
+                <OrderTrackingModal
+                    isOpen={showTracking}
+                    onClose={() => setShowTracking(false)}
+                />
             )}
         </div>
     );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import {
     CheckCircle,
     Receipt,
@@ -13,12 +14,14 @@ import {
     Info,
     X,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    Bike
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { formatCurrency } from '../../core/utils/formatters';
 
 const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
+    const navigate = useNavigate();
     const [countdown, setCountdown] = useState(15);
     const [isClosing, setIsClosing] = useState(false);
     const [showFullDetails, setShowFullDetails] = useState(false);
@@ -266,10 +269,26 @@ const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
                 {/* Main Actions (Hidden in details view unless changed) */}
                 {!showFullDetails && (
                     <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* Live Tracking Button */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsClosing(true);
+                                onClose();
+                                const targetNum = orderData.orderNumber || orderData.orderId || '';
+                                const targetPhone = orderData.customerPhone || '';
+                                navigate(`/track?order=${encodeURIComponent(targetNum)}&phone=${encodeURIComponent(targetPhone)}`);
+                            }}
+                            className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-110 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-950/40 transition-all active:scale-[0.98] border border-emerald-400/20"
+                        >
+                            <Bike size={20} className="animate-bounce" />
+                            <span>متابعة حالة طلبك لحظة بلحظة 🚚</span>
+                        </button>
+
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
                             <button
                                 onClick={handleToggleDetails}
-                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-dark-800 hover:bg-dark-700 text-white font-black text-sm transition-all border border-white/5 active:scale-95 group"
+                                className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl bg-dark-800 hover:bg-dark-700 text-white font-black text-xs sm:text-sm transition-all border border-white/5 active:scale-95 group"
                             >
                                 <Receipt size={18} className="text-slate-400 group-hover:text-primary" />
                                 <span>تفاصيل الطلب</span>
@@ -277,7 +296,7 @@ const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
                             </button>
                             <button
                                 onClick={stopCountdown}
-                                className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-primary hover:bg-orange-600 text-white font-black text-sm transition-all shadow-xl shadow-primary/20 active:scale-95"
+                                className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl bg-primary hover:bg-orange-600 text-white font-black text-xs sm:text-sm transition-all shadow-xl shadow-primary/20 active:scale-95"
                             >
                                 <span>الرئيسية</span>
                                 <Home size={18} />

@@ -20,7 +20,10 @@ const StickyCartBar = memo(function StickyCartBar() {
         >
             <button
                 type="button"
-                onClick={() => navigate('/review')}
+                onClick={() => {
+                    if (navigator.vibrate) navigator.vibrate(15);
+                    navigate('/review');
+                }}
                 className="group w-full bg-dark-900/92 text-white p-2.5 pr-4 sm:pr-5 rounded-[1.75rem] sm:rounded-[2rem] shadow-2xl shadow-black/50 border border-white/[0.08] backdrop-blur-xl flex items-center justify-between gap-2 transition-all active:scale-[0.98] animate-in slide-in-from-bottom-10 duration-500 min-h-[3.25rem]"
                 aria-label={`متابعة الطلب: ${totalItems} عناصر في السلة، الإجمالي ${formatCurrency(subtotal)}. اضغط لمراجعة السلة`}
             >

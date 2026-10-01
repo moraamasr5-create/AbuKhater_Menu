@@ -10,7 +10,10 @@ import {
     Phone,
     User,
     CheckCircle2,
-    Lock
+    Lock,
+    Wallet,
+    CreditCard,
+    Receipt
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
 import { RESTAURANT_LOCATION } from '../core/constants';
@@ -685,23 +688,68 @@ const CustomerPage = () => {
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">طريقة الدفع للمطعم</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                         {[
-                            { id: 'cash', label: 'نقدي' },
-                            { id: 'vodafone_cash', label: 'أتصـالات كاش' },
-                            { id: 'instapay', label: 'انستاباي' }
-                        ].map(method => (
-                            <button
-                                key={method.id}
-                                onClick={() => setPaymentMethod(method.id)}
-                                className={`py-3.5 sm:py-4 min-h-[48px] rounded-xl sm:rounded-2xl border-2 transition-all font-black text-sm ${paymentMethod === method.id
-                                    ? 'border-primary bg-primary/12 text-primary'
-                                    : 'border-white/[0.06] bg-dark-800/55 text-slate-500 hover:border-white/15'
+                            {
+                                id: 'cash',
+                                label: 'الدفع كاش',
+                                desc: 'نقداً عند الاستلام',
+                                icon: Receipt,
+                                badge: 'الأسهل',
+                                activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                            },
+                            {
+                                id: 'vodafone_cash',
+                                label: 'محفظة كاش',
+                                desc: 'فودافون / اتصالات / أورانج',
+                                icon: Wallet,
+                                badge: 'فوري',
+                                activeColor: 'border-primary bg-primary/10 text-primary'
+                            },
+                            {
+                                id: 'instapay',
+                                label: 'انستاباي (InstaPay)',
+                                desc: 'تحويل بنكي لحظي',
+                                icon: CreditCard,
+                                badge: 'لحظي ⚡',
+                                activeColor: 'border-purple-500 bg-purple-500/10 text-purple-400'
+                            }
+                        ].map(method => {
+                            const IconComponent = method.icon;
+                            const isSelected = paymentMethod === method.id;
+                            return (
+                                <button
+                                    key={method.id}
+                                    type="button"
+                                    onClick={() => {
+                                        if (navigator.vibrate) navigator.vibrate(15);
+                                        setPaymentMethod(method.id);
+                                    }}
+                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${
+                                        isSelected
+                                            ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
+                                            : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
                                     }`}
-                            >
-                                {method.label}
-                            </button>
-                        ))}
+                                >
+                                    <div className="flex items-center justify-between w-full">
+                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                                            isSelected ? 'bg-white/15' : 'bg-dark-700/50 text-slate-400'
+                                        }`}>
+                                            <IconComponent size={18} />
+                                        </div>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                            isSelected ? 'bg-white/15 text-white' : 'bg-dark-700 text-slate-500'
+                                        }`}>
+                                            {method.badge}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-black text-sm text-white">{method.label}</h4>
+                                        <p className="text-[11px] text-slate-400 leading-snug mt-0.5">{method.desc}</p>
+                                    </div>
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 

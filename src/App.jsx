@@ -5,6 +5,7 @@ import MenuPage from './pages/MenuPage';
 import ReviewPage from './pages/ReviewPage';
 import CustomerPage from './pages/CustomerPage';
 import PaymentPage from './pages/PaymentPage';
+import TrackPage from './pages/TrackPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/customer" element={<CustomerPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/track" element={<TrackPage />} />
         </Routes>
       </CartProvider>
     </Router>

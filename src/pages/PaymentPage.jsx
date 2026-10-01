@@ -11,7 +11,9 @@ import {
     Info,
     Upload,
     X,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Check,
+    Wallet
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
 import ProgressSteps from '../features/checkout/ProgressSteps';
@@ -36,6 +38,7 @@ const PaymentPage = () => {
     const [successData, setSuccessData] = useState(null);
     const [screenshot, setScreenshot] = useState(null);
     const [isProcessingFile, setIsProcessingFile] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     // Calculations
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -185,6 +188,7 @@ const PaymentPage = () => {
                 orderNumber: authoritativeOrderNumber,
                 supabaseId: result.order_id,
                 customerName: customerData.name,
+                customerPhone: customerData.phone1,
                 totalAmount: authoritativeTotal,
                 estimatedTime: estimatedTime,
                 itemsCount: cart.reduce((s, i) => s + i.quantity, 0),
@@ -236,9 +240,12 @@ const PaymentPage = () => {
     };
 
     const copyToClipboard = (text) => {
+        if (!text) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
-                // Done
+                setCopied(true);
+                if (navigator.vibrate) navigator.vibrate(20);
+                setTimeout(() => setCopied(false), 2200);
             });
         }
     };
@@ -303,25 +310,54 @@ const PaymentPage = () => {
                 {!isCash ? (
                     <div className="space-y-4">
                         {/* Bank Account Details */}
-                        <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 shadow-sm">
-                            <div className="flex gap-3 sm:gap-4 items-center">
-                                <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 bg-primary/12 rounded-xl sm:rounded-2xl flex items-center justify-center text-primary">
-                                    <CreditCard size={24} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-[10px] text-slate-400 font-bold mb-1.5">رقم الحساب للتحويل</p>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="text-base sm:text-lg font-mono font-bold text-white ltr truncate">{paymentNumber}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => copyToClipboard(paymentNumber)}
-                                            className="p-2.5 bg-dark-800 text-slate-300 rounded-xl hover:bg-primary hover:text-white transition-all active:scale-95 shrink-0"
-                                            aria-label="نسخ رقم الحساب أو المحفظة إلى الحافظة"
-                                        >
-                                            <Copy size={16} aria-hidden />
-                                        </button>
+                        <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.08] p-4 sm:p-5 shadow-lg space-y-3">
+                            <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                                        paymentMethod === 'instapay'
+                                            ? 'bg-purple-500/20 text-purple-400'
+                                            : 'bg-primary/20 text-primary'
+                                    }`}>
+                                        {paymentMethod === 'instapay' ? <CreditCard size={18} /> : <Wallet size={18} />}
                                     </div>
+                                    <span className="text-xs font-black text-white">
+                                        {paymentMethod === 'instapay' ? 'بيانات حساب انستاباي (InstaPay)' : 'رقم المحفظة الإلكترونية كاش'}
+                                    </span>
                                 </div>
+                                <span className="text-[10px] font-bold text-slate-400 bg-dark-800 px-2 py-0.5 rounded-full">
+                                    {paymentMethod === 'instapay' ? 'عنوان IPA' : 'رقم الهاتف'}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center justify-between gap-3 bg-dark-950/70 p-3.5 rounded-xl border border-white/5">
+                                <div className="min-w-0">
+                                    <span className="text-[10px] text-slate-500 font-bold block mb-0.5">حول المبلغ المطلوب إلى:</span>
+                                    <span className="text-base sm:text-lg font-mono font-black text-primary ltr select-all tracking-wide">
+                                        {paymentNumber}
+                                    </span>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(paymentNumber)}
+                                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-90 shrink-0 ${
+                                        copied
+                                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                                            : 'bg-dark-800 hover:bg-primary text-slate-200 hover:text-white border border-white/10'
+                                    }`}
+                                    aria-label="نسخ رقم الحساب"
+                                >
+                                    {copied ? (
+                                        <>
+                                            <Check size={15} />
+                                            <span>تم النسخ!</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy size={15} />
+                                            <span>نسخ</span>
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
 

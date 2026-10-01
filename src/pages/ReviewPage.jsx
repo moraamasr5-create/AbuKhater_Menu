@@ -65,7 +65,11 @@ const ReviewPage = () => {
                     </h3>
                     <div className="grid grid-cols-2 gap-2.5 sm:gap-3 px-0.5 sm:px-1">
                         <button
-                            onClick={() => setOrderType('delivery')}
+                            type="button"
+                            onClick={() => {
+                                if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+                                setOrderType('delivery');
+                            }}
                             className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'delivery'
                                 ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
                                 : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
@@ -76,7 +80,11 @@ const ReviewPage = () => {
                         </button>
 
                         <button
-                            onClick={() => setOrderType('pickup')}
+                            type="button"
+                            onClick={() => {
+                                if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+                                setOrderType('pickup');
+                            }}
                             className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'pickup'
                                 ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
                                 : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'

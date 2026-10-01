@@ -21,15 +21,25 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
                                 {/* Quantity Toggles */}
                                 <div className="flex items-center bg-dark-900 border border-white/5 rounded-xl p-1 shrink-0 shadow-sm">
                                     <button
-                                        onClick={() => updateQuantity(item.id, 1)}
+                                        type="button"
+                                        onClick={() => {
+                                            if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+                                            updateQuantity(item.id, 1);
+                                        }}
                                         className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary/20 rounded-lg transition-all active:scale-90"
+                                        aria-label={`زيادة كمية ${item.name}`}
                                     >
                                         <Plus size={14} />
                                     </button>
-                                    <span className="min-w-[1.5rem] text-center font-bold text-white text-sm">{item.quantity}</span>
+                                    <span className="min-w-[1.5rem] text-center font-bold text-white text-sm tabular-nums">{item.quantity}</span>
                                     <button
-                                        onClick={() => updateQuantity(item.id, -1)}
+                                        type="button"
+                                        onClick={() => {
+                                            if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+                                            updateQuantity(item.id, -1);
+                                        }}
                                         className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all active:scale-90"
+                                        aria-label={`تقليل كمية ${item.name}`}
                                     >
                                         <Minus size={14} />
                                     </button>
