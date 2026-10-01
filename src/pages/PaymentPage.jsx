@@ -23,6 +23,7 @@ import { orderService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import OrderConfirmation from '../features/checkout/OrderConfirmation';
 import TurnstileWidget from '../components/common/TurnstileWidget';
+import { saveDeviceOrder } from '../core/utils/deviceTracker';
 
 const PaymentPage = () => {
     const {
@@ -210,6 +211,13 @@ const PaymentPage = () => {
             setIsSuccess(true);
 
             try {
+                saveDeviceOrder({
+                    id: result.order_id,
+                    order_number: authoritativeOrderNumber,
+                    phone: customerData?.phone1,
+                    created_at: new Date().toISOString()
+                });
+
                 localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
                     order: { ...orderData, order_number: authoritativeOrderNumber, order_id: result.order_id },
                     timestamp: new Date().toISOString()

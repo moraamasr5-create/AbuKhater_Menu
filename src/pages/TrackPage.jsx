@@ -2,32 +2,26 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
     ArrowRight,
-    Search,
     Clock,
     Bike,
     ChefHat,
     CheckCircle2,
     XCircle,
     Phone,
-    Receipt,
-    Wallet,
     Sparkles,
     RotateCcw,
-    AlertCircle,
-    Home
+    Home,
+    ShoppingBag,
+    Utensils,
+    Layers
 } from 'lucide-react';
-import { orderService } from '../services/api';
 import { supabase } from '../services/supabase/supabaseClient';
 import { formatCurrency } from '../core/utils/formatters';
 import {
-    GENERIC_NOT_FOUND_MESSAGE,
-    maskPhoneNumber,
-    getLockoutRemainingSeconds,
-    setLockoutDuration,
-    recordAndCheckPhoneActivity,
-    recordSearchFailure,
-    recordSearchSuccess
-} from '../core/utils/trackingSecurity';
+    fetchDeviceRecentOrders,
+    saveDeviceOrder,
+    getStoredDeviceOrders
+} from '../core/utils/deviceTracker';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
@@ -51,159 +45,112 @@ const getStepIndex = (status) => {
         case 'out_for_delivery':
             return 3;
         case 'delivered':
+        case 'completed':
             return 4;
         default:
             return 0;
     }
 };
 
+const formatOrderTime = (isoString) => {
+    if (!isoString) return '';
+    try {
+        const date = new Date(isoString);
+        return new Intl.DateTimeFormat('ar-EG', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        }).format(date);
+    } catch {
+        return '';
+    }
+};
+
 const TrackPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const paramOrderNumber = searchParams.get('order') || searchParams.get('orderNumber') || '';
-    const paramPhone = searchParams.get('phone') || '';
+    const [orders, setOrders] = useState([]);
+    const [selectedIdx, setSelectedIdx] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const [orderNumber, setOrderNumber] = useState(paramOrderNumber);
-    const [phone, setPhone] = useState(paramPhone);
-    const [orderData, setOrderData] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [cooldownSeconds, setCooldownSeconds] = useState(getLockoutRemainingSeconds());
-    const [isSuspiciousLocked, setIsSuspiciousLocked] = useState(false);
-
-    // Cooldown countdown interval
-    useEffect(() => {
-        if (cooldownSeconds <= 0) return;
-        const timer = setInterval(() => {
-            setCooldownSeconds(prev => {
-                if (prev <= 1) {
-                    clearInterval(timer);
-                    setIsSuspiciousLocked(false);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [cooldownSeconds]);
-
-    const performTrack = useCallback(async (num, ph) => {
-        const cleanNum = (num || '').trim();
-        const cleanPh = (ph || '').trim();
-
-        if (!cleanNum && !cleanPh) {
-            setError('يرجى إدخال رقم الطلب أو رقم الهاتف للاستعلام.');
-            return;
-        }
-
-        // Check active rate limit / cooldown lockout
-        const activeLockout = getLockoutRemainingSeconds();
-        if (activeLockout > 0) {
-            setCooldownSeconds(activeLockout);
-            setError(`تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${activeLockout} ثانية).`);
-            return;
-        }
-
-        // Check suspicious multi-phone hopping activity
-        if (cleanPh) {
-            const activity = recordAndCheckPhoneActivity(cleanPh);
-            if (activity.isSuspicious) {
-                setLockoutDuration(120);
-                setCooldownSeconds(120);
-                setIsSuspiciousLocked(true);
-                setError('⚠️ تم رصد محاولات بحث متعددة بأرقام مختلفة. لأسباب أمنية تم إيقاف البحث مؤقتاً لمدة دقيقتين.');
-                return;
-            }
+    // Initial load: save params if passed from checkout, then fetch up to 2 recent device orders
+    const loadDeviceOrders = useCallback(async (isManualRefresh = false) => {
+        if (isManualRefresh) {
+            setIsRefreshing(true);
+        } else {
+            setLoading(true);
         }
 
         try {
-            setLoading(true);
-            setError(null);
-
-            const result = await orderService.trackOrder({
-                orderNumber: cleanNum || null,
-                phone: cleanPh || null
-            });
-
-            if (!result || !result.found) {
-                const { cooldownSec } = recordSearchFailure();
-                if (cooldownSec > 0) {
-                    setCooldownSeconds(cooldownSec);
-                }
-                setError(GENERIC_NOT_FOUND_MESSAGE);
-                setOrderData(null);
-            } else {
-                recordSearchSuccess();
-                setOrderData(result);
-                setError(null);
+            // Check if query params provided from previous confirmation
+            const paramOrder = searchParams.get('order') || searchParams.get('orderNumber');
+            const paramPhone = searchParams.get('phone');
+            if (paramOrder || paramPhone) {
+                saveDeviceOrder({
+                    order_number: paramOrder,
+                    phone: paramPhone
+                });
             }
+
+            const recentOrders = await fetchDeviceRecentOrders();
+            setOrders(recentOrders || []);
+            setSelectedIdx(0);
         } catch (err) {
-            console.error('Tracking query error:', err);
-            const { cooldownSec } = recordSearchFailure();
-            if (cooldownSec > 0) {
-                setCooldownSeconds(cooldownSec);
-            }
-            setError(GENERIC_NOT_FOUND_MESSAGE);
-            setOrderData(null);
+            console.error('Error loading device recent orders:', err);
+            setOrders([]);
         } finally {
             setLoading(false);
+            setIsRefreshing(false);
         }
-    }, []);
+    }, [searchParams]);
 
     useEffect(() => {
-        if (paramOrderNumber || paramPhone) {
-            performTrack(paramOrderNumber, paramPhone);
-        } else {
-            try {
-                const stored = localStorage.getItem('lastSuccessfulOrder');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    const lastNum = parsed?.order?.order_number;
-                    const lastPhone = parsed?.order?.customer?.phone1;
-                    if (lastNum) {
-                        setOrderNumber(lastNum);
-                        if (lastPhone) setPhone(lastPhone);
-                        performTrack(lastNum, lastPhone);
+        loadDeviceOrders();
+    }, [loadDeviceOrders]);
+
+    // Supabase Realtime Subscription for active orders
+    useEffect(() => {
+        const activeIds = orders
+            .map(o => o.order_id)
+            .filter(Boolean);
+
+        if (activeIds.length === 0) return;
+
+        const channels = activeIds.map(orderId => {
+            return supabase
+                .channel(`track-page-order-${orderId}`)
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'orders',
+                        filter: `id=eq.${orderId}`
+                    },
+                    () => {
+                        console.log(`⚡ Realtime update received for order ${orderId}`);
+                        loadDeviceOrders(true);
                     }
-                }
-            } catch (e) {
-                // ignore
-            }
-        }
-    }, [paramOrderNumber, paramPhone, performTrack]);
-
-    // Realtime subscription
-    useEffect(() => {
-        if (!orderData?.order_id) return;
-
-        const channel = supabase
-            .channel(`page-track-order-${orderData.order_id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'UPDATE',
-                    schema: 'public',
-                    table: 'orders',
-                    filter: `id=eq.${orderData.order_id}`
-                },
-                () => {
-                    performTrack(orderData.order_number, phone);
-                }
-            )
-            .subscribe();
+                )
+                .subscribe();
+        });
 
         return () => {
-            supabase.removeChannel(channel);
+            channels.forEach(ch => supabase.removeChannel(ch));
         };
-    }, [orderData?.order_id, orderData?.order_number, phone, performTrack]);
+    }, [orders, loadDeviceOrders]);
 
-    const currentStepIndex = orderData ? getStepIndex(orderData.status) : -1;
-    const isCancelled = orderData && ['cancelled', 'failed_delivery'].includes(orderData.status);
+    const currentOrder = orders[selectedIdx] || null;
+    const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status) : -1;
+    const isCancelled = currentOrder && ['cancelled', 'failed_delivery'].includes(currentOrder.status);
 
     return (
         <div className="min-h-screen bg-dark-950 pb-20 font-sans" dir="rtl">
-            {/* Top Navigation */}
-            <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-white/10 px-4 py-3.5">
+            {/* Top Navigation Bar */}
+            <header className="sticky top-0 z-40 bg-dark-950/85 backdrop-blur-xl border-b border-white/10 px-4 py-3.5">
                 <div className="max-w-xl mx-auto flex items-center justify-between">
                     <button
                         type="button"
@@ -214,153 +161,185 @@ const TrackPage = () => {
                         <ArrowRight size={20} />
                         <span className="font-bold text-sm">العودة للمنيو</span>
                     </button>
-                    <h1 className="text-base font-black text-white">متابعة الطلب الحية</h1>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/')}
-                        className="w-9 h-9 rounded-xl bg-dark-800 text-slate-300 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
-                        aria-label="الرئيسية"
-                    >
-                        <Home size={18} />
-                    </button>
+
+                    <h1 className="text-base font-black text-white flex items-center gap-2">
+                        <span>متابعة الطلب</span>
+                        <Bike size={18} className="text-primary" />
+                    </h1>
+
+                    <div className="flex items-center gap-1.5">
+                        <button
+                            type="button"
+                            onClick={() => loadDeviceOrders(true)}
+                            disabled={loading || isRefreshing}
+                            className="w-9 h-9 rounded-xl bg-dark-800 text-slate-300 hover:text-white flex items-center justify-center hover:bg-dark-700 transition-all disabled:opacity-50"
+                            aria-label="تحديث الحالة"
+                            title="تحديث البيانات"
+                        >
+                            <RotateCcw size={16} className={isRefreshing ? 'animate-spin text-primary' : ''} />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/')}
+                            className="w-9 h-9 rounded-xl bg-dark-800 text-slate-300 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
+                            aria-label="الرئيسية"
+                            title="الرئيسية"
+                        >
+                            <Home size={17} />
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            <main className="max-w-xl mx-auto px-4 pt-6 space-y-6">
-                {/* Search Form Card */}
-                <div className="bg-dark-900 border border-white/10 rounded-3xl p-5 shadow-xl space-y-4">
-                    <div className="text-center space-y-1">
-                        <h2 className="text-lg font-black text-white">استعلام عن حالة الطلب</h2>
-                        <p className="text-xs text-slate-400">أدخل رقم الطلب أو رقم الهاتف المسجل به الطلب</p>
+            <main className="max-w-xl mx-auto px-4 pt-6 space-y-5">
+                {/* Loading Skeleton */}
+                {loading && (
+                    <div className="bg-dark-900 border border-white/10 rounded-3xl p-8 text-center space-y-4 shadow-xl animate-pulse">
+                        <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mx-auto text-primary">
+                            <RotateCcw size={26} className="animate-spin" />
+                        </div>
+                        <div className="space-y-2">
+                            <h2 className="text-base font-bold text-white">جاري مزامنة بيانات طلبك...</h2>
+                            <p className="text-xs text-slate-400">نستعرض أحدث الطلبات الخاصة بهذا الجهاز من النظام</p>
+                        </div>
                     </div>
+                )}
 
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            performTrack(orderNumber, phone);
-                        }}
-                        className="space-y-3"
-                    >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <div>
-                                <label className="block text-[11px] font-bold text-slate-400 mb-1">رقم الطلب</label>
-                                <input
-                                    type="text"
-                                    placeholder="مثال: #1042"
-                                    value={orderNumber}
-                                    onChange={(e) => setOrderNumber(e.target.value)}
-                                    className="w-full px-4 py-3 bg-dark-950/70 border border-white/10 rounded-xl text-white placeholder-slate-600 text-sm focus:border-primary focus:outline-none text-center font-mono"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[11px] font-bold text-slate-400 mb-1">رقم الهاتف</label>
-                                <input
-                                    type="tel"
-                                    placeholder="010XXXXXXXX"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-4 py-3 bg-dark-950/70 border border-white/10 rounded-xl text-white placeholder-slate-600 text-sm focus:border-primary focus:outline-none text-center font-mono"
-                                />
-                            </div>
+                {/* Empty State: No Recent Orders on this Device */}
+                {!loading && orders.length === 0 && (
+                    <div className="bg-dark-900 border border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary shadow-inner">
+                            <ShoppingBag size={34} />
                         </div>
 
-                        {/* Cooldown / Lockout Notice */}
-                        {cooldownSeconds > 0 && (
-                            <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-2.5 text-amber-300 text-xs font-bold animate-in fade-in">
-                                <Clock size={16} className="text-amber-400 shrink-0 animate-pulse" />
-                                <span>
-                                    {isSuspiciousLocked
-                                        ? `تم إيقاف البحث مؤقتاً بسبب نشاط غير اعتيادي (${cooldownSeconds} ثانية).`
-                                        : `تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${cooldownSeconds} ثانية)...`}
-                                </span>
+                        <div className="space-y-2">
+                            <h2 className="text-lg font-black text-white">لا توجد طلبات جارية حالياً</h2>
+                            <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+                                عند قيامك بتأكيد أي طلب جديد من هذا الجهاز، ستظهر هنا جميع مراحل التحضير والتوصيل مباشرة وبشكل فوري دون الحاجة للبحث.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => navigate('/')}
+                            className="w-full py-4 bg-primary hover:bg-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-xl shadow-primary/25 active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                            <Utensils size={18} />
+                            <span>تصفح المنيو واطلب الآن</span>
+                        </button>
+                    </div>
+                )}
+
+                {/* Orders Content */}
+                {!loading && orders.length > 0 && currentOrder && (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
+                        {/* Two-Order Switcher Tabs if 2 recent orders exist */}
+                        {orders.length > 1 && (
+                            <div className="bg-dark-900/90 p-1.5 rounded-2xl border border-white/10 grid grid-cols-2 gap-1.5 shadow-lg">
+                                {orders.map((ord, idx) => {
+                                    const isSelected = selectedIdx === idx;
+                                    return (
+                                        <button
+                                            key={ord.order_id || idx}
+                                            type="button"
+                                            onClick={() => setSelectedIdx(idx)}
+                                            className={`py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${
+                                                isSelected
+                                                    ? 'bg-primary text-white shadow-md shadow-primary/30 scale-[1.01]'
+                                                    : 'text-slate-400 hover:text-white hover:bg-dark-800'
+                                            }`}
+                                        >
+                                            <span className="font-black text-xs flex items-center gap-1.5">
+                                                <Layers size={13} />
+                                                {idx === 0 ? 'الطلب الأحدث' : 'الطلب السابق'} ({ord.order_number})
+                                            </span>
+                                            <span className={`text-[10px] truncate max-w-full ${isSelected ? 'text-white/90' : 'text-slate-500'}`}>
+                                                {ord.status_label_ar || 'قيد المعالجة'}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            disabled={loading || cooldownSeconds > 0 || (!orderNumber && !phone)}
-                            className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/20"
-                        >
-                            {cooldownSeconds > 0 ? (
-                                <>
-                                    <Clock size={18} className="animate-pulse text-white/80" />
-                                    <span>يرجى الانتظار ({cooldownSeconds} ثانية)...</span>
-                                </>
-                            ) : loading ? (
-                                <>
-                                    <RotateCcw size={18} className="animate-spin" />
-                                    <span>جاري الاستعلام...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Search size={18} />
-                                    <span>تتبع الطلب الآن</span>
-                                </>
-                            )}
-                        </button>
-                    </form>
-
-                    {error && (
-                        <div className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-2.5 text-red-400 text-xs">
-                            <AlertCircle size={18} className="shrink-0" />
-                            <span className="font-bold leading-relaxed">{error}</span>
-                        </div>
-                    )}
-                </div>
-
-                {/* Tracking Data Presentation */}
-                {orderData && (
-                    <div className="space-y-5 animate-in fade-in slide-in-from-bottom-3 duration-300">
-                        {/* Order Summary Pill */}
-                        <div className="bg-dark-900 border border-white/10 rounded-3xl p-5 shadow-xl space-y-4">
-                            <div className="flex justify-between items-center border-b border-white/5 pb-4">
-                                <div>
-                                    <span className="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">طلب رقم</span>
-                                    <span className="text-white font-mono font-black text-xl">{orderData.order_number}</span>
+                        {/* Order Summary Card */}
+                        <div className="bg-dark-900 border border-white/10 rounded-3xl p-5 sm:p-6 shadow-xl space-y-4">
+                            <div className="flex justify-between items-start border-b border-white/5 pb-4">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">طلب رقم</span>
+                                        <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20 font-mono">
+                                            {currentOrder.order_number}
+                                        </span>
+                                    </div>
+                                    <span className="text-white font-mono font-black text-2xl block">
+                                        {currentOrder.order_number}
+                                    </span>
+                                    {currentOrder.created_at && (
+                                        <span className="text-[11px] text-slate-400 block">
+                                            {formatOrderTime(currentOrder.created_at)}
+                                        </span>
+                                    )}
                                 </div>
-                                <div className="text-left">
-                                    <span className="text-[10px] text-slate-500 font-bold block uppercase tracking-wider">المبلغ الإجمالي</span>
-                                    <span className="text-primary font-black text-xl">{formatCurrency(orderData.total_amount)}</span>
+
+                                <div className="text-left space-y-1">
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">الإجمالي</span>
+                                    <span className="text-emerald-400 font-black text-2xl block">
+                                        {formatCurrency(currentOrder.total_amount)}
+                                    </span>
+                                    <span className="text-[11px] text-slate-400 font-medium block">
+                                        {currentOrder.payment_status_label_ar || 'الدفع عند الاستلام'}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 text-xs">
+                            <div className="grid grid-cols-2 gap-2.5 text-xs">
                                 <div className="p-3 bg-dark-950/60 rounded-xl border border-white/5">
                                     <span className="text-[10px] text-slate-500 block font-bold mb-0.5">نوع الطلب</span>
                                     <span className="text-white font-bold">
-                                        {orderData.order_type === 'delivery' ? 'توصيل منزلي' : 'استلام من المطعم'}
+                                        {currentOrder.order_type === 'delivery' ? 'توصيل منزلي 🛵' : 'استلام من المطعم 🥡'}
                                     </span>
                                 </div>
                                 <div className="p-3 bg-dark-950/60 rounded-xl border border-white/5">
-                                    <span className="text-[10px] text-slate-500 block font-bold mb-0.5">حالة السداد</span>
-                                    <span className="text-emerald-400 font-bold">
-                                        {orderData.payment_status_label_ar || 'تم'}
+                                    <span className="text-[10px] text-slate-500 block font-bold mb-0.5">عدد الوجبات</span>
+                                    <span className="text-white font-bold font-mono">
+                                        {currentOrder.items_count ? `${currentOrder.items_count} صنف` : 'وجبات مختارة'}
                                     </span>
                                 </div>
                             </div>
 
-                            {orderData.pilot_name && (
+                            {/* Assigned Pilot Banner */}
+                            {currentOrder.pilot_name && (
                                 <div className="p-3.5 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-between">
                                     <div className="flex items-center gap-2.5">
-                                        <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
-                                            <Bike size={18} />
+                                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+                                            <Bike size={20} />
                                         </div>
                                         <div>
                                             <span className="text-[10px] text-slate-400 font-bold block">المندوب المسؤول</span>
-                                            <span className="text-white font-bold text-sm">{orderData.pilot_name}</span>
+                                            <span className="text-white font-bold text-sm">{currentOrder.pilot_name}</span>
                                         </div>
                                     </div>
-                                    <span className="text-xs text-primary font-bold bg-primary/15 px-2.5 py-1 rounded-full border border-primary/30">
-                                        في الطريق
+                                    <span className="text-xs text-primary font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">
+                                        في الطريق إليك
                                     </span>
                                 </div>
                             )}
                         </div>
 
-                        {/* Order Steps */}
+                        {/* Live Execution Timeline */}
                         {!isCancelled ? (
                             <div className="bg-dark-900 border border-white/10 rounded-3xl p-6 shadow-xl space-y-6">
-                                <h3 className="text-sm font-black text-white uppercase tracking-wider">مراحل التنفيذ</h3>
+                                <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                                    <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                        <Sparkles size={16} className="text-primary" />
+                                        <span>مراحل تجهيز وتوصيل الطلب</span>
+                                    </h3>
+                                    <span className="text-[11px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                                        تحديث فوري
+                                    </span>
+                                </div>
+
                                 <div className="relative space-y-7 before:absolute before:right-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-dark-800">
                                     {STATUS_STEPS.map((step, idx) => {
                                         const isDone = idx < currentStepIndex;
@@ -414,7 +393,7 @@ const TrackPage = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-5 flex items-center gap-3.5 text-red-400">
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-5 flex items-center gap-3.5 text-red-400 shadow-xl">
                                 <XCircle size={28} className="shrink-0" />
                                 <div>
                                     <h4 className="font-black text-base">تم إلغاء الطلب</h4>
@@ -425,14 +404,16 @@ const TrackPage = () => {
                             </div>
                         )}
 
-                        {/* Quick Action Contact Button */}
-                        <a
-                            href="tel:01038035884"
-                            className="w-full py-4 bg-dark-900 hover:bg-dark-800 text-slate-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
-                        >
-                            <Phone size={16} className="text-primary" />
-                            <span>الاتصال بإدارة المطعم (01038035884)</span>
-                        </a>
+                        {/* Direct Contact Button */}
+                        <div className="space-y-3 pt-2">
+                            <a
+                                href="tel:01038035884"
+                                className="w-full py-4 bg-dark-900 hover:bg-dark-800 text-slate-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
+                            >
+                                <Phone size={16} className="text-primary" />
+                                <span>الاتصال بإدارة المطعم (01038035884)</span>
+                            </a>
+                        </div>
                     </div>
                 )}
             </main>
