@@ -405,31 +405,34 @@ const MenuPage = () => {
                 <button
                     type="button"
                     onClick={() => setShowReservation(true)}
-                    className="bg-teal-600/95 hover:bg-teal-500 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-teal-900/30 flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-teal-400/20"
+                    className="group relative overflow-hidden bg-gradient-to-r from-[#fa6c14] to-[#ea580c] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-orange-600/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
                     aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
                 >
-                    <Calendar size={17} className="shrink-0 animate-pulse" />
-                    <span className="leading-tight truncate">حجز طاولة</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
+                    <Calendar size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
+                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">حجز طاولة</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => setShowTracking(true)}
-                    className="bg-emerald-600/95 hover:bg-emerald-500 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-emerald-400/20"
+                    className="group relative overflow-hidden bg-gradient-to-r from-[#fa7814] to-[#f97316] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
                     aria-label="تتبع حالة طلبك"
                 >
-                    <Bike size={17} className="shrink-0" />
-                    <span className="leading-tight truncate">تتبع طلبك</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
+                    <Bike size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
+                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">تتبع طلبك</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => setShowFeedback(true)}
-                    className="bg-dark-800 hover:bg-primary text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-md flex items-center justify-center gap-1.5 sm:gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/10"
+                    className="group relative overflow-hidden bg-gradient-to-r from-[#f97316] to-[#d97706] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-amber-600/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
                     aria-label="إرسال شكوى أو مقترح للمطعم"
                 >
-                    <MessageSquare size={17} className="shrink-0" />
-                    <span className="leading-tight truncate">الشكاوى</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
+                    <MessageSquare size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
+                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">الشكاوى</span>
                 </button>
             </div>
 

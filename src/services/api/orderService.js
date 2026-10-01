@@ -144,6 +144,26 @@ export const orderService = {
             console.error('❌ Order tracking failed:', error);
             throw error;
         }
+    },
+
+    /**
+     * Get up to 3 recent orders for a customer by phone number and/or order number
+     * @param {Object} params - { phone, orderNumber, limit }
+     */
+    async fetchRecentOrders({ phone = null, orderNumber = null, limit = 3 }) {
+        try {
+            const { data, error } = await supabase.rpc('get_customer_recent_orders', {
+                p_customer_phone: phone ? String(phone) : null,
+                p_order_number: orderNumber ? String(orderNumber) : null,
+                p_limit: limit
+            });
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('❌ Fetching recent customer orders failed:', error);
+            throw error;
+        }
     }
 };
 

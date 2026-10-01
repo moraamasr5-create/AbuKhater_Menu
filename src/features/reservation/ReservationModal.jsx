@@ -95,7 +95,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     const maxDate = new Date();
                     maxDate.setDate(today.getDate() + 2);
 
-                    if (selectedDate < today) fieldError = 'لا يمكن اختيار تاريخ في الماضي';
+                    if (selectedDate < today) fieldError = 'عايز تحجز أمبارح إزاي .!🙄';
                     else if (selectedDate > maxDate) fieldError = 'يمكن الحجز خلال اليومين القادمين فقط';
                 }
                 break;
@@ -186,7 +186,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     const handleSubmit = async () => {
         if (!formData.paymentProof) {
-            setError('الرجاء رفع صورة إيصال التحويل لتأكيد الحجز');
+            setError('الرجاء رفع (إسكرين شوت/صورة) التحويل لتأكيد الحجز');
             return;
         }
 
@@ -225,9 +225,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle className="text-emerald-500 w-10 h-10" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-3">تم إرسال طلبك بنجاح!</h2>
+                    <h2 className="text-2xl font-black text-white mb-3">تم إرسال طلبك بنجاح وهو تحت المراجة✅</h2>
                     <p className="text-slate-400 mb-8 leading-relaxed">
-                        سيتم مراجعة طلب الحجز وصورة التحويل وتأكيده معك عبر الهاتف في أقرب وقت.
+                        سيتم مراجعة طلب الحجز وصورة التحويل وتأكيده معك عبر الهاتف أو الواتساب في أقرب وقت.
                     </p>
                     <button
                         onClick={onClose}
@@ -252,7 +252,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                         <X size={20} />
                     </button>
                     <h2 className="text-xl font-black text-white flex items-center gap-3">
-                        {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز (العربون)'}
+                        {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز  (العربون يخـصم من الفاتورة الحساب)'}
                         <Calendar className="text-primary" size={24} />
                     </h2>
                 </div>
@@ -273,7 +273,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                 {/* Full Name */}
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <User size={14} className="text-primary" /> الاسم الكامل
+                                        <User size={14} className="text-primary" /> الاسم ثنائي
                                     </label>
                                     <input
                                         required
@@ -281,7 +281,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         name="fullName"
                                         value={formData.fullName}
                                         onChange={handleInputChange}
-                                        placeholder="محمد أحمد علي"
+                                        placeholder="بالعربي من فضلكـ."
                                         aria-invalid={!!errors.fullName}
                                         className={`w-full bg-dark-950/50 border ${errors.fullName ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
                                     />
@@ -363,7 +363,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                 {/* Location Type Select */}
                                 <div className="space-y-3 md:col-span-2">
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان المفضل
+                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان (🍗   /   🍹)
                                     </label>
                                     <div className="grid grid-cols-2 gap-4">
                                         <button
@@ -459,7 +459,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl text-center space-y-3">
                                             <h3 className="text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
                                             <p className="text-slate-300 text-sm leading-relaxed">
-                                                لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br />
+                                                لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br /> سيتم خصم المبلغ في حساب الفاتورة<br />
                                                 <span className="text-2xl font-black text-white mt-2 block">{totalDeposit} ج.م</span>
                                             </p>
                                         </div>
