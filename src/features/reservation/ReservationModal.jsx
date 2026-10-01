@@ -430,6 +430,39 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.phone && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.phone}</p>}
                                 </div>
 
+                                {/* Location Type Select (Restaurant / Cafe) */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
+                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-3 h-[60px]">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
+                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'restaurant'
+                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
+                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <UtensilsCrossed size={17} />
+                                            <span>مطعم</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
+                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'cafe'
+                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-600/30 scale-[1.02]'
+                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-purple-300'
+                                            }`}
+                                        >
+                                            <Coffee size={17} />
+                                            <span>كافيه</span>
+                                        </button>
+                                    </div>
+                                </div>
+
                                 {/* Date Selection (Today or Tomorrow) */}
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center justify-between">
@@ -581,39 +614,6 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         >+</button>
                                     </div>
                                     {errors.guests && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.guests}</p>}
-                                </div>
-
-                                {/* Location Type Select (Restaurant / Cafe) */}
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-3 h-[60px]">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
-                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'restaurant'
-                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
-                                            }`}
-                                        >
-                                            <UtensilsCrossed size={17} />
-                                            <span>مطعم</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
-                                            className={`flex items-center justify-center gap-2.5 px-3 rounded-2xl font-black text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'cafe'
-                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-600/30 scale-[1.02]'
-                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-purple-300'
-                                            }`}
-                                        >
-                                            <Coffee size={17} />
-                                            <span>كافيه</span>
-                                        </button>
-                                    </div>
                                 </div>
 
                                 {/* Notes */}
