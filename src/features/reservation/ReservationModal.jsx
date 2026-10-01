@@ -21,6 +21,36 @@ import { reservationService } from '../../services/api';
 import useCart from '../../hooks/useCart';
 import TurnstileWidget, { TURNSTILE_SITE_KEY } from '../../components/common/TurnstileWidget';
 
+const formatDateLocal = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const getTodayDateString = () => formatDateLocal(new Date());
+
+const getTomorrowDateString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return formatDateLocal(d);
+};
+
+const formatArabicDateLabel = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const date = new Date(y, m - 1, d);
+        return new Intl.DateTimeFormat('ar-EG', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short'
+        }).format(date);
+    } catch {
+        return dateStr;
+    }
+};
+
 const ReservationModal = ({ isOpen, onClose }) => {
     const { restaurantSettings } = useCart() || {};
     const [step, setStep] = useState(1); // 1: Info, 2: Payment
@@ -31,11 +61,16 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const [turnstileToken, setTurnstileToken] = useState(null);
     const hourScrollRef = useRef(null);
 
+    const todayStr = getTodayDateString();
+    const tomorrowStr = getTomorrowDateString();
+    const todayLabel = formatArabicDateLabel(todayStr);
+    const tomorrowLabel = formatArabicDateLabel(tomorrowStr);
+
     const [formData, setFormData] = useState({
         fullName: '',
         phone: '',
         guests: 2,
-        date: '',
+        date: todayStr,
         timeHour: '',
         timeMinute: '',
         timeAmPm: '',
@@ -53,6 +88,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (!isOpen) {
             setTimeout(() => {
+                const today = getTodayDateString();
                 setStep(1);
                 setSuccess(false);
                 setError(null);
@@ -60,7 +96,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     fullName: '',
                     phone: '',
                     guests: 2,
-                    date: '',
+                    date: today,
                     timeHour: '',
                     timeMinute: '',
                     timeAmPm: '',
@@ -74,6 +110,15 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     paymentProofPreview: null
                 });
             }, 300);
+        } else {
+            const today = getTodayDateString();
+            const tomorrow = getTomorrowDateString();
+            setFormData(prev => {
+                if (prev.date !== today && prev.date !== tomorrow) {
+                    return { ...prev, date: today };
+                }
+                return prev;
+            });
         }
     }, [isOpen]);
 
@@ -114,20 +159,16 @@ const ReservationModal = ({ isOpen, onClose }) => {
                 if (!value) fieldError = 'رقم الهاتف مطلوب';
                 else if (!phoneRegex.test(value)) fieldError = 'يرجى إدخال رقم هاتف مصري صحيح (11 رقم)';
                 break;
-            case 'date':
+            case 'date': {
+                const today = getTodayDateString();
+                const tomorrow = getTomorrowDateString();
                 if (!value) {
-                    fieldError = 'التاريخ مطلوب';
-                } else {
-                    const selectedDate = new Date(value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const maxDate = new Date();
-                    maxDate.setDate(today.getDate() + 2);
-
-                    if (selectedDate < today) fieldError = 'عايز تحجز أمبارح إزاي .!🙄';
-                    else if (selectedDate > maxDate) fieldError = 'يمكن الحجز خلال اليومين القادمين فقط';
+                    fieldError = 'يرجى اختيار موعد الحجز (اليوم أو غداً)';
+                } else if (value !== today && value !== tomorrow) {
+                    fieldError = 'الحجز متاح لليوم أو غداً فقط';
                 }
                 break;
+            }
             case 'time':
                 if (!value) {
                     fieldError = 'الوقت مطلوب';
@@ -418,22 +459,50 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.phone && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.phone}</p>}
                                 </div>
 
-                                {/* Date */}
+                                {/* Date Selection (Today or Tomorrow) */}
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <Calendar size={14} className="text-primary" /> التاريخ
+                                    <label className="text-sm font-bold text-slate-400 pr-1 flex items-center justify-between">
+                                        <span className="flex items-center gap-2">
+                                            <Calendar size={14} className="text-primary" /> ميعاد الحجز
+                                        </span>
+                                        <span className="text-[11px] text-slate-500 font-normal">اليوم أو غداً فقط</span>
                                     </label>
-                                    <input
-                                        required
-                                        type="date"
-                                        name="date"
-                                        value={formData.date}
-                                        onChange={handleInputChange}
-                                        min={new Date().toISOString().split('T')[0]}
-                                        max={new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0]}
-                                        aria-invalid={!!errors.date}
-                                        className={`w-full bg-dark-950/50 border ${errors.date ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all [color-scheme:dark]`}
-                                    />
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setFormData(prev => ({ ...prev, date: todayStr }));
+                                                setErrors(prev => ({ ...prev, date: '' }));
+                                            }}
+                                            className={`flex flex-col items-center justify-center py-3.5 px-3 rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
+                                                formData.date === todayStr
+                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
+                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <span className="text-sm sm:text-base font-black">اليوم</span>
+                                            <span className={`text-[11px] mt-0.5 font-medium ${formData.date === todayStr ? 'text-white/90' : 'text-slate-500'}`}>
+                                                {todayLabel}
+                                            </span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setFormData(prev => ({ ...prev, date: tomorrowStr }));
+                                                setErrors(prev => ({ ...prev, date: '' }));
+                                            }}
+                                            className={`flex flex-col items-center justify-center py-3.5 px-3 rounded-2xl font-bold transition-all border-2 text-center touch-manipulation active:scale-[0.98] ${
+                                                formData.date === tomorrowStr
+                                                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
+                                                    : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <span className="text-sm sm:text-base font-black">غداً</span>
+                                            <span className={`text-[11px] mt-0.5 font-medium ${formData.date === tomorrowStr ? 'text-white/90' : 'text-slate-500'}`}>
+                                                {tomorrowLabel}
+                                            </span>
+                                        </button>
+                                    </div>
                                     {errors.date && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.date}</p>}
                                 </div>
 
