@@ -22,6 +22,7 @@ import { calculateServiceFee } from '../core/utils/calculations';
 import { orderService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import OrderConfirmation from '../features/checkout/OrderConfirmation';
+import TurnstileWidget from '../components/common/TurnstileWidget';
 
 const PaymentPage = () => {
     const {
@@ -38,6 +39,7 @@ const PaymentPage = () => {
     const [successData, setSuccessData] = useState(null);
     const [screenshot, setScreenshot] = useState(null);
     const [isProcessingFile, setIsProcessingFile] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState(null);
     const [copied, setCopied] = useState(false);
 
     // Calculations
@@ -162,6 +164,7 @@ const PaymentPage = () => {
             payment: {
                 screenshot: screenshot
             },
+            turnstile_token: turnstileToken,
             items: cart.map(item => ({
                 id: item.id || item.menuItemId || item.item_id,
                 name: item.name,
@@ -449,6 +452,12 @@ const PaymentPage = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Cloudflare Turnstile Verification Widget */}
+                <TurnstileWidget
+                    onVerify={(token) => setTurnstileToken(token)}
+                    onExpire={() => setTurnstileToken(null)}
+                />
 
                 {/* Error Banner */}
                 {submitError && (

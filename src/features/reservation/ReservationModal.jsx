@@ -13,10 +13,13 @@ import {
     AlertCircle,
     Loader2,
     Coffee,
-    UtensilsCrossed
+    UtensilsCrossed,
+    Smartphone,
+    Wallet
 } from 'lucide-react';
 import { reservationService } from '../../services/api';
 import useCart from '../../hooks/useCart';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 
 const ReservationModal = ({ isOpen, onClose }) => {
     const { restaurantSettings } = useCart() || {};
@@ -25,6 +28,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [errors, setErrors] = useState({}); // Field-level errors
+    const [turnstileToken, setTurnstileToken] = useState(null);
     const hourScrollRef = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -38,6 +42,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
         time: '',
         notes: '',
         locationType: 'restaurant', // 'restaurant' or 'cafe'
+        paymentMethod: 'wallet', // 'wallet' or 'instapay'
+        senderAccount: '',
+        isConfirmedSender: false,
         paymentProof: null,
         paymentProofPreview: null
     });
@@ -60,6 +67,9 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     time: '',
                     notes: '',
                     locationType: 'restaurant',
+                    paymentMethod: 'wallet',
+                    senderAccount: '',
+                    isConfirmedSender: false,
                     paymentProof: null,
                     paymentProofPreview: null
                 });
@@ -130,6 +140,20 @@ const ReservationModal = ({ isOpen, onClose }) => {
             case 'notes':
                 if (value.length > 300) fieldError = 'الملاحظات يجب ألا تزيد عن 300 حرف';
                 break;
+            case 'senderAccount':
+                if (!value || !value.trim()) {
+                    fieldError = 'بيانات الحساب / الرقم المحول منه مطلوبة للتحقق';
+                } else if (formData.paymentMethod === 'wallet') {
+                    const phoneRegex = /^01[0125][0-9]{8}$/;
+                    if (!phoneRegex.test(value.trim())) {
+                        fieldError = 'يرجى إدخال رقم محفظة مصري صحيح (11 رقم يبدأ بـ 01)';
+                    }
+                } else if (formData.paymentMethod === 'instapay') {
+                    if (value.trim().length < 3) {
+                        fieldError = 'يرجى إدخال معرف إنستاباي أو رقم صحيح (3 أحرف على الأقل)';
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -143,6 +167,17 @@ const ReservationModal = ({ isOpen, onClose }) => {
         // Real-time validation
         const fieldError = validateField(name, value);
         setErrors(prev => ({ ...prev, [name]: fieldError }));
+    };
+
+    const handlePaymentMethodChange = (method) => {
+        setFormData(prev => ({
+            ...prev,
+            paymentMethod: method,
+            senderAccount: method === 'wallet' ? (prev.senderAccount || prev.phone) : (prev.senderAccount === prev.phone ? '' : prev.senderAccount),
+            isConfirmedSender: false
+        }));
+        setErrors(prev => ({ ...prev, senderAccount: '' }));
+        setError(null);
     };
 
     const handleTimeChange = (e) => {
@@ -170,11 +205,10 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     const validateForm = () => {
         const newErrors = {};
-        Object.keys(formData).forEach(key => {
-            if (!['paymentProof', 'paymentProofPreview', 'timeHour', 'timeMinute', 'timeAmPm'].includes(key)) {
-                const error = validateField(key, formData[key]);
-                if (error) newErrors[key] = error;
-            }
+        const step1Fields = ['fullName', 'phone', 'date', 'time', 'guests', 'notes'];
+        step1Fields.forEach(key => {
+            const error = validateField(key, formData[key]);
+            if (error) newErrors[key] = error;
         });
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -198,12 +232,28 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const nextStep = (e) => {
         e.preventDefault();
         if (validateForm()) {
+            setFormData(prev => ({
+                ...prev,
+                senderAccount: prev.paymentMethod === 'wallet' ? (prev.senderAccount || prev.phone) : prev.senderAccount
+            }));
             setStep(2);
             window.scrollTo(0, 0);
         }
     };
 
     const handleSubmit = async () => {
+        const senderErr = validateField('senderAccount', formData.senderAccount);
+        if (senderErr) {
+            setError(senderErr);
+            setErrors(prev => ({ ...prev, senderAccount: senderErr }));
+            return;
+        }
+
+        if (!formData.isConfirmedSender) {
+            setError('يرجى تأكيد صحة بيانات الحساب / الرقم المحول منه بوضع علامة التأكيد');
+            return;
+        }
+
         if (!formData.paymentProof) {
             setError('الرجاء رفع (إسكرين شوت/صورة) التحويل لتأكيد الحجز');
             return;
@@ -213,16 +263,24 @@ const ReservationModal = ({ isOpen, onClose }) => {
         setError(null);
 
         try {
+            const paymentNotes = `[طريقة الدفع: ${formData.paymentMethod === 'wallet' ? 'محفظة إلكترونية' : 'إنستاباي'} | المحول منه: ${formData.senderAccount}]`;
+            const combinedNotes = formData.notes 
+                ? `${formData.notes} | ${paymentNotes}`
+                : paymentNotes;
+
             // Prepare production-ready JSON payload
             const payload = {
                 name: sanitizeInput(formData.fullName),
                 phone: formData.phone,
-                guests: parseInt(formData.guests),
+                guests: parseInt(formData.guests, 10),
                 date: formData.date,
                 time: formData.time,
                 location_type: formData.locationType, // مطعم أو كافيه
-                notes: sanitizeInput(formData.notes),
+                notes: sanitizeInput(combinedNotes),
                 payment_screenshot: formData.paymentProof,
+                payment_method: formData.paymentMethod,
+                sender_account: sanitizeInput(formData.senderAccount),
+                turnstile_token: turnstileToken,
                 status: 'pending',
                 source: 'web_reservation_form',
                 created_at: new Date().toISOString()
@@ -514,36 +572,140 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
                                 return (
                                     <>
-                                        <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl text-center space-y-3">
-                                            <h3 className="text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
-                                            <p className="text-slate-300 text-sm leading-relaxed">
-                                                لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br /> سيتم خصم المبلغ في حساب الفاتورة<br />
-                                                <span className="text-2xl font-black text-white mt-2 block">{totalDeposit} ج.م</span>
+                                        <div className="bg-primary/10 border border-primary/20 p-5 sm:p-6 rounded-3xl text-center space-y-2">
+                                            <h3 className="text-lg sm:text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
+                                            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                                                لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br />
+                                                <span className="text-slate-400 text-xs">(يتم خصم العربون بالكامل من فاتورة الحساب عند الحضور)</span>
+                                                <span className="text-2xl font-black text-white mt-1 block">{totalDeposit} ج.م</span>
                                             </p>
                                         </div>
 
-                                        {/* Payment Info */}
-                                        <div className="bg-dark-950/50 border border-white/5 p-6 rounded-3xl space-y-4">
-                                            <h4 className="font-bold text-slate-400 border-b border-white/5 pb-2 text-sm flex items-center gap-2">
-                                                <CreditCard size={14} className="text-primary" /> بيانات التحويل
+                                        {/* Payment Method Tabs */}
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
+                                                <CreditCard size={14} className="text-primary" /> اختر طريقة التحويل
+                                            </label>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handlePaymentMethodChange('wallet')}
+                                                    className={`flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 ${
+                                                        formData.paymentMethod === 'wallet'
+                                                            ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-lg shadow-emerald-500/10 scale-[1.02]'
+                                                            : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                                    }`}
+                                                >
+                                                    <Wallet size={18} className={formData.paymentMethod === 'wallet' ? 'text-emerald-400' : 'text-slate-500'} />
+                                                    <span>محفظة إلكترونية</span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handlePaymentMethodChange('instapay')}
+                                                    className={`flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 ${
+                                                        formData.paymentMethod === 'instapay'
+                                                            ? 'bg-primary/15 border-primary text-primary shadow-lg shadow-primary/10 scale-[1.02]'
+                                                            : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                                    }`}
+                                                >
+                                                    <Smartphone size={18} className={formData.paymentMethod === 'instapay' ? 'text-primary' : 'text-slate-500'} />
+                                                    <span>إنستاباي (Instapay)</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Transfer Info based on selected payment method */}
+                                        <div className="bg-dark-950/50 border border-white/5 p-5 sm:p-6 rounded-3xl space-y-4">
+                                            <h4 className="font-bold text-slate-400 border-b border-white/5 pb-2 text-xs sm:text-sm flex items-center gap-2">
+                                                <CreditCard size={14} className="text-primary" /> بيانات التحويل للمطعم
                                             </h4>
                                             <div className="space-y-3">
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <span className="text-slate-500">فودافون كاش / المحفظة:</span>
-                                                    <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                                                        {walletNum}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <span className="text-slate-500">إنستاباي (Instapay):</span>
-                                                    <span className="bg-primary/10 text-primary border border-primary/30 px-3 py-1.5 rounded-xl font-black tracking-wider">
-                                                        {instapayIpa}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <span className="text-slate-500">الاسم :</span>
+                                                {formData.paymentMethod === 'wallet' ? (
+                                                    <div className="flex justify-between items-center text-xs sm:text-sm">
+                                                        <span className="text-slate-400 font-medium">فودافون كاش / المحفظة:</span>
+                                                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest text-sm sm:text-base shadow-[0_0_15px_rgba(16,185,129,0.15)] select-all font-mono">
+                                                            {walletNum}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex justify-between items-center text-xs sm:text-sm">
+                                                        <span className="text-slate-400 font-medium">عنوان الدفع (Instapay IPA):</span>
+                                                        <span className="bg-primary/10 text-primary border border-primary/30 px-3 py-1.5 rounded-xl font-black tracking-wider text-xs sm:text-sm select-all font-mono">
+                                                            {instapayIpa}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                <div className="flex justify-between items-center text-xs sm:text-sm">
+                                                    <span className="text-slate-400 font-medium">اسم الحساب المستلم:</span>
                                                     <span className="text-white font-black">{accName}</span>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Sender Account Input & Confirmation */}
+                                        <div className="space-y-3 bg-dark-950/50 border border-white/5 p-5 rounded-3xl">
+                                            <label className="text-xs sm:text-sm font-bold text-slate-300 flex items-center justify-between">
+                                                <span className="flex items-center gap-2">
+                                                    {formData.paymentMethod === 'wallet' ? (
+                                                        <Wallet size={14} className="text-emerald-400" />
+                                                    ) : (
+                                                        <Smartphone size={14} className="text-primary" />
+                                                    )}
+                                                    {formData.paymentMethod === 'wallet' ? 'رقم المحفظة المحول منها' : 'معرف / حساب إنستاباي المحول منه'}
+                                                    <span className="text-red-400 font-bold">*</span>
+                                                </span>
+                                                <span className="text-[10px] text-amber-400/90 font-medium">مطلوب للتحقق</span>
+                                            </label>
+
+                                            <input
+                                                required
+                                                type={formData.paymentMethod === 'wallet' ? 'tel' : 'text'}
+                                                name="senderAccount"
+                                                value={formData.senderAccount}
+                                                onChange={handleInputChange}
+                                                maxLength={formData.paymentMethod === 'wallet' ? 11 : 60}
+                                                placeholder={
+                                                    formData.paymentMethod === 'wallet'
+                                                        ? '01xxxxxxxxx'
+                                                        : 'مثال: username@instapay أو رقم الهاتف'
+                                                }
+                                                className={`w-full bg-dark-900 border ${
+                                                    errors.senderAccount ? 'border-red-500 ring-1 ring-red-500/20' : 'border-white/10'
+                                                } text-white px-4 py-3.5 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm transition-all font-mono`}
+                                            />
+                                            {errors.senderAccount && (
+                                                <p className="text-red-500 text-xs pr-1 flex items-center gap-1 animate-in slide-in-from-top-1">
+                                                    <AlertCircle size={12} /> {errors.senderAccount}
+                                                </p>
+                                            )}
+
+                                            {/* Warning notice & Checkbox */}
+                                            <div className="pt-2 border-t border-white/5 space-y-3">
+                                                <div className="flex items-start gap-2 text-[11px] sm:text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 p-3 rounded-2xl">
+                                                    <AlertCircle size={15} className="shrink-0 text-amber-400 mt-0.5" />
+                                                    <p className="leading-relaxed">
+                                                        {formData.paymentMethod === 'wallet'
+                                                            ? 'تنبيه: تأكد أن التحويل تم بالفعل من هذا الرقم لضمان مطابقة الدفعة وتأكيد الحجز سريعاً.'
+                                                            : 'تنبيه: يرجى كتابة عنوان إنستاباي (IPA) أو رقم الحساب/الهاتف المحول منه للتحقق من العملية.'}
+                                                    </p>
+                                                </div>
+
+                                                <label className="flex items-start sm:items-center gap-3 cursor-pointer select-none text-xs sm:text-sm text-slate-300 group p-1">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.isConfirmedSender}
+                                                        onChange={(e) => {
+                                                            setFormData(p => ({ ...p, isConfirmedSender: e.target.checked }));
+                                                            if (e.target.checked && error) setError(null);
+                                                        }}
+                                                        className="w-4 h-4 mt-0.5 sm:mt-0 rounded border-white/20 bg-dark-900 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer accent-primary shrink-0"
+                                                    />
+                                                    <span className="group-hover:text-white transition-colors font-medium leading-tight">
+                                                        {formData.paymentMethod === 'wallet'
+                                                            ? 'أؤكد أنه تم التحويل من رقم المحفظة المسجل أعلاه'
+                                                            : 'أؤكد أنه تم التحويل من حساب إنستاباي المسجل أعلاه'}
+                                                    </span>
+                                                </label>
                                             </div>
                                         </div>
                                     </>
@@ -581,6 +743,12 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Cloudflare Turnstile Verification */}
+                            <TurnstileWidget
+                                onVerify={(token) => setTurnstileToken(token)}
+                                onExpire={() => setTurnstileToken(null)}
+                            />
 
                             {error && (
                                 <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-500 text-sm">

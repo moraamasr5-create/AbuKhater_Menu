@@ -13,12 +13,14 @@ import {
     ThumbsDown
 } from 'lucide-react';
 import { feedbackService } from '../../services/api';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 
 const FeedbackModal = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [errors, setErrors] = useState({});
+    const [turnstileToken, setTurnstileToken] = useState(null);
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -32,6 +34,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             setTimeout(() => {
                 setSuccess(false);
                 setError(null);
+                setTurnstileToken(null);
                 setFormData({
                     fullName: '',
                     phone: '',
@@ -93,6 +96,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
         try {
             const payload = {
                 ...formData,
+                turnstile_token: turnstileToken,
                 timestamp: new Date().toISOString(),
                 source: 'web_feedback_form'
             };
@@ -225,6 +229,14 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 <p>{error}</p>
                             </div>
                         )}
+
+                        <div className="flex justify-center py-2">
+                            <TurnstileWidget
+                                onVerify={(token) => setTurnstileToken(token)}
+                                onExpire={() => setTurnstileToken(null)}
+                                theme="dark"
+                            />
+                        </div>
 
                         <button
                             type="submit"

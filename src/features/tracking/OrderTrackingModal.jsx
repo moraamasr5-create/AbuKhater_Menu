@@ -24,6 +24,7 @@ import {
 import { orderService } from '../../services/api';
 import { supabase } from '../../services/supabase/supabaseClient';
 import { formatCurrency } from '../../core/utils/formatters';
+import TurnstileWidget from '../../components/common/TurnstileWidget';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك ومراجعته في النظام', icon: Clock },
@@ -79,9 +80,10 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState(null);
 
     // Fetch up to 3 recent orders by phone (and optional order number)
-    const performSearch = useCallback(async (ph, num, autoSelectId = null) => {
+    const performSearch = useCallback(async (ph, num, autoSelectId = null, tokenOverride = null) => {
         const cleanPh = (ph || '').trim();
         const cleanNum = (num || '').trim();
 
@@ -106,7 +108,8 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
             const result = await orderService.fetchRecentOrders({
                 phone: cleanPh || null,
                 orderNumber: cleanNum || null,
-                limit: 3
+                limit: 3,
+                turnstileToken: tokenOverride || turnstileToken
             });
 
             setHasSearched(true);
@@ -362,6 +365,12 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                     </div>
                                 )}
                             </div>
+
+                            {/* Cloudflare Turnstile Verification */}
+                            <TurnstileWidget
+                                onVerify={(token) => setTurnstileToken(token)}
+                                onExpire={() => setTurnstileToken(null)}
+                            />
 
                             <button
                                 type="submit"

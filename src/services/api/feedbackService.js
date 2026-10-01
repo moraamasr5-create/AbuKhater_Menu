@@ -15,7 +15,8 @@ export const feedbackService = {
                 p_phone: payload.phone || '',
                 p_type: payload.type || 'suggestion',
                 p_message: payload.message || '',
-                p_idempotency_key: idempotencyKey
+                p_idempotency_key: idempotencyKey,
+                p_turnstile_token: payload.turnstile_token || payload.turnstileToken || null
             });
 
             if (error) throw error;

@@ -79,7 +79,8 @@ export const reservationService = {
                 p_location_type: payload.location_type || payload.locationType || 'restaurant',
                 p_notes: payload.notes || null,
                 p_payment_proof_url: screenshotStoragePath,
-                p_idempotency_key: idempotencyKey
+                p_idempotency_key: idempotencyKey,
+                p_turnstile_token: payload.turnstile_token || payload.turnstileToken || null
             });
 
             if (error) throw error;

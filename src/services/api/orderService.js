@@ -92,7 +92,8 @@ export const orderService = {
                 p_longitude: payload.customer?.delivery_info?.coordinates?.lon ?? payload.customer?.delivery_info?.coordinates?.lng ?? null,
                 p_items: itemsForRpc,
                 p_idempotency_key: idempotencyKey,
-                p_source: 'online'
+                p_source: 'online',
+                p_turnstile_token: payload.turnstile_token || payload.turnstileToken || null
             };
 
             console.log('📦 Invoking create_order RPC with authoritative parameters:', rpcParams);
@@ -148,14 +149,15 @@ export const orderService = {
 
     /**
      * Get up to 3 recent orders for a customer by phone number and/or order number
-     * @param {Object} params - { phone, orderNumber, limit }
+     * @param {Object} params - { phone, orderNumber, limit, turnstileToken }
      */
-    async fetchRecentOrders({ phone = null, orderNumber = null, limit = 3 }) {
+    async fetchRecentOrders({ phone = null, orderNumber = null, limit = 3, turnstileToken = null }) {
         try {
             const { data, error } = await supabase.rpc('get_customer_recent_orders', {
                 p_customer_phone: phone ? String(phone) : null,
                 p_order_number: orderNumber ? String(orderNumber) : null,
-                p_limit: limit
+                p_limit: limit,
+                p_turnstile_token: turnstileToken || null
             });
 
             if (error) throw error;
