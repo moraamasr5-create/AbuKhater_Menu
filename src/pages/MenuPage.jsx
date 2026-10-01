@@ -386,17 +386,29 @@ const MenuPage = () => {
                             />
                         </div>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-2.5 tracking-tight drop-shadow-[0_2px_30px_rgba(249,115,22,0.35)] hover:scale-[1.01] transition-transform duration-300 cursor-default">
-                        <span className="bg-gradient-to-r from-amber-300 via-primary to-orange-500 bg-clip-text text-transparent">
-                            مطاعـم أبـو خـاطـر
-                        </span>
-                    </h1>
-                    <p className="text-slate-200/90 text-xs sm:text-sm font-bold tracking-wide max-w-sm mx-auto leading-relaxed border-t border-white/10 pt-2 mt-1">
-                        ولا علـ البــال ولا علـ الخـاطـر
-                    </p>
-                    <p className="text-slate-200/90 text-xs sm:text-sm font-bold tracking-wide max-w-sm mx-auto leading-relaxed border-t border-white/10 pt-2 mt-1">
-                        كـله عنـد أبـو خــاطـر
-                    </p>
+                    <div className="relative group cursor-default mb-1">
+                        {/* Ambient Glow behind title */}
+                        <div className="absolute -inset-x-8 -inset-y-3 bg-gradient-to-r from-primary/0 via-primary/35 to-amber-500/0 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                        <h1 className="relative text-3xl sm:text-5xl md:text-6xl font-black tracking-tight drop-shadow-[0_4px_30px_rgba(234,88,12,0.5)] transition-all duration-300 group-hover:scale-[1.02] active:scale-95 touch-manipulation">
+                            <span className="bg-gradient-to-r from-amber-200 via-[#fa7814] to-orange-500 bg-clip-text text-transparent inline-block font-black select-none">
+                                مطاعـم أبـو خـاطـر
+                            </span>
+                        </h1>
+                    </div>
+
+                    {/* Slogan Badge */}
+                    <div className="mt-1.5 sm:mt-2">
+                        <div className="inline-flex items-center gap-2 px-3.5 sm:px-5 py-1.5 rounded-full bg-dark-950/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/40 hover:border-primary/40 transition-colors">
+                            <span className="text-slate-200 font-bold text-[11px] sm:text-xs md:text-sm tracking-wide">
+                                ولا علـ البــال ولا علـ الخـاطـر
+                            </span>
+                            <span className="w-1 h-1 rounded-full bg-primary/80 shrink-0" />
+                            <span className="text-amber-400 font-black text-[11px] sm:text-xs md:text-sm tracking-wide">
+                                كـله عنـد أبـو خــاطـر
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
