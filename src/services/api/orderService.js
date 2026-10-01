@@ -124,6 +124,26 @@ export const orderService = {
             console.groupEnd();
             throw error;
         }
+    },
+
+    /**
+     * Track order status for customer via authoritative tracking RPC
+     * @param {Object} params - { orderId, orderNumber, phone }
+     */
+    async trackOrder({ orderId = null, orderNumber = null, phone = null }) {
+        try {
+            const { data, error } = await supabase.rpc('get_customer_order_tracking', {
+                p_order_id: orderId,
+                p_order_number: orderNumber ? String(orderNumber) : null,
+                p_customer_phone: phone ? String(phone) : null
+            });
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('❌ Order tracking failed:', error);
+            throw error;
+        }
     }
 };
 
