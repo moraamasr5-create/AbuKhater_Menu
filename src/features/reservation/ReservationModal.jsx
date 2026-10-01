@@ -332,30 +332,69 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         <Clock size={14} className="text-primary" /> الوقت
                                     </label>
                                     <div className="grid grid-cols-3 gap-2 items-start">
-                                        {[
-                                            { name: 'timeHour', label: 'الساعة', values: [...Array(12)].map((_, i) => String(i + 1)) },
-                                            { name: 'timeMinute', label: 'الدقيقة', values: ['00', '30'] },
-                                            { name: 'timeAmPm', label: 'الفترة', values: ['AM', 'PM'] }
-                                        ].map(({ name, label, values }) => (
-                                            <div key={name} className="space-y-2">
-                                                <span className="block text-center text-xs font-bold text-slate-500">{label}</span>
-                                                <div className={name === 'timeHour' ? 'grid grid-cols-3 gap-1' : 'grid grid-cols-1 gap-1'}>
-                                                    {values.map(value => (
+                                        {/* Hour (Scrollable on phones) */}
+                                        <div className="space-y-2">
+                                            <span className="block text-center text-xs font-bold text-slate-500">الساعة</span>
+                                            <div className="h-[92px] overflow-y-auto flex flex-col gap-1 pr-1 custom-scrollbar snap-y snap-mandatory rounded-xl touch-pan-y overscroll-contain">
+                                                {[...Array(12)].map((_, i) => {
+                                                    const value = String(i + 1);
+                                                    const isSelected = formData.timeHour === value;
+                                                    return (
                                                         <button
                                                             key={value}
                                                             type="button"
-                                                            aria-pressed={formData[name] === value}
-                                                            onClick={() => handleTimeChange({ target: { name, value } })}
-                                                            className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData[name] === value
+                                                            aria-pressed={isSelected}
+                                                            onClick={() => handleTimeChange({ target: { name: 'timeHour', value } })}
+                                                            className={`min-h-11 w-full shrink-0 snap-center rounded-xl border text-sm font-bold transition-all touch-manipulation flex items-center justify-center ${isSelected
                                                                 ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
                                                                 : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
                                                         >
-                                                            {name === 'timeAmPm' ? (value === 'AM' ? 'صباحًا' : 'مساءً') : value}
+                                                            {value}
                                                         </button>
-                                                    ))}
-                                                </div>
+                                                    );
+                                                })}
                                             </div>
-                                        ))}
+                                        </div>
+
+                                        {/* Minute */}
+                                        <div className="space-y-2">
+                                            <span className="block text-center text-xs font-bold text-slate-500">الدقيقة</span>
+                                            <div className="grid grid-cols-1 gap-1">
+                                                {['00', '30'].map(value => (
+                                                    <button
+                                                        key={value}
+                                                        type="button"
+                                                        aria-pressed={formData.timeMinute === value}
+                                                        onClick={() => handleTimeChange({ target: { name: 'timeMinute', value } })}
+                                                        className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData.timeMinute === value
+                                                            ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
+                                                            : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                    >
+                                                        {value}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Period (AM/PM) */}
+                                        <div className="space-y-2">
+                                            <span className="block text-center text-xs font-bold text-slate-500">الفترة</span>
+                                            <div className="grid grid-cols-1 gap-1">
+                                                {['AM', 'PM'].map(value => (
+                                                    <button
+                                                        key={value}
+                                                        type="button"
+                                                        aria-pressed={formData.timeAmPm === value}
+                                                        onClick={() => handleTimeChange({ target: { name: 'timeAmPm', value } })}
+                                                        className={`min-h-11 rounded-xl border text-sm font-bold transition-colors touch-manipulation ${formData.timeAmPm === value
+                                                            ? 'bg-primary border-primary text-white shadow-md shadow-primary/20'
+                                                            : `bg-dark-950/50 ${errors.time ? 'border-red-500/60' : 'border-white/5'} text-slate-300 active:bg-dark-800 hover:bg-dark-800`}`}
+                                                    >
+                                                        {value === 'AM' ? 'صباحًا' : 'مساءً'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                     {errors.time && <p className="text-red-500 text-xs mt-1 pr-1 flex items-center gap-1 animate-in slide-in-from-top-1"><AlertCircle size={12} /> {errors.time}</p>}
                                 </div>
