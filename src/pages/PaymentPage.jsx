@@ -138,6 +138,11 @@ const PaymentPage = () => {
             return;
         }
 
+        if (!turnstileToken && TURNSTILE_SITE_KEY) {
+            setSubmitError('يرجى إكمال اختبار التحقق الأمني (التحقق من أنك لست روبوت) للمتابعة.');
+            return;
+        }
+
         setIsSubmitting(true);
         const clientMutationKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : null;
 

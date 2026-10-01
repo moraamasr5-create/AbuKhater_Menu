@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { ShieldCheck, Loader2 } from 'lucide-react';
 
 export const TURNSTILE_SITE_KEY = 
     import.meta.env.VITE_TURNSTILE_SITE_KEY || 
@@ -8,7 +9,7 @@ export const TURNSTILE_SITE_KEY =
 
 /**
  * Cloudflare Turnstile CAPTCHA Widget
- * Zero external library dependencies, lazy-loads official Cloudflare script.
+ * Zero external library dependencies, robust lifecycle handling & dark theme.
  */
 export const TurnstileWidget = ({
     onVerify,
@@ -19,26 +20,19 @@ export const TurnstileWidget = ({
 }) => {
     const containerRef = useRef(null);
     const widgetIdRef = useRef(null);
+    const [widgetState, setWidgetState] = useState('loading'); // 'loading' | 'rendered' | 'verified' | 'error'
 
     useEffect(() => {
         if (!TURNSTILE_SITE_KEY) {
-            // When site key is not configured, inform onVerify with null (safe bypass)
+            // Safe bypass when site key is not configured
+            setWidgetState('idle');
             return;
         }
 
         let isMounted = true;
+        let intervalId = null;
 
-        // Ensure official Turnstile script is loaded in <head>
-        if (!window.turnstile && !document.getElementById('cf-turnstile-script')) {
-            const script = document.createElement('script');
-            script.id = 'cf-turnstile-script';
-            script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-        }
-
-        const checkAndRender = () => {
+        const renderTurnstile = () => {
             if (!isMounted) return;
             if (window.turnstile && containerRef.current && !widgetIdRef.current) {
                 try {
@@ -47,43 +41,76 @@ export const TurnstileWidget = ({
                         theme,
                         language: 'ar',
                         callback: (token) => {
-                            if (isMounted && onVerify) onVerify(token);
+                            if (!isMounted) return;
+                            setWidgetState('verified');
+                            if (onVerify) onVerify(token);
                         },
                         'expired-callback': () => {
-                            if (isMounted && onExpire) onExpire();
+                            if (!isMounted) return;
+                            setWidgetState('rendered');
+                            if (onExpire) onExpire();
                         },
                         'error-callback': (err) => {
-                            console.warn('[Turnstile] Challenge error:', err);
-                            if (isMounted && onError) onError(err);
+                            console.warn('[Turnstile] Challenge error/failed:', err);
+                            if (!isMounted) return;
+                            setWidgetState('error');
+                            if (onError) onError(err);
                         }
                     });
+                    setWidgetState('rendered');
+                    if (intervalId) clearInterval(intervalId);
                 } catch (e) {
                     console.error('[Turnstile] Render exception:', e);
                 }
             }
         };
 
-        const interval = setInterval(checkAndRender, 100);
+        // If turnstile script is already available
+        if (window.turnstile) {
+            renderTurnstile();
+        } else {
+            intervalId = setInterval(() => {
+                if (window.turnstile) {
+                    renderTurnstile();
+                }
+            }, 100);
+        }
 
         return () => {
             isMounted = false;
-            clearInterval(interval);
+            if (intervalId) clearInterval(intervalId);
             if (window.turnstile && widgetIdRef.current) {
                 try {
                     window.turnstile.remove(widgetIdRef.current);
                 } catch {
-                    // ignore
+                    // ignore cleanup error
                 }
                 widgetIdRef.current = null;
             }
         };
-    }, [onVerify, onExpire, onError, theme]);
+    }, [theme, onVerify, onExpire, onError]);
 
-    if (!TURNSTILE_SITE_KEY) return null;
+    if (!TURNSTILE_SITE_KEY) {
+        return null;
+    }
 
     return (
-        <div className={`my-3 flex justify-center items-center ${className}`}>
-            <div ref={containerRef} className="rounded-2xl overflow-hidden border border-white/10 shadow-lg" />
+        <div className={`my-4 flex flex-col items-center justify-center ${className}`}>
+            <div className="relative min-h-[65px] min-w-[300px] flex items-center justify-center rounded-2xl bg-dark-950/40 border border-white/10 p-1.5 shadow-inner">
+                {widgetState === 'loading' && (
+                    <div className="absolute inset-0 flex items-center justify-center gap-2 text-slate-400 text-xs font-bold animate-pulse">
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        <span>جاري تحميل التحقق الأمني...</span>
+                    </div>
+                )}
+                <div ref={containerRef} className="turnstile-wrapper" />
+            </div>
+            {widgetState === 'verified' && (
+                <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] font-bold mt-1.5 animate-in fade-in">
+                    <ShieldCheck size={14} />
+                    <span>تم التحقق الأمني بنجاح</span>
+                </div>
+            )}
         </div>
     );
 };

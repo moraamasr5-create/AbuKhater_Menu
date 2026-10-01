@@ -13,7 +13,7 @@ import {
     ThumbsDown
 } from 'lucide-react';
 import { feedbackService } from '../../services/api';
-import TurnstileWidget from '../../components/common/TurnstileWidget';
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from '../../components/common/TurnstileWidget';
 
 const FeedbackModal = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
@@ -87,6 +87,11 @@ const FeedbackModal = ({ isOpen, onClose }) => {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            return;
+        }
+
+        if (!turnstileToken && TURNSTILE_SITE_KEY) {
+            setError('يرجى إكمال اختبار التحقق الأمني (التحقق من أنك لست روبوت) قبل الإرسال.');
             return;
         }
 

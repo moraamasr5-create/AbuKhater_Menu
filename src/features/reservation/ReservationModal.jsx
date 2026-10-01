@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { reservationService } from '../../services/api';
 import useCart from '../../hooks/useCart';
-import TurnstileWidget from '../../components/common/TurnstileWidget';
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from '../../components/common/TurnstileWidget';
 
 const ReservationModal = ({ isOpen, onClose }) => {
     const { restaurantSettings } = useCart() || {};
@@ -256,6 +256,11 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
         if (!formData.paymentProof) {
             setError('الرجاء رفع (إسكرين شوت/صورة) التحويل لتأكيد الحجز');
+            return;
+        }
+
+        if (!turnstileToken && TURNSTILE_SITE_KEY) {
+            setError('يرجى إكمال اختبار التحقق الأمني (التحقق من أنك لست روبوت) لتأكيد الحجز.');
             return;
         }
 
