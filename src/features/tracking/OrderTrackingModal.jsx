@@ -25,6 +25,15 @@ import { orderService } from '../../services/api';
 import { supabase } from '../../services/supabase/supabaseClient';
 import { formatCurrency } from '../../core/utils/formatters';
 import TurnstileWidget from '../../components/common/TurnstileWidget';
+import {
+    GENERIC_NOT_FOUND_MESSAGE,
+    maskPhoneNumber,
+    getLockoutRemainingSeconds,
+    setLockoutDuration,
+    recordAndCheckPhoneActivity,
+    recordSearchFailure,
+    recordSearchSuccess
+} from '../../core/utils/trackingSecurity';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك ومراجعته في النظام', icon: Clock },
@@ -81,6 +90,24 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
     const [error, setError] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState(null);
+    const [cooldownSeconds, setCooldownSeconds] = useState(getLockoutRemainingSeconds());
+    const [isSuspiciousLocked, setIsSuspiciousLocked] = useState(false);
+
+    // Cooldown countdown interval
+    useEffect(() => {
+        if (cooldownSeconds <= 0) return;
+        const timer = setInterval(() => {
+            setCooldownSeconds(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setIsSuspiciousLocked(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [cooldownSeconds]);
 
     // Fetch up to 3 recent orders by phone (and optional order number)
     const performSearch = useCallback(async (ph, num, autoSelectId = null, tokenOverride = null) => {
@@ -90,6 +117,26 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
         if (!cleanPh && !cleanNum) {
             setError('يرجى إدخال رقم الهاتف المسجل به الطلب للاستعلام.');
             return;
+        }
+
+        // Check active rate limit / cooldown lockout
+        const activeLockout = getLockoutRemainingSeconds();
+        if (activeLockout > 0) {
+            setCooldownSeconds(activeLockout);
+            setError(`تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${activeLockout} ثانية).`);
+            return;
+        }
+
+        // Check suspicious multi-phone hopping activity
+        if (cleanPh) {
+            const activity = recordAndCheckPhoneActivity(cleanPh);
+            if (activity.isSuspicious) {
+                setLockoutDuration(120);
+                setCooldownSeconds(120);
+                setIsSuspiciousLocked(true);
+                setError('⚠️ تم رصد محاولات بحث متعددة بأرقام مختلفة. لأسباب أمنية، تم تجميد البحث مؤقتاً لمدة دقيقتين.');
+                return;
+            }
         }
 
         try {
@@ -117,8 +164,13 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
             if (!result || !result.success || !result.orders || result.orders.length === 0) {
                 setRecentOrders([]);
                 setSelectedOrder(null);
-                setError(result?.message || 'لم يتم العثور على أي طلبات مسجلة بهذا الرقم.');
+                const { cooldownSec } = recordSearchFailure();
+                if (cooldownSec > 0) {
+                    setCooldownSeconds(cooldownSec);
+                }
+                setError(GENERIC_NOT_FOUND_MESSAGE);
             } else {
+                recordSearchSuccess();
                 const orders = result.orders;
                 setRecentOrders(orders);
                 setError(null);
@@ -146,13 +198,17 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
             }
         } catch (err) {
             console.error('Customer recent orders fetch error:', err);
-            setError('تعذر الاستعلام عن الطلبات حالياً. يرجى التأكد من اتصال الإنترنت والمحاولة ثانية.');
+            const { cooldownSec } = recordSearchFailure();
+            if (cooldownSec > 0) {
+                setCooldownSeconds(cooldownSec);
+            }
+            setError(GENERIC_NOT_FOUND_MESSAGE);
             setRecentOrders([]);
             setSelectedOrder(null);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [turnstileToken]);
 
     // Initial search when modal opens
     useEffect(() => {
@@ -372,17 +428,39 @@ const OrderTrackingModal = ({ isOpen, onClose, initialOrderNumber, initialPhone 
                                 onExpire={() => setTurnstileToken(null)}
                             />
 
+                            {/* Cooldown / Lockout Notice */}
+                            {cooldownSeconds > 0 && (
+                                <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-2.5 text-amber-300 text-xs font-bold animate-in fade-in">
+                                    <Clock size={16} className="text-amber-400 shrink-0 animate-pulse" />
+                                    <span>
+                                        {isSuspiciousLocked
+                                            ? `تم إيقاف البحث مؤقتاً بسبب نشاط غير اعتيادي (${cooldownSeconds} ثانية).`
+                                            : `تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${cooldownSeconds} ثانية)...`}
+                                    </span>
+                                </div>
+                            )}
+
                             <button
                                 type="submit"
-                                disabled={loading || (!phone && !orderNumber)}
+                                disabled={loading || cooldownSeconds > 0 || (!phone && !orderNumber)}
                                 className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/25"
                             >
-                                {loading ? (
-                                    <RotateCcw size={18} className="animate-spin" />
+                                {cooldownSeconds > 0 ? (
+                                    <>
+                                        <Clock size={18} className="animate-pulse text-white/80" />
+                                        <span>يرجى الانتظار ({cooldownSeconds} ثانية)...</span>
+                                    </>
+                                ) : loading ? (
+                                    <>
+                                        <RotateCcw size={18} className="animate-spin" />
+                                        <span>جاري التحقق والاستعلام...</span>
+                                    </>
                                 ) : (
-                                    <Search size={18} />
+                                    <>
+                                        <Search size={18} />
+                                        <span>عرض ومتابعة طلباتي</span>
+                                    </>
                                 )}
-                                <span>عرض ومتابعة طلباتي</span>
                             </button>
                         </form>
                     )}

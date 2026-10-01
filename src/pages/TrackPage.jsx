@@ -19,6 +19,15 @@ import {
 import { orderService } from '../services/api';
 import { supabase } from '../services/supabase/supabaseClient';
 import { formatCurrency } from '../core/utils/formatters';
+import {
+    GENERIC_NOT_FOUND_MESSAGE,
+    maskPhoneNumber,
+    getLockoutRemainingSeconds,
+    setLockoutDuration,
+    recordAndCheckPhoneActivity,
+    recordSearchFailure,
+    recordSearchSuccess
+} from '../core/utils/trackingSecurity';
 
 const STATUS_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
@@ -59,6 +68,24 @@ const TrackPage = () => {
     const [orderData, setOrderData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [cooldownSeconds, setCooldownSeconds] = useState(getLockoutRemainingSeconds());
+    const [isSuspiciousLocked, setIsSuspiciousLocked] = useState(false);
+
+    // Cooldown countdown interval
+    useEffect(() => {
+        if (cooldownSeconds <= 0) return;
+        const timer = setInterval(() => {
+            setCooldownSeconds(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setIsSuspiciousLocked(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [cooldownSeconds]);
 
     const performTrack = useCallback(async (num, ph) => {
         const cleanNum = (num || '').trim();
@@ -67,6 +94,26 @@ const TrackPage = () => {
         if (!cleanNum && !cleanPh) {
             setError('يرجى إدخال رقم الطلب أو رقم الهاتف للاستعلام.');
             return;
+        }
+
+        // Check active rate limit / cooldown lockout
+        const activeLockout = getLockoutRemainingSeconds();
+        if (activeLockout > 0) {
+            setCooldownSeconds(activeLockout);
+            setError(`تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${activeLockout} ثانية).`);
+            return;
+        }
+
+        // Check suspicious multi-phone hopping activity
+        if (cleanPh) {
+            const activity = recordAndCheckPhoneActivity(cleanPh);
+            if (activity.isSuspicious) {
+                setLockoutDuration(120);
+                setCooldownSeconds(120);
+                setIsSuspiciousLocked(true);
+                setError('⚠️ تم رصد محاولات بحث متعددة بأرقام مختلفة. لأسباب أمنية تم إيقاف البحث مؤقتاً لمدة دقيقتين.');
+                return;
+            }
         }
 
         try {
@@ -79,15 +126,24 @@ const TrackPage = () => {
             });
 
             if (!result || !result.found) {
-                setError(result?.message || 'لم يتم العثور على أي طلب مطابق للبيانات المدخلة.');
+                const { cooldownSec } = recordSearchFailure();
+                if (cooldownSec > 0) {
+                    setCooldownSeconds(cooldownSec);
+                }
+                setError(GENERIC_NOT_FOUND_MESSAGE);
                 setOrderData(null);
             } else {
+                recordSearchSuccess();
                 setOrderData(result);
                 setError(null);
             }
         } catch (err) {
             console.error('Tracking query error:', err);
-            setError('تعذر الاستعلام عن الطلب حالياً. يرجى التأكد من اتصال الإنترنت.');
+            const { cooldownSec } = recordSearchFailure();
+            if (cooldownSec > 0) {
+                setCooldownSeconds(cooldownSec);
+            }
+            setError(GENERIC_NOT_FOUND_MESSAGE);
             setOrderData(null);
         } finally {
             setLoading(false);
@@ -208,17 +264,39 @@ const TrackPage = () => {
                             </div>
                         </div>
 
+                        {/* Cooldown / Lockout Notice */}
+                        {cooldownSeconds > 0 && (
+                            <div className="p-3.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-2.5 text-amber-300 text-xs font-bold animate-in fade-in">
+                                <Clock size={16} className="text-amber-400 shrink-0 animate-pulse" />
+                                <span>
+                                    {isSuspiciousLocked
+                                        ? `تم إيقاف البحث مؤقتاً بسبب نشاط غير اعتيادي (${cooldownSeconds} ثانية).`
+                                        : `تم إيقاف البحث مؤقتاً لحماية البيانات. يرجى الانتظار (${cooldownSeconds} ثانية)...`}
+                                </span>
+                            </div>
+                        )}
+
                         <button
                             type="submit"
-                            disabled={loading || (!orderNumber && !phone)}
+                            disabled={loading || cooldownSeconds > 0 || (!orderNumber && !phone)}
                             className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-primary/20"
                         >
-                            {loading ? (
-                                <RotateCcw size={18} className="animate-spin" />
+                            {cooldownSeconds > 0 ? (
+                                <>
+                                    <Clock size={18} className="animate-pulse text-white/80" />
+                                    <span>يرجى الانتظار ({cooldownSeconds} ثانية)...</span>
+                                </>
+                            ) : loading ? (
+                                <>
+                                    <RotateCcw size={18} className="animate-spin" />
+                                    <span>جاري الاستعلام...</span>
+                                </>
                             ) : (
-                                <Search size={18} />
+                                <>
+                                    <Search size={18} />
+                                    <span>تتبع الطلب الآن</span>
+                                </>
                             )}
-                            <span>تتبع الطلب الآن</span>
                         </button>
                     </form>
 
