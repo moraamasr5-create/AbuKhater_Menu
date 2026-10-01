@@ -229,24 +229,22 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         </div>
 
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-500 text-sm">
-                                <AlertCircle size={18} />
+                            <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-2xl flex items-center gap-3 text-red-500 text-xs sm:text-sm">
+                                <AlertCircle size={18} className="shrink-0" />
                                 <p>{error}</p>
                             </div>
                         )}
 
-                        <div className="flex justify-center py-2">
-                            <TurnstileWidget
-                                onVerify={(token) => setTurnstileToken(token)}
-                                onExpire={() => setTurnstileToken(null)}
-                                theme="dark"
-                            />
-                        </div>
+                        <TurnstileWidget
+                            onVerify={(token) => setTurnstileToken(token)}
+                            onExpire={() => setTurnstileToken(null)}
+                            theme="dark"
+                        />
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-orange-600 disabled:opacity-50 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-3 mt-8"
+                            className="w-full bg-primary hover:bg-orange-600 disabled:opacity-50 text-white font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20 flex items-center justify-center gap-3 mt-4 sm:mt-6"
                         >
                             {loading ? (
                                 <Loader2 className="animate-spin" size={20} />

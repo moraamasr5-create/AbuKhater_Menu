@@ -126,24 +126,24 @@ export const TurnstileWidget = ({
     }
 
     return (
-        <div className={`my-3 flex flex-col items-center justify-center w-full ${className}`}>
-            <div className="relative min-h-[65px] min-w-[300px] flex items-center justify-center rounded-2xl bg-dark-950/60 border border-white/10 p-2 shadow-inner">
+        <div className={`my-2.5 sm:my-3.5 flex flex-col items-center justify-center w-full ${className}`}>
+            <div className="relative min-h-[65px] w-full max-w-[320px] flex items-center justify-center rounded-2xl bg-dark-950/50 border border-white/[0.08] p-1.5 shadow-inner overflow-hidden">
                 {widgetState === 'loading' && (
                     <div className="absolute inset-0 flex items-center justify-center gap-2 text-slate-400 text-xs font-bold animate-pulse">
-                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        <Loader2 className="w-4 h-4 animate-spin text-primary shrink-0" />
                         <span>جاري تحميل التحقق الأمني...</span>
                     </div>
                 )}
-                <div ref={containerRef} className="turnstile-wrapper flex justify-center items-center" />
+                <div ref={containerRef} className="turnstile-wrapper flex justify-center items-center w-full" />
             </div>
             {widgetState === 'verified' && (
-                <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold mt-1.5 animate-in fade-in">
-                    <ShieldCheck size={16} />
+                <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] sm:text-xs font-bold mt-1.5 animate-in fade-in">
+                    <ShieldCheck size={14} className="shrink-0" />
                     <span>تم التحقق الأمني بنجاح</span>
                 </div>
             )}
             {widgetState === 'error' && (
-                <div className="text-red-400 text-xs font-bold mt-1.5 animate-in fade-in">
+                <div className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 text-center animate-in fade-in">
                     تعذر إكمال التحقق الأمني، يرجى إعادة المحاولة.
                 </div>
             )}

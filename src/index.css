@@ -186,3 +186,17 @@
   transform: translateY(0);
   transition: opacity 300ms, transform 300ms;
 }
+
+/* Cloudflare Turnstile Responsive Alignment */
+.turnstile-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.turnstile-wrapper iframe {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+

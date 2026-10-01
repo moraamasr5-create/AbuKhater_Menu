@@ -735,13 +735,13 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                             </button>
                                         </div>
                                     ) : (
-                                        <label className="flex flex-col items-center justify-center gap-4 bg-dark-950/50 border-2 border-dashed border-white/10 hover:border-primary/50 rounded-3xl p-10 cursor-pointer transition-all hover:bg-dark-950">
-                                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                                                <Upload size={28} />
+                                        <label className="flex flex-col items-center justify-center gap-3 sm:gap-4 bg-dark-950/50 border-2 border-dashed border-white/10 hover:border-primary/50 rounded-3xl p-6 sm:p-8 cursor-pointer transition-all hover:bg-dark-950">
+                                            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                                <Upload size={24} className="sm:w-7 sm:h-7" />
                                             </div>
                                             <div className="text-center">
-                                                <p className="text-slate-200 font-bold text-sm">اضغط هنا لرفع الصورة</p>
-                                                <p className="text-slate-500 text-xs mt-1">PNG, JPG or JPEG (Max 10MB)</p>
+                                                <p className="text-slate-200 font-bold text-xs sm:text-sm">اضغط هنا لرفع الصورة</p>
+                                                <p className="text-slate-500 text-[11px] sm:text-xs mt-0.5">PNG, JPG or JPEG (الحد الأقصى 10MB)</p>
                                             </div>
                                             <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
                                         </label>
@@ -756,7 +756,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                             />
 
                             {error && (
-                                <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-500 text-sm">
+                                <div className="bg-red-500/10 border border-red-500/20 p-3.5 sm:p-4 rounded-2xl flex items-center gap-3 text-red-500 text-xs sm:text-sm">
                                     <AlertCircle size={18} className="shrink-0" />
                                     <p>{error}</p>
                                 </div>
