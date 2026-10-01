@@ -166,13 +166,10 @@
 
 @keyframes scroll-hint {
   0% {
-    transform: translateX(0);
+    transform: translateX(-90px);
   }
-  35% {
-    transform: translateX(-40px);
-  }
-  70% {
-    transform: translateX(6px);
+  75% {
+    transform: translateX(5px);
   }
   100% {
     transform: translateX(0);
@@ -180,7 +177,7 @@
 }
 
 .animate-scroll-hint {
-  animation: scroll-hint 0.9s cubic-bezier(0.25, 1, 0.5, 1) 0.5s 1 normal forwards;
+  animation: scroll-hint 1s cubic-bezier(0.16, 1, 0.3, 1) 0.25s 1 normal both;
 }
 
 .animate-float {
