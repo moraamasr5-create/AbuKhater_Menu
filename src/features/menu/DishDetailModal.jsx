@@ -83,7 +83,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
             <div className="relative w-full max-w-lg bg-dark-900 border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-300">
                 {/* Header Actions */}
                 <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                    {hasRealImage && (
+                    {/* {hasRealImage && (
                         <button
                             type="button"
                             onClick={() => setIsZoomed(!isZoomed)}
@@ -92,7 +92,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                         >
                             {isZoomed ? <ZoomOut size={18} /> : <ZoomIn size={18} />}
                         </button>
-                    )}
+                    )} */}
                     <button
                         type="button"
                         onClick={onClose}
@@ -115,9 +115,8 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                                 alt={item.name}
                                 onLoad={() => setImgLoaded(true)}
                                 onError={() => setImgError(true)}
-                                className={`w-full h-full object-cover transition-transform duration-500 cursor-zoom-in ${
-                                    isZoomed ? 'scale-150 cursor-zoom-out' : 'scale-100 hover:scale-105'
-                                } ${!isAvailable ? 'grayscale opacity-60' : ''}`}
+                                className={`w-full h-full object-cover transition-transform duration-500 cursor-zoom-in ${isZoomed ? 'scale-150 cursor-zoom-out' : 'scale-100 hover:scale-105'
+                                    } ${!isAvailable ? 'grayscale opacity-60' : ''}`}
                                 onClick={() => setIsZoomed(!isZoomed)}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent pointer-events-none" />
@@ -139,9 +138,8 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                             </span>
                         )}
                         {!isAvailable && (
-                            <span className={`inline-flex items-center gap-1 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg ${
-                                isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'
-                            }`}>
+                            <span className={`inline-flex items-center gap-1 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'
+                                }`}>
                                 <AlertCircle size={13} /> {statusLabel}
                             </span>
                         )}
@@ -169,9 +167,9 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                     </div>
 
                     <div className="bg-dark-950/60 rounded-2xl p-4 border border-white/5">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">وصف الوجبة</h3>
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5"> الوصـف </h3>
                         <p className="text-sm text-slate-300 leading-relaxed">
-                            {item.description || 'وجبة طازجة ومحضرة بأجود المكونات والتوابل الخاصة على طريقة مطاعم أبو خاطر.'}
+                            {item.description || ' طازجة ومحضرة بأجود المكونات والتوابل الخاصة على طريقة مطاعم أبو خاطر.'}
                         </p>
                     </div>
                 </div>

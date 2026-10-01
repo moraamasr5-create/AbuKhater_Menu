@@ -94,7 +94,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
             className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-1.5 ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
         >
             {/* Image / Thumbnail Container */}
-            <div 
+            <div
                 onClick={() => onOpenDetail(item)}
                 className="relative w-[96px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden bg-dark-950 cursor-pointer"
             >
@@ -151,7 +151,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
             <div className="flex-1 p-3 md:p-6 flex flex-col min-w-0 min-h-0">
                 <div className="mb-0 md:mb-4">
                     <div className="flex items-center justify-between gap-1 mb-1 md:mb-2">
-                        <h3 
+                        <h3
                             onClick={() => onOpenDetail(item)}
                             className="text-sm md:text-xl font-bold text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
                         >
@@ -572,11 +572,10 @@ const MenuPage = () => {
                                             if (navigator.vibrate) navigator.vibrate(10);
                                             setActiveCategory(catId);
                                         }}
-                                        className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-black transition-all whitespace-nowrap border shrink-0 snap-start min-h-[40px] ${
-                                            isActive
-                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25 scale-[1.02]'
-                                                : 'bg-dark-800/60 border-white/[0.06] text-slate-400 hover:bg-dark-800 hover:text-slate-200'
-                                        }`}
+                                        className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-black transition-all whitespace-nowrap border shrink-0 snap-start min-h-[40px] ${isActive
+                                            ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25 scale-[1.02]'
+                                            : 'bg-dark-800/60 border-white/[0.06] text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                                            }`}
                                     >
                                         <IconComp size={15} className={`shrink-0 ${isActive ? 'text-white' : 'text-primary'}`} />
                                         <span>{mapped.label}</span>
@@ -751,7 +750,7 @@ const MenuPage = () => {
 
                         {/* Swipe / Click hint for phones */}
                         <p className="text-slate-400 text-xs font-medium mt-4 text-center select-none pointer-events-none opacity-80">
-                            اسحب لأعلى أو لأسفل أو اضغط بالخارج للإغلاق
+                            فرخـتنـا المشـويـة رقـم واحـد فـ الجمهوريـة
                         </p>
                     </div>
                 </div>
