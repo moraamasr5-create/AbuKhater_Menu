@@ -122,7 +122,7 @@ const PaymentPage = () => {
     };
 
     /**
-     * 🔴 الدالة الأساسية لتأكيد الطلب وإرساله لـ n8n
+     * 🔴 الدالة الأساسية لتأكيد الطلب وإرساله إلى Supabase Core (create_order RPC)
      * بتجمع بيانات العميل، الأصناف، وصورة الدفع وبتبعتهم في طلب واحد
      */
     const handleConfirmPayment = async () => {

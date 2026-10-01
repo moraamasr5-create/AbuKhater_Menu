@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { menuService } from '../services/api';
-import { supabase } from '../services/supabaseClient';
+import { supabase } from '../services/supabase/supabaseClient';
 import useCart from '../hooks/useCart';
 import StickyCartBar from '../features/cart/StickyCartBar';
 import ProgressSteps from '../features/checkout/ProgressSteps';
@@ -38,7 +38,6 @@ const CATEGORY_DATA = {
 
 const DataSourceBadge = ({ source }) => {
     const config = {
-        n8n: { label: 'مباشر (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
         supabase: { label: 'أحـدث منيـو - (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
         offline: { label: 'أوفلاين (Offline)', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
     };
@@ -48,7 +47,7 @@ const DataSourceBadge = ({ source }) => {
 
     return (
         <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-sm ${color} transition-all duration-500 animate-in fade-in slide-in-from-top-1`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${source === 'n8n' ? 'bg-green-500 animate-pulse' : source === 'supabase' ? 'bg-blue-500' : 'bg-amber-500'}`} />
+            <div className={`w-1.5 h-1.5 rounded-full ${source === 'supabase' ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
             <span>{label}</span>
         </div>
     );
