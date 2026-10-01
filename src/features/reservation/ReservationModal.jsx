@@ -307,7 +307,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle className="text-emerald-500 w-10 h-10" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-3">تم إرسال طلبك بنجاح وهو تحت المراجة✅</h2>
+                    <h2 className="text-2xl font-black text-white mb-3">تم إرسال طلبك بنجاح وهو قيد المراجعة ✅</h2>
                     <p className="text-slate-400 mb-8 leading-relaxed">
                         سيتم مراجعة طلب الحجز وصورة التحويل وتأكيده معك عبر الهاتف أو الواتساب في أقرب وقت.
                     </p>
@@ -333,8 +333,8 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     >
                         <X size={20} />
                     </button>
-                    <h2 className="text-xl font-black text-white flex items-center gap-3">
-                        {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز  (العربون يخـصم من الفاتورة الحساب)'}
+                    <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-3">
+                        {step === 1 ? 'حجز طاولة جديدة' : 'تأكيد الحجز ودفع العربون'}
                         <Calendar className="text-primary" size={24} />
                     </h2>
                 </div>

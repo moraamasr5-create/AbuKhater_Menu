@@ -13,7 +13,8 @@ import {
     Lock,
     Wallet,
     CreditCard,
-    Receipt
+    Receipt,
+    Store
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
 import { RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../core/constants';
@@ -136,7 +137,7 @@ const CustomerPage = () => {
 
     const validators = {
         name: (value) => {
-            if (!value) return "الاسم مطلوب";
+            if (!value || !value.trim()) return "الاسم مطلوب";
             if (value.trim().length < 2) return "الاسم يجب أن لا يقل عن حرفين";
             if (!/^[\u0600-\u06FFa-zA-Z\s]+$/.test(value)) return "يمنع استخدام الأرقام أو الرموز في الاسم";
             return "";
@@ -148,22 +149,22 @@ const CustomerPage = () => {
             return "";
         },
         street: (value) => {
-            if (!value) return "اسم الشارع مطلوب";
-            if (value.length < 3) return "اسم الشارع يجب أن لا يقل عن 10 أحرف";
+            if (!value || !value.trim()) return "اسم الشارع مطلوب";
+            if (value.trim().length < 3) return "اسم الشارع يجب أن لا يقل عن 3 أحرف";
             return "";
         },
         building: (value) => {
-            if (!value) return "بيانات المبنى مطلوبة";
-            const isNumber = /^\d+$/.test(value);
-            if (isNumber && value.length > 4) return "رقم المبنى يجب أن لا يزيد عن 5 أرقام";
-            if (!isNumber && value.length > 4) return "اسم المبنى يجب أن لا يزيد عن 10 أحرف";
+            if (!value || !value.trim()) return "بيانات المبنى مطلوبة";
+            const isNumber = /^\d+$/.test(value.trim());
+            if (isNumber && value.trim().length > 5) return "رقم المبنى يجب أن لا يزيد عن 5 أرقام";
+            if (!isNumber && value.trim().length > 30) return "اسم المبنى يجب أن لا يزيد عن 30 حرفًا";
             return "";
         },
         apartment: (value) => {
-            if (!value) return "بيانات الشقة مطلوبة";
-            const isNumber = /^\d+$/.test(value);
-            if (isNumber && value.length > 5) return "رقم الشقة يجب أن لا يزيد عن 5 أرقام";
-            if (!isNumber && value.length > 10) return "اسم الشقة يجب أن لا يزيد عن 10 أحرف";
+            if (!value || !value.trim()) return "بيانات الشقة مطلوبة";
+            const isNumber = /^\d+$/.test(value.trim());
+            if (isNumber && value.trim().length > 5) return "رقم الشقة يجب أن لا يزيد عن 5 أرقام";
+            if (!isNumber && value.trim().length > 30) return "بيانات الشقة يجب أن لا تزيد عن 30 حرفًا";
             return "";
         }
     };
@@ -435,7 +436,25 @@ const CustomerPage = () => {
 
             navigate('/payment');
         } else {
-            alert('يرجى إكمال جميع البيانات المطلوبة');
+            // Touch and validate all required fields for instant inline feedback
+            const allTouched = { name: true, phone1: true, phone2: true };
+            const allErrors = {
+                name: validateField('name', customerData.name),
+                phone1: validateField('phone1', customerData.phone1),
+                phone2: validateField('phone2', customerData.phone2)
+            };
+            if (orderType === 'delivery') {
+                allTouched.street = true;
+                allTouched.building = true;
+                allTouched.apartment = true;
+                allErrors.street = validateField('street', addressDetails.street);
+                allErrors.building = validateField('building', addressDetails.building);
+                allErrors.apartment = validateField('apartment', addressDetails.apartment);
+            }
+            setTouched(prev => ({ ...prev, ...allTouched }));
+            setErrors(prev => ({ ...prev, ...allErrors }));
+
+            if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
         }
     };
 
@@ -446,8 +465,23 @@ const CustomerPage = () => {
             <div className="max-w-md mx-auto w-full px-3 sm:px-4 pt-5 sm:pt-6 space-y-5 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <header className="text-center space-y-2">
                     <h2 className="text-[1.35rem] sm:text-2xl md:text-3xl font-black text-white display-font tracking-tight">إكمال البيانات</h2>
-                    <p className="text-slate-400/95 text-[13px] sm:text-sm font-semibold leading-relaxed px-1">نحتاج لبعض المعلومات لتوصيل طلبك بأفضل جودة</p>
+                    <p className="text-slate-400/95 text-[13px] sm:text-sm font-semibold leading-relaxed px-1">
+                        {orderType === 'pickup' ? 'بياناتك لتجهيز واستلام طلبك من الفرع' : 'نحتاج لبعض المعلومات لتوصيل طلبك بأفضل سرعة'}
+                    </p>
                 </header>
+
+                {/* Pickup Context Banner */}
+                {orderType === 'pickup' && (
+                    <div className="bg-teal-500/10 border border-teal-500/25 p-4 rounded-2xl flex items-center gap-3.5 animate-in fade-in">
+                        <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center text-teal-400 shrink-0">
+                            <Store size={20} />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-teal-400 text-xs sm:text-sm">استلام من المطعم (بدون رسوم توصيل)</h4>
+                            <p className="text-[11px] text-slate-400 font-medium mt-0.5">فرع مطعم أبو خاطر الرئيسي — يرجى تجهيز الاسم ورقم الهاتف عند الاستلام.</p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Section 1: Personal Info */}
                 <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
@@ -458,10 +492,12 @@ const CustomerPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5 relative">
-                            <label className="text-[10px] text-slate-500 font-black mr-2">الاسم بالكامل <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                                الاسم بالكامل <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 required
-                                placeholder="أسـم ثنائـي ..."
+                                placeholder="أدخل اسمك ثنائي..."
                                 className={getInputClass('name')}
                                 value={customerData.name}
                                 onChange={e => handleChange('name', e.target.value)}
@@ -471,7 +507,12 @@ const CustomerPage = () => {
                                     setTimeout(() => setShowSuggestions(false), 200);
                                 }}
                             />
-                            {touched.name && errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.name}</p>}
+                            {touched.name && errors.name && (
+                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                    <AlertCircle size={12} className="shrink-0" />
+                                    <span>{errors.name}</span>
+                                </p>
+                            )}
 
                             {showSuggestions && savedCustomers.length > 0 && (
                                 <div className="absolute top-[100%] left-0 w-full mt-1 bg-dark-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
@@ -501,7 +542,9 @@ const CustomerPage = () => {
                             )}
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-[10px] text-slate-500 font-black mr-2">رقم الهاتف الأساسي <span className="text-red-500">*</span></label>
+                            <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                                رقم الهاتف الأساسي <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 required
                                 type="tel"
@@ -512,11 +555,18 @@ const CustomerPage = () => {
                                 onBlur={() => handleBlur('phone1')}
                                 maxLength={11}
                             />
-                            {touched.phone1 && errors.phone1 && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.phone1}</p>}
+                            {touched.phone1 && errors.phone1 && (
+                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                    <AlertCircle size={12} className="shrink-0" />
+                                    <span>{errors.phone1}</span>
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] text-slate-500 font-black mr-2">هاتف إضافي (إجباري) <span className="text-red-500">*</span></label>
+                        <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                            هاتف إضافي (للطوارئ والتأكيد) <span className="text-red-500">*</span>
+                        </label>
                         <input
                             required
                             type="tel"
@@ -527,7 +577,12 @@ const CustomerPage = () => {
                             onBlur={() => handleBlur('phone2')}
                             maxLength={11}
                         />
-                        {touched.phone2 && errors.phone2 && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.phone2}</p>}
+                        {touched.phone2 && errors.phone2 && (
+                            <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                <AlertCircle size={12} className="shrink-0" />
+                                <span>{errors.phone2}</span>
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -643,12 +698,14 @@ const CustomerPage = () => {
                         )}
 
                         <div className="space-y-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">تفاصيل العنوان</h4>
+                            <div className="flex items-center gap-2 mb-1">
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mr-1">تفاصيل العنوان والمبنى</h4>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-[10px] text-slate-500 font-bold mr-2">اسم الشارع <span className="text-red-500">*</span></label>
+                                <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                                    اسم الشارع <span className="text-red-500">*</span>
+                                </label>
                                 <input
                                     required
                                     placeholder="أدخل اسم الشارع بالتفصيل..."
@@ -657,33 +714,52 @@ const CustomerPage = () => {
                                     onChange={e => handleChange('street', e.target.value)}
                                     onBlur={() => handleBlur('street')}
                                 />
-                                {touched.street && errors.street && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.street}</p>}
+                                {touched.street && errors.street && (
+                                    <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                        <AlertCircle size={12} className="shrink-0" />
+                                        <span>{errors.street}</span>
+                                    </p>
+                                )}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] text-slate-500 font-bold mr-2">رقم / اسم العمارة <span className="text-red-500">*</span></label>
+                                    <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                                        رقم / اسم العمارة <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         required
-                                        placeholder="رقم العمارة"
+                                        placeholder="مثال: عمارة 14 أو برج النور"
                                         className={getInputClass('building')}
                                         value={addressDetails.building}
                                         onChange={e => handleChange('building', e.target.value)}
                                         onBlur={() => handleBlur('building')}
                                     />
-                                    {touched.building && errors.building && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.building}</p>}
+                                    {touched.building && errors.building && (
+                                        <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                            <AlertCircle size={12} className="shrink-0" />
+                                            <span>{errors.building}</span>
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] text-slate-500 font-bold mr-2">رقم / اسم الشقة <span className="text-red-500">*</span></label>
+                                    <label className="text-xs font-bold text-slate-300 mr-1.5 flex items-center gap-1">
+                                        رقم / اسم الشقة <span className="text-red-500">*</span>
+                                    </label>
                                     <input
                                         required
-                                        placeholder="رقم الشقة"
+                                        placeholder="مثال: شقة 4 الدور 2"
                                         className={getInputClass('apartment')}
                                         value={addressDetails.apartment}
                                         onChange={e => handleChange('apartment', e.target.value)}
                                         onBlur={() => handleBlur('apartment')}
                                     />
-                                    {touched.apartment && errors.apartment && <p className="text-red-500 text-[10px] font-bold mt-1 animate-pulse">{errors.apartment}</p>}
+                                    {touched.apartment && errors.apartment && (
+                                        <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                            <AlertCircle size={12} className="shrink-0" />
+                                            <span>{errors.apartment}</span>
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>

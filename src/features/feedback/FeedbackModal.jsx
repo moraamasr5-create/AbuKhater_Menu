@@ -191,7 +191,12 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 placeholder="أدخل اسمك..."
                                 className={`w-full bg-dark-950/50 border ${errors.fullName ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
                             />
-                            {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+                            {errors.fullName && (
+                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                    <AlertCircle size={12} className="shrink-0" />
+                                    <span>{errors.fullName}</span>
+                                </p>
+                            )}
                         </div>
 
                         {/* Phone */}
@@ -209,7 +214,12 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 maxLength={11}
                                 className={`w-full bg-dark-950/50 border ${errors.phone ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all`}
                             />
-                            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                            {errors.phone && (
+                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                    <AlertCircle size={12} className="shrink-0" />
+                                    <span>{errors.phone}</span>
+                                </p>
+                            )}
                         </div>
 
                         {/* Message */}
@@ -225,7 +235,12 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 placeholder="اكتب مقترحك أو تفاصيل الشكوى هنا..."
                                 className={`w-full bg-dark-950/50 border ${errors.message ? 'border-red-500' : 'border-white/5'} text-white px-5 py-4 rounded-2xl focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all min-h-[140px] resize-none`}
                             ></textarea>
-                            {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
+                            {errors.message && (
+                                <p className="text-red-400 text-xs font-bold mt-1 flex items-center gap-1 animate-in fade-in">
+                                    <AlertCircle size={12} className="shrink-0" />
+                                    <span>{errors.message}</span>
+                                </p>
+                            )}
                         </div>
 
                         {error && (
