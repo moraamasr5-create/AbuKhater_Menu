@@ -8,21 +8,19 @@ export const feedbackService = {
         console.group('📝 Submitting feedback to Supabase');
         
         try {
-            const { data, error } = await supabase
-                .from('feedback')
-                .insert([{
-                    full_name: payload.fullName,
-                    phone: payload.phone,
-                    type: payload.type,
-                    message: payload.message,
-                    created_at: new Date().toISOString()
-                }])
-                .select()
-                .single();
+            const idempotencyKey = payload.idempotencyKey || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : null);
+
+            const { data, error } = await supabase.rpc('submit_feedback', {
+                p_full_name: payload.fullName || payload.full_name || '',
+                p_phone: payload.phone || '',
+                p_type: payload.type || 'suggestion',
+                p_message: payload.message || '',
+                p_idempotency_key: idempotencyKey
+            });
 
             if (error) throw error;
 
-            console.log('✅ Feedback submitted successfully');
+            console.log('✅ Feedback submitted successfully via RPC:', data);
             console.groupEnd();
             
             return {

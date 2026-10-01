@@ -88,26 +88,23 @@ export const reservationService = {
                 throw new Error('خطأ: محاولة تخزين Base64 في قاعدة البيانات مرفوضة.');
             }
 
-            const { data, error } = await supabase
-                .from('reservations')
-                .insert([{
-                    customer_name: payload.name,
-                    customer_phone: payload.phone,
-                    reservation_date: payload.date,
-                    reservation_time: payload.time,
-                    guests_count: payload.guests,
-                    location_type: payload.location_type,
-                    notes: payload.notes,
-                    status: payload.status || 'pending',
-                    payment_proof_url: screenshotUrl,
-                    created_at: payload.created_at || new Date().toISOString()
-                }])
-                .select()
-                .single();
+            const idempotencyKey = payload.idempotencyKey || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : null);
+
+            const { data, error } = await supabase.rpc('submit_reservation', {
+                p_customer_name: payload.name || payload.customer_name || '',
+                p_customer_phone: payload.phone || payload.customer_phone || '',
+                p_reservation_date: payload.date || payload.reservation_date,
+                p_reservation_time: payload.time || payload.reservation_time,
+                p_guests_count: parseInt(payload.guests || payload.guests_count || 2, 10),
+                p_location_type: payload.location_type || payload.locationType || 'restaurant',
+                p_notes: payload.notes || null,
+                p_payment_proof_url: screenshotUrl || null,
+                p_idempotency_key: idempotencyKey
+            });
 
             if (error) throw error;
 
-            console.log('✅ Reservation submitted successfully');
+            console.log('✅ Reservation submitted successfully via RPC:', data);
             console.groupEnd();
 
             return {
