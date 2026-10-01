@@ -547,7 +547,7 @@ const MenuPage = () => {
                             id="categories-scroll"
                             role="tablist"
                             aria-label="تصنيفات القائمة"
-                            className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 -mx-0.5 px-0.5 scrollbar-hide mask-fade flex-1 scroll-smooth snap-x snap-mandatory"
+                            className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 -mx-0.5 px-0.5 scrollbar-hide mask-fade flex-1 scroll-smooth snap-x snap-mandatory animate-scroll-hint"
                             dir="rtl"
                         >
                             {categories.map((catId) => {
