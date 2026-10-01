@@ -134,18 +134,13 @@ const PaymentPage = () => {
         }
 
         setIsSubmitting(true);
+        const clientMutationKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : null;
 
-        // 🔴 جلب رقم الطلب التسلسلي (#1, #2...) من الذاكرة المحلية
-        const lastCount = parseInt(localStorage.getItem('order_sequence_num') || '0');
-        const nextCount = lastCount + 1;
-        const orderId = `#${nextCount}`;
-
-        // Data structure for Supabase submission
+        // Data structure for submission (server calculates authoritative totals)
         const orderData = {
             restaurant: "مطعم أبو خاطر",
-            order_id: orderId,
-            timestamp: new Date().toISOString(),
             order_type: orderType,
+            idempotency_key: clientMutationKey,
             customer: {
                 full_name: customerData.name,
                 phone_1: customerData.phone1,
@@ -162,42 +157,35 @@ const PaymentPage = () => {
                 } : null
             },
             payment: {
-                total_amount: finalTotal,
-                paid_now: paidNow,
-                remaining: remaining,
-                service_fee: serviceFee,
-                deadline: isCash ? null : new Date(Date.now() + 10 * 60000).toISOString(),
                 screenshot: screenshot
             },
-            items: cart.map((item, index) => ({
-                id: `#${index + 1}`,
+            items: cart.map(item => ({
+                id: item.id || item.menuItemId || item.item_id,
                 name: item.name,
                 category: item.category || "عام",
                 quantity: item.quantity,
                 price: item.price,
                 total: item.price * item.quantity
-            })),
-            totals: {
-                subtotal: subtotal,
-                delivery_fee: deliveryFee,
-                service_fee: serviceFee,
-                total: finalTotal
-            }
+            }))
         };
 
         try {
-            console.log('🎯 بدء تأكيد الطلب عبر Supabase...');
+            console.log('🎯 بدء تأكيد الطلب عبر السيرفر (create_order)...');
             setSubmitError(null);
 
-            await orderService.submitOrder(orderData);
-            console.log('✅ Order submitted directly to Supabase');
+            const result = await orderService.submitOrder(orderData);
+            console.log('✅ تم إنشاء الطلب بنجاح عبر السيرفر:', result);
 
-            // Record success data immediately since we succeeded
+            const authoritativeOrderNumber = result.order_number || `#${result.order_id?.slice(0, 6)}`;
+            const authoritativeTotal = result.total_amount ?? finalTotal;
+
+            // Record success data with server-authoritative values
             setSuccessData({
-                orderId: orderId,
-                orderNumber: orderId,
+                orderId: authoritativeOrderNumber,
+                orderNumber: authoritativeOrderNumber,
+                supabaseId: result.order_id,
                 customerName: customerData.name,
-                totalAmount: finalTotal,
+                totalAmount: authoritativeTotal,
                 estimatedTime: estimatedTime,
                 itemsCount: cart.reduce((s, i) => s + i.quantity, 0),
                 items: [...cart],
@@ -208,24 +196,25 @@ const PaymentPage = () => {
             });
 
             setIsSuccess(true);
-            localStorage.setItem('order_sequence_num', nextCount.toString());
 
             try {
                 localStorage.setItem('lastSuccessfulOrder', JSON.stringify({
-                    order: orderData,
+                    order: { ...orderData, order_number: authoritativeOrderNumber, order_id: result.order_id },
                     timestamp: new Date().toISOString()
                 }));
             } catch (e) {
                 console.error('Failed to save to localStorage', e);
             }
         } catch (error) {
-            console.error('💀 خطأ نهائي في تأكيد الدفع:', error);
+            console.error('💀 خطأ في تأكيد الطلب:', error);
             const errMsg = error?.message != null ? String(error.message) : String(error);
             let userMessage = 'عذراً، حدث خطأ أثناء تأكيد الطلب.';
             if (errMsg.includes('شبكة') || errMsg.includes('اتصال') || errMsg.includes('Failed to fetch')) {
                 userMessage = '⚠️ مشكلة في الاتصال بالإنترنت. يرجى التحقق من اتصالك وإعادة المحاولة.';
             } else if (errMsg.includes('وقت') || errMsg.includes('timeout')) {
                 userMessage = '⏰ تأخرت الاستجابة من الخادم. جاري المحاولة مرة أخرى...';
+            } else if (errMsg.includes('وردية') || errMsg.includes('مغلق') || errMsg.includes('توصيل') || errMsg.includes('متوفر')) {
+                userMessage = `⚠️ ${errMsg}`;
             } else {
                 userMessage = `❌ ${errMsg}`;
             }

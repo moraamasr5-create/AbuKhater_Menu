@@ -26,10 +26,10 @@ const base64ToBlob = (base64Data) => {
 
 export const orderService = {
     /**
-     * Submit order directly to Supabase
+     * Submit order via authoritative server-side create_order RPC
      */
     async submitOrder(payload) {
-        console.group('🚀 Submitting order to Supabase');
+        console.group('🚀 Submitting order via create_order RPC');
         try {
             let screenshotUrl = payload.payment?.screenshot;
 
@@ -52,7 +52,7 @@ export const orderService = {
                         });
 
                     if (uploadError) {
-                        console.error('⚠️ Screenshot upload failed, falling back to base64:', uploadError.message);
+                        console.error('⚠️ Screenshot upload failed, falling back to original:', uploadError.message);
                     } else {
                         const { data: publicUrlData } = supabase.storage
                             .from('payment-screenshots')
@@ -64,75 +64,60 @@ export const orderService = {
                 }
             }
 
-            // 2. Create a compact payload for the raw_payload backup (prevents duplicating data)
-            const compactPayload = {
-                order_id: payload.order_id,
-                timestamp: payload.timestamp,
-                order_type: payload.order_type,
-                restaurant: payload.restaurant,
-                items: payload.items
+            // 2. Prepare items with genuine menu item IDs
+            const itemsForRpc = (payload.items || []).map(item => ({
+                item_id: item.itemId || item.menuItemId || item.id,
+                name: item.name,
+                quantity: parseInt(item.quantity || item.count || 1, 10),
+                notes: item.notes || null
+            }));
+
+            const idempotencyKey = payload.idempotency_key || (
+                typeof crypto !== 'undefined' && crypto.randomUUID
+                    ? crypto.randomUUID()
+                    : null
+            );
+
+            const rpcParams = {
+                p_order_type: payload.order_type || 'delivery',
+                p_customer_name: payload.customer?.full_name || '',
+                p_customer_phone: payload.customer?.phone_1 || '',
+                p_customer_phone_2: payload.customer?.phone_2 || null,
+                p_delivery_address: payload.customer?.delivery_info?.address || null,
+                p_payment_method: payload.customer?.payment_method || 'cash',
+                p_payment_screenshot: screenshotUrl || null,
+                p_location_method: payload.customer?.delivery_info?.method || 'gps',
+                p_area_id: payload.customer?.delivery_info?.area_id || null,
+                p_latitude: payload.customer?.delivery_info?.coordinates?.lat ?? null,
+                p_longitude: payload.customer?.delivery_info?.coordinates?.lon ?? payload.customer?.delivery_info?.coordinates?.lng ?? null,
+                p_items: itemsForRpc,
+                p_idempotency_key: idempotencyKey,
+                p_source: 'online'
             };
 
-            // 3. Insert main order record
-            const { data: orderData, error: orderError } = await supabase
-                .from('orders')
-                .insert([{
-                    customer_name: payload.customer?.full_name,
-                    customer_phone: payload.customer?.phone_1,
-                    customer_phone_2: payload.customer?.phone_2,
-                    order_type: payload.order_type,
-                    total_amount: payload.payment?.total_amount,
-                    service_fee: payload.payment?.service_fee,
-                    paid_now: payload.payment?.paid_now,
-                    remaining_amount: payload.payment?.remaining,
-                    status: 'pending',
-                    delivery_address: payload.customer?.delivery_info?.address,
-                    delivery_fee: payload.customer?.delivery_info?.delivery_fee,
-                    latitude: payload.customer?.delivery_info?.coordinates?.lat,
-                    longitude: payload.customer?.delivery_info?.coordinates?.lon,
-                    payment_method: payload.customer?.payment_method,
-                    payment_screenshot: screenshotUrl, // Now using URL or fallback to original
-                    created_at: new Date().toISOString(),
-                    raw_payload: compactPayload // Storing compact payload as backup
-                }])
-                .select()
-                .single();
+            console.log('📦 Invoking create_order RPC with authoritative parameters:', rpcParams);
 
-            if (orderError) {
-                console.error("Order failed:", orderError);
+            const { data: rpcResult, error: rpcError } = await supabase.rpc('create_order', rpcParams);
+
+            if (rpcError) {
+                console.error("❌ create_order RPC failed:", rpcError);
                 console.groupEnd();
-                throw orderError;
+                throw rpcError;
             }
 
-            const insertedOrderId = orderData.id;
-
-            // 4. Insert order items if table exists
-            if (payload.items && payload.items.length > 0) {
-                const itemsToInsert = payload.items.map(item => ({
-                    order_id: insertedOrderId,
-                    product_id: item.id,
-                    product_name: item.name,
-                    quantity: item.quantity,
-                    unit_price: item.price,
-                    total_price: item.total
-                }));
-
-                const { error: itemsError } = await supabase
-                    .from('order_items')
-                    .insert(itemsToInsert);
-
-                if (itemsError) {
-                    console.warn('⚠️ Order created but items failed to insert:', itemsError.message);
-                }
-            }
-
-            console.log('✅ Order submitted successfully:', insertedOrderId);
+            console.log('✅ Order created authoritatively by server:', rpcResult);
             console.groupEnd();
 
             return {
                 success: true,
-                order_id: insertedOrderId,
-                data: orderData
+                order_id: rpcResult?.order_id,
+                order_number: rpcResult?.order_number,
+                total_amount: rpcResult?.total_amount,
+                delivery_fee: rpcResult?.delivery_fee,
+                service_fee: rpcResult?.service_fee,
+                paid_now: rpcResult?.paid_now,
+                remaining_amount: rpcResult?.remaining_amount,
+                data: rpcResult
             };
         } catch (error) {
             console.error('❌ Order submission failed:', error);
@@ -143,6 +128,3 @@ export const orderService = {
 };
 
 export default orderService;
-
-
-
