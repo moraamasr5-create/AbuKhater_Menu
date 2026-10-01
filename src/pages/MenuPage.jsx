@@ -375,12 +375,12 @@ const MenuPage = () => {
                     decoding="async"
                 />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10">
-                    <div className="mb-4 sm:mb-6 animate-float relative">
-                        <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 opacity-40"></div>
-                        <div className="relative bg-white/5 backdrop-blur-md p-3 sm:p-4 rounded-full border border-white/10 shadow-2xl">
+                    <div className="mb-4 sm:mb-6 animate-float relative flex items-center justify-center">
+                        <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-110 opacity-75"></div>
+                        <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center">
                             <img
                                 src={restaurantLogo}
-                                className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 object-contain drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] transition-transform duration-500 hover:scale-110"
+                                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-transform duration-500 hover:scale-105"
                                 alt="مطعم أبو خاطر"
                                 decoding="async"
                             />
