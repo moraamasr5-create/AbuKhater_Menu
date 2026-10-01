@@ -5,7 +5,7 @@ import { ShieldCheck, Loader2 } from 'lucide-react';
 export const TURNSTILE_SITE_KEY = 
     import.meta.env.VITE_TURNSTILE_SITE_KEY || 
     import.meta.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || 
-    '';
+    '0x4AAAAAAFLSA8pS0lQrz1I6';
 
 /**
  * Cloudflare Turnstile CAPTCHA Widget
@@ -24,13 +24,22 @@ export const TurnstileWidget = ({
 
     useEffect(() => {
         if (!TURNSTILE_SITE_KEY) {
-            // Safe bypass when site key is not configured
             setWidgetState('idle');
             return;
         }
 
         let isMounted = true;
         let intervalId = null;
+
+        // Dynamically ensure script is present if not already added in head
+        if (!window.turnstile && !document.getElementById('cf-turnstile-script')) {
+            const script = document.createElement('script');
+            script.id = 'cf-turnstile-script';
+            script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
 
         const renderTurnstile = () => {
             if (!isMounted) return;
@@ -65,7 +74,6 @@ export const TurnstileWidget = ({
             }
         };
 
-        // If turnstile script is already available
         if (window.turnstile) {
             renderTurnstile();
         } else {
@@ -95,20 +103,25 @@ export const TurnstileWidget = ({
     }
 
     return (
-        <div className={`my-4 flex flex-col items-center justify-center ${className}`}>
-            <div className="relative min-h-[65px] min-w-[300px] flex items-center justify-center rounded-2xl bg-dark-950/40 border border-white/10 p-1.5 shadow-inner">
+        <div className={`my-3 flex flex-col items-center justify-center w-full ${className}`}>
+            <div className="relative min-h-[65px] min-w-[300px] flex items-center justify-center rounded-2xl bg-dark-950/60 border border-white/10 p-2 shadow-inner">
                 {widgetState === 'loading' && (
                     <div className="absolute inset-0 flex items-center justify-center gap-2 text-slate-400 text-xs font-bold animate-pulse">
                         <Loader2 className="w-4 h-4 animate-spin text-primary" />
                         <span>جاري تحميل التحقق الأمني...</span>
                     </div>
                 )}
-                <div ref={containerRef} className="turnstile-wrapper" />
+                <div ref={containerRef} className="turnstile-wrapper flex justify-center items-center" />
             </div>
             {widgetState === 'verified' && (
-                <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] font-bold mt-1.5 animate-in fade-in">
-                    <ShieldCheck size={14} />
+                <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold mt-1.5 animate-in fade-in">
+                    <ShieldCheck size={16} />
                     <span>تم التحقق الأمني بنجاح</span>
+                </div>
+            )}
+            {widgetState === 'error' && (
+                <div className="text-red-400 text-xs font-bold mt-1.5 animate-in fade-in">
+                    تعذر إكمال التحقق الأمني، يرجى تحديث الصفحة أو التحقق من الدومين.
                 </div>
             )}
         </div>
