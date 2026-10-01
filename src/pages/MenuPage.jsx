@@ -22,42 +22,50 @@ import restaurantLogo from '../assets/logo.png';
 import restaurantBanner from '../assets/banner.png';
 import { normalizeCategoryKey } from '../core/utils/menuItem';
 
-const CATEGORY_DATA = {
+const CATEGORY_MAP = {
     all: { label: 'الكل', icon: '🍽️' },
     grills: { label: 'المشويات', icon: '🔥' },
+    'مشويات': { label: 'المشويات', icon: '🔥' },
+    'مشويـات': { label: 'المشويات', icon: '🔥' },
     trays: { label: 'الصواني', icon: '🍱' },
+    'صواني': { label: 'الصواني', icon: '🍱' },
+    'صـوانـي': { label: 'الصواني', icon: '🍱' },
     meals: { label: 'الوجبات', icon: '🍛' },
+    'وجبات': { label: 'الوجبات', icon: '🍛' },
+    'وجـبات': { label: 'الوجبات', icon: '🍛' },
     casseroles: { label: 'الطواجن', icon: '🥘' },
+    'طواجن': { label: 'الطواجن', icon: '🥘' },
+    'طـواجـن': { label: 'الطواجن', icon: '🥘' },
     crepes: { label: 'كريب', icon: '🥞' },
+    'كريب': { label: 'كريب', icon: '🥞' },
+    'كـريب': { label: 'كريب', icon: '🥞' },
     sandwiches: { label: 'ساندوتشات', icon: '🥪' },
-    additions: { label: 'إضافات', icon: '➕' },
+    'سندوتشات': { label: 'ساندوتشات', icon: '🥪' },
+    'ساندوتشات': { label: 'ساندوتشات', icon: '🥪' },
+    rise: { label: 'الأرز', icon: '🍚' },
+    'الرز': { label: 'الأرز', icon: '🍚' },
+    'الـرز': { label: 'الأرز', icon: '🍚' },
+    cass: { label: 'المكرونات', icon: '🍝' },
+    'مكرونات': { label: 'المكرونات', icon: '🍝' },
     drinks: { label: 'مشروبات', icon: '🥤' },
+    'مشروبات': { label: 'مشروبات', icon: '🥤' },
     sides: { label: 'مقبلات', icon: '🍟' },
-    combos: { label: 'عروض', icon: '🎁' }
-};
-
-const DataSourceBadge = ({ source }) => {
-    const config = {
-        supabase: { label: 'أحـدث منيـو - (Live)', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
-        offline: { label: 'أوفلاين (Offline)', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' }
-    };
-
-    if (!source) return null;
-    const { label, color } = config[source] || config.offline;
-
-    return (
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-sm ${color} transition-all duration-500 animate-in fade-in slide-in-from-top-1`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${source === 'supabase' ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`} />
-            <span>{label}</span>
-        </div>
-    );
+    'مقبلات': { label: 'مقبلات', icon: '🍟' },
+    combos: { label: 'عروض', icon: '🎁' },
+    'عروض': { label: 'عروض', icon: '🎁' },
+    'top': { label: 'عروض خاصة', icon: '⭐' }
 };
 
 const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage, addToCart, updateQuantity }) {
     const isAvailable = item.status === 'available';
+    const isOutOfStock = item.status === 'out_of_stock';
+    const isPaused = item.status === 'paused';
+
+    const statusLabel = isOutOfStock ? 'نفذت الكمية' : (isPaused ? 'غير متاح مؤقتاً' : 'غير متاح');
+
     return (
         <div
-            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-2 ${!isAvailable ? 'opacity-50 grayscale' : ''}`}
+            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-2 ${!isAvailable ? 'opacity-60 grayscale-[40%]' : ''}`}
         >
             <div className="relative w-[88px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden">
                 <img
@@ -71,8 +79,10 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                 <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60" />
 
                 {!isAvailable && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                        <span className="bg-red-500 text-white px-2 py-0.5 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest">غير متاح</span>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                        <span className={`text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'}`}>
+                            {statusLabel}
+                        </span>
                     </div>
                 )}
 
@@ -83,9 +93,16 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
             <div className="flex-1 p-2.5 md:p-6 flex flex-col min-w-0 min-h-0">
                 <div className="mb-0 md:mb-4">
-                    <h3 className="text-sm md:text-xl font-bold text-white mb-0.5 md:mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none">{item.name}</h3>
+                    <div className="flex items-center justify-between gap-1 mb-0.5 md:mb-2">
+                        <h3 className="text-sm md:text-xl font-bold text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none">{item.name}</h3>
+                        {item.is_popular && (
+                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                ⭐ مميز
+                            </span>
+                        )}
+                    </div>
                     <p className="text-slate-400/95 text-xs md:text-sm line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.5rem]">
-                        {item.description || 'لم يتم إضافة وصف لهذا الصنف بعد.'}
+                        {item.description || 'صنف طازج ومميز من مطعم أبو خاطر.'}
                     </p>
                 </div>
 
@@ -131,7 +148,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                         ) : (
                             <button type="button" disabled className="w-9 h-9 md:w-full bg-dark-800/50 text-slate-500 md:py-3.5 rounded-lg md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.05] opacity-50 md:min-h-[48px] flex items-center justify-center">
                                 <span className="md:hidden text-xs">×</span>
-                                <span className="hidden md:inline">نفذت الكمية</span>
+                                <span className="hidden md:inline">{statusLabel}</span>
                             </button>
                         )}
                     </div>
@@ -146,9 +163,8 @@ const MenuPage = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [dataSource, setDataSource] = useState(null);
     const [activeCategory, setActiveCategory] = useState('all');
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(['all']);
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
     const [showReservation, setShowReservation] = useState(false);
@@ -156,7 +172,6 @@ const MenuPage = () => {
     const menuProductsRef = useRef(null);
     const skipCategoryScrollRef = useRef(true);
 
-    // بعد تغيير التصنيف: تمرير سلس لبداية شبكة المنتجات (تسهيل التصفح)
     useEffect(() => {
         if (skipCategoryScrollRef.current) {
             skipCategoryScrollRef.current = false;
@@ -168,7 +183,6 @@ const MenuPage = () => {
         return () => cancelAnimationFrame(t);
     }, [activeCategory]);
 
-    // Monitoring scroll for header effects
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 100);
@@ -180,29 +194,27 @@ const MenuPage = () => {
     const loadMenu = useCallback(async () => {
         try {
             setLoading(true);
-            const { items, error: remoteError, dataSource: source } = await menuService.fetchMenu();
-            setDataSource(source);
+            setError(null);
+            const { items, error: remoteError } = await menuService.fetchMenu();
+
+            if (remoteError) {
+                setError(remoteError);
+                setMenuItems([]);
+                return;
+            }
 
             if (!items || items.length === 0) {
-                setMenuItems(menuService._getFallbackMenu());
-                setDataSource('offline');
-                setError('لا توجد عناصر حالياً في القائمة.');
+                setMenuItems([]);
+                setError('لا توجد عناصر متاحة حالياً في قائمة الطعام.');
                 return;
             }
 
             setMenuItems(items);
-            if (source === 'offline' && remoteError) {
-                setError(`تعذر تحميل المنيو من الخادم. عُرضت القائمة المحلية. (${remoteError})`);
-            } else if (source === 'offline') {
-                setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
-            } else {
-                setError(null);
-            }
+            setError(null);
         } catch (err) {
             console.error('Fetch error:', err);
-            setError('تعذر تحديث المنيو المباشر. جاري استخدام القائمة المخزنة.');
-            setMenuItems(menuService._getFallbackMenu());
-            setDataSource('offline');
+            setError('تعذر تحميل قائمة الطعام من الخادم. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.');
+            setMenuItems([]);
         } finally {
             setLoading(false);
         }
@@ -213,7 +225,7 @@ const MenuPage = () => {
 
         // Subscribe to real-time changes in menu_items table
         const channel = supabase
-            .channel('menu-realtime-changes')
+            .channel(`menu-realtime-${Date.now()}`)
             .on(
                 'postgres_changes',
                 {
@@ -233,25 +245,25 @@ const MenuPage = () => {
     }, [loadMenu]);
 
     /**
-     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على البيانات مع الترتيب
+     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على بيانات Supabase
      */
     useEffect(() => {
         if (menuItems.length > 0) {
             const categoryMap = new Map();
             menuItems.forEach((item) => {
-                const catKey = normalizeCategoryKey(item.category);
+                const catKey = normalizeCategoryKey(item.category_slug || item.category);
                 if (catKey) {
                     if (!categoryMap.has(catKey)) {
-                        categoryMap.set(catKey, item.category_order ?? 999);
-                    } else {
-                        // Update order if we find a lower one
-                        categoryMap.set(catKey, Math.min(categoryMap.get(catKey), item.category_order ?? 999));
+                        categoryMap.set(catKey, {
+                            order: item.category_order ?? 999,
+                            label: item.category
+                        });
                     }
                 }
             });
 
             const sortedCategories = Array.from(categoryMap.entries())
-                .sort((a, b) => a[1] - b[1])
+                .sort((a, b) => a[1].order - b[1].order)
                 .map(entry => entry[0]);
 
             setCategories(['all', ...sortedCategories]);
@@ -265,12 +277,16 @@ const MenuPage = () => {
         const idRaw = item?.id;
         const idOk = idRaw != null && String(idRaw).trim() !== '';
         if (!nameOk || !idOk) return false;
+
+        const itemCatKey = normalizeCategoryKey(item.category_slug || item.category);
         const matchesCategory =
             activeCategory === 'all' ||
-            normalizeCategoryKey(item.category) === normalizeCategoryKey(activeCategory);
+            itemCatKey === normalizeCategoryKey(activeCategory);
+
         const matchesSearch =
             item.name.toLowerCase().includes(searchLower) ||
             (item.description && item.description.toLowerCase().includes(searchLower));
+
         return matchesCategory && matchesSearch;
     }), [menuItems, activeCategory, searchLower]);
 
@@ -348,34 +364,27 @@ const MenuPage = () => {
                 <div className={`max-w-3xl mx-auto bg-dark-900/88 backdrop-blur-xl border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2rem] shadow-[0_20px_56px_rgba(0,0,0,0.42)] p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 transition-all duration-300 ${isScrolled ? 'scale-[0.98] shadow-primary/10' : 'scale-100'}`}>
                     {/* Search & Actions */}
                     <div className="flex flex-col gap-3.5">
-                        <div className="flex items-center justify-between px-1">
-                            <span className="text-[10px] sm:text-xs font-black text-slate-500 uppercase tracking-widest">تصفح القائمة</span>
-                            <DataSourceBadge source={dataSource} />
-                        </div>
-                        <div className="flex gap-2 sm:gap-3 items-stretch sm:items-center">
-                            <div className="relative flex-1 min-w-0">
-                                <label htmlFor="menu-search" className="sr-only">البحث في قائمة الطعام</label>
-                                <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={16} aria-hidden />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="relative flex-1">
+                                <Search className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={18} aria-hidden />
                                 <input
-                                    id="menu-search"
-                                    type="search"
-                                    enterKeyHint="search"
-                                    autoComplete="off"
-                                    placeholder="ابحث عن وجبتك المفضلة..."
+                                    type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className={`w-full bg-dark-950/60 border border-white/[0.06] text-white pr-10 py-3 sm:py-2.5 rounded-xl sm:rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/35 focus:border-primary/35 transition-all text-[15px] sm:text-sm placeholder:text-slate-600 ${searchQuery ? 'pl-9' : 'pl-3 sm:pl-4'}`}
+                                    placeholder="ابحث عن وجبتك المفضلة..."
+                                    aria-label="البحث في قائمة الطعام"
+                                    className="w-full bg-dark-800/90 text-white text-xs sm:text-sm pr-10 sm:pr-11 pl-9 sm:pl-10 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl border border-white/[0.06] focus:border-primary/60 focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-500"
                                 />
-                                {searchQuery ? (
+                                {searchQuery && (
                                     <button
                                         type="button"
                                         onClick={() => setSearchQuery('')}
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
-                                        aria-label="مسح البحث"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1"
+                                        aria-label="مسح نص البحث"
                                     >
-                                        <X size={16} strokeWidth={2.5} />
+                                        <X size={14} aria-hidden />
                                     </button>
-                                ) : null}
+                                )}
                             </div>
 
                             <button
@@ -391,7 +400,7 @@ const MenuPage = () => {
                         </div>
                     </div>
 
-                    {/* Categories Scrollable Bar with Navigation */}
+                    {/* Categories Scrollable Bar */}
                     <div className="relative flex items-center gap-1">
                         <button
                             type="button"
@@ -413,11 +422,11 @@ const MenuPage = () => {
                             dir="rtl"
                         >
                             {categories.map((catId) => {
-                                const data = CATEGORY_DATA[catId] || { label: catId, icon: '🍽️' };
+                                const mapped = CATEGORY_MAP[catId] || CATEGORY_MAP[normalizeCategoryKey(catId)] || { label: catId, icon: '🍽️' };
                                 const count = catId === 'all'
                                     ? menuItems.length
                                     : menuItems.filter(
-                                        (i) => normalizeCategoryKey(i.category) === normalizeCategoryKey(catId)
+                                        (i) => normalizeCategoryKey(i.category_slug || i.category) === normalizeCategoryKey(catId)
                                     ).length;
 
                                 return (
@@ -432,8 +441,8 @@ const MenuPage = () => {
                                             ? 'bg-primary border-primary text-white shadow-md shadow-primary/25'
                                             : 'bg-dark-800/55 border-white/[0.06] text-slate-500 hover:bg-dark-800 hover:text-slate-300'}`}
                                     >
-                                        <span aria-hidden>{data.icon}</span>
-                                        <span>{data.label}</span>
+                                        <span aria-hidden>{mapped.icon}</span>
+                                        <span>{mapped.label}</span>
                                         <span className={`text-[8px] px-1 rounded-md tabular-nums ${activeCategory === catId ? 'bg-white/20' : 'bg-dark-700/50'}`} aria-label={`${count} صنف`}>
                                             {count}
                                         </span>
@@ -462,130 +471,70 @@ const MenuPage = () => {
                     <div className="h-1 bg-dark-800 rounded-full overflow-hidden border border-white/[0.05]">
                         <div className="h-full w-2/5 bg-primary rounded-full animate-pulse motion-reduce:animate-none" />
                     </div>
-                    <p className="text-[11px] sm:text-xs text-center text-slate-500 mt-1.5 font-medium">يتم تحديث القائمة…</p>
+                    <p className="text-[11px] sm:text-xs text-center text-slate-500 mt-1.5 font-medium">يتم تحديث القائمة من الخادم…</p>
                 </div>
             ) : null}
 
-            {/* Notifications */}
+            {/* Error Notification */}
             {error && (
-                <div className="max-w-6xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5">
-                    <div className="bg-amber-500/10 border border-amber-500/25 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl flex items-start gap-3 text-amber-200/95 text-sm leading-relaxed">
-                        <AlertCircle size={20} className="shrink-0 mt-0.5" />
-                        <p className="font-medium">{error}</p>
+                <div className="max-w-3xl mx-auto px-3 sm:px-4 mt-4" role="alert">
+                    <div className="p-4 bg-red-500/10 border border-red-500/25 rounded-2xl flex items-center justify-between gap-3 text-red-400 text-xs sm:text-sm">
+                        <div className="flex items-center gap-2.5">
+                            <AlertCircle size={18} className="shrink-0" aria-hidden />
+                            <span>{error}</span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={loadMenu}
+                            className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-white rounded-xl text-xs font-bold transition-all shrink-0"
+                        >
+                            إعادة المحاولة
+                        </button>
                     </div>
                 </div>
             )}
 
-            {/* Products Grid */}
-            <main id="menu-products" ref={menuProductsRef} className="max-w-6xl mx-auto px-3 sm:px-4 mt-6 sm:mt-10 scroll-mt-28 sm:scroll-mt-32" tabIndex={-1}>
+            {/* Products Grid Section */}
+            <main ref={menuProductsRef} className="max-w-6xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
                 {loading && menuItems.length === 0 ? (
-                    <div role="status" aria-live="polite" aria-busy="true" aria-label="جاري تحميل قائمة الطعام">
-                        <p className="text-center text-slate-400 text-sm font-medium mb-4 flex items-center justify-center gap-2">
-                            <RefreshCcw size={16} className="animate-spin shrink-0 text-primary" aria-hidden />
-                            جاري تحميل القائمة…
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
-                            {[1, 2, 3, 4, 5, 6].map(i => (
-                                <div key={i} className="bg-dark-900/50 rounded-xl md:rounded-3xl min-h-[88px] md:min-h-[280px] md:h-80 shimmer border border-white/[0.06]" />
-                            ))}
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                            <div key={n} className="bg-dark-900/50 rounded-xl md:rounded-3xl p-4 border border-white/[0.04] animate-pulse h-36 md:h-80" />
+                        ))}
                     </div>
                 ) : filteredItems.length > 0 ? (
-                    <>
-                        <p className="text-slate-500 text-sm font-medium mb-4 text-center sm:text-start" role="status" aria-live="polite">
-                            {activeCategory === 'all' && !searchQuery.trim()
-                                ? `عرض ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`
-                                : `بعد التصفية: ${filteredItems.length} ${filteredItems.length === 1 ? 'صنف' : 'أصناف'}`}
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 lg:gap-8">
-                            {filteredItems.map((item) => {
-                                const qty = qtyByItemId.get(item.id) ?? 0;
-                                return (
-                                    <MenuProductCard
-                                        key={item.id}
-                                        item={item}
-                                        qty={qty}
-                                        fallbackImage={restaurantLogo}
-                                        addToCart={addToCart}
-                                        updateQuantity={updateQuantity}
-                                    />
-                                );
-                            })}
-                        </div>
-                    </>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                        {filteredItems.map((item) => (
+                            <MenuProductCard
+                                key={item.id}
+                                item={item}
+                                qty={qtyByItemId.get(item.id) || 0}
+                                fallbackImage="/logo.jpg"
+                                addToCart={addToCart}
+                                updateQuantity={updateQuantity}
+                            />
+                        ))}
+                    </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-20 sm:py-32 px-4 text-center">
-                        <div className="bg-dark-900/55 p-8 sm:p-10 rounded-full mb-5 sm:mb-6 border border-white/[0.06] shadow-xl">
-                            <Inbox size={56} className="sm:w-16 sm:h-16 text-slate-600" />
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-black text-slate-400 mb-2 tracking-tight">لا يوجد نتائج</h3>
-                        <p className="text-slate-500 max-w-xs mx-auto text-sm leading-relaxed">لم نجد أي وجبة تطابق بحثك حالياً، جرب كلمة بحث أخرى أو تصنيف مختلف.</p>
-                        <button
-                            type="button"
-                            onClick={() => { setActiveCategory('all'); setSearchQuery(''); }}
-                            className="mt-6 sm:mt-8 text-primary font-bold hover:underline text-[15px] py-2 rounded-lg"
-                            aria-label="إلغاء التصفية وعرض كل الأصناف"
-                        >
-                            عرض المنيو بالكامل
-                        </button>
+                    <div className="text-center py-16 sm:py-20 px-4 bg-dark-900/30 rounded-3xl border border-white/[0.04] mt-4">
+                        <Inbox size={48} className="mx-auto text-slate-600 mb-3" />
+                        <h3 className="text-base sm:text-lg font-bold text-slate-300 mb-1">لا توجد نتائج مطابقة</h3>
+                        <p className="text-xs text-slate-500 max-w-xs mx-auto">لم نتمكن من العثور على أي أصناف مطابقة لبحثك أو التصنيف المختار.</p>
                     </div>
                 )}
             </main>
 
-            {/* Footer */}
-            <footer className="max-w-6xl mx-auto px-3 sm:px-4 mt-16 sm:mt-20 pb-16 sm:pb-20 border-t border-white/[0.06]">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 pt-10 sm:pt-12">
-                    <div className="text-center md:text-right space-y-1">
-                        <h4 className="text-white font-black mb-3 sm:mb-4 text-[15px] tracking-tight"> للتواصل </h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            <a href="tel:+201080804069" className="hover:text-primary transition-colors">اتصل بنا: 01080804069</a>
-                        </p>
-                        <p className="text-slate-400 text-sm">
-                            <a href="https://wa.me/201144423700" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">واتساب: 01144423700</a>
-                        </p>
-                        <h4 className="text-white font-black mb-3 sm:mb-4 mt-5 text-[15px] tracking-tight">رقم الشكاوي والمقترحات</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            <a href="tel:+201140449940" className="hover:text-primary transition-colors">اتصل بنا: 01140449940</a>
-                        </p>
-                    </div>
-                    <div className="text-center space-y-2">
-                        <h4 className="text-white font-black mb-3 text-[15px] tracking-tight">ساعات العمل</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto">خدمة التوصيل : كل يوم من 8 صباحآ حتا 4 فجرآ</p>
-                        <div className="inline-block mt-3 sm:mt-4 bg-teal-500/10 text-teal-400 px-4 py-1.5 rounded-full text-xs font-bold border border-teal-500/25">
-                            نحن نعمل الآن : المطعم يعمل علي مدار 24 ساعة
-                        </div>
-                    </div>
-                    <div className="text-center md:text-left">
-                        <h4 className="text-white font-black mb-3 sm:mb-4 text-[15px] tracking-tight">تابعنا</h4>
-                        <div className="flex justify-center md:justify-end gap-3 sm:gap-4 flex-wrap">
-                            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="min-w-[2.75rem] min-h-[2.75rem] w-11 h-11 sm:w-10 sm:h-10 bg-dark-800 rounded-xl flex items-center justify-center cursor-pointer hover:bg-primary transition-colors text-slate-300 text-[10px] font-bold text-center leading-tight px-1 border border-white/[0.05]">FaceBook</a>
-                            <b className="text-slate-600 self-center hidden sm:inline"> | </b>
-                            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="min-w-[2.75rem] min-h-[2.75rem] w-11 h-11 sm:w-10 sm:h-10 bg-dark-800 rounded-xl flex items-center justify-center cursor-pointer hover:bg-primary transition-colors text-slate-300 text-[10px] font-bold text-center leading-tight px-1 border border-white/[0.05]">Instagram</a>
-                            <b className="text-slate-600 self-center hidden sm:inline"> | </b>
-                            <a href="https://wa.me/201144423700" target="_blank" rel="noopener noreferrer" className="min-w-[2.75rem] min-h-[2.75rem] w-11 h-11 sm:w-10 sm:h-10 bg-dark-800 rounded-xl flex items-center justify-center cursor-pointer hover:bg-primary transition-colors text-slate-300 text-[10px] font-bold text-center leading-tight px-1 border border-white/[0.05]">Whatsapp</a>
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-10 sm:mt-12 text-center text-slate-600 text-[11px] sm:text-xs font-bold uppercase tracking-widest">
-                    &copy; 2024 أبو خاطر . جميع الحقوق محفوظة
-                </div>
-            </footer>
-
             <StickyCartBar />
 
-            <ReservationModal
-                isOpen={showReservation}
-                onClose={() => setShowReservation(false)}
-            />
+            {showReservation && (
+                <ReservationModal isOpen={showReservation} onClose={() => setShowReservation(false)} />
+            )}
 
-            <FeedbackModal
-                isOpen={showFeedback}
-                onClose={() => setShowFeedback(false)}
-            />
+            {showFeedback && (
+                <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
+            )}
         </div>
     );
 };
 
 export default MenuPage;
-
-

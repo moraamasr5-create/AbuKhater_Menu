@@ -13,7 +13,7 @@ import {
     Lock
 } from 'lucide-react';
 import useCart from '../hooks/useCart';
-import { FIXED_AREAS, RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../core/constants';
+import { RESTAURANT_LOCATION } from '../core/constants';
 import ProgressSteps from '../features/checkout/ProgressSteps';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
@@ -29,7 +29,8 @@ const CustomerPage = () => {
         location, setLocation,
         locationMethod, setLocationMethod,
         selectedAreaId, setSelectedAreaId,
-        deliveryFee, distanceKm
+        deliveryFee, distanceKm,
+        deliveryZones, maxDistance
     } = useCart();
 
     const [errors, setErrors] = useState({});
@@ -607,8 +608,8 @@ const CustomerPage = () => {
                                         className="w-full p-4 bg-dark-800/50 rounded-2xl border border-white/5 text-white focus:border-primary outline-none transition-all appearance-none"
                                     >
                                         <option value="">-- اختر منطقتك من القائمة --</option>
-                                        {FIXED_AREAS.map(area => (
-                                            <option key={area.id} value={area.id}>{area.name} (توصيل: {area.fee} ج.م)</option>
+                                        {(deliveryZones || []).map(zone => (
+                                            <option key={zone.id} value={zone.id}>{zone.name} (توصيل: {parseFloat(zone.fee)} ج.م)</option>
                                         ))}
                                     </select>
                                 </div>
@@ -624,7 +625,7 @@ const CustomerPage = () => {
                                 <span>
                                     {deliveryFee > 0
                                         ? `موقعك ضمن النطاق. المسافة: ${distanceKm.toFixed(1)} كم | رسوم التوصيل: ${deliveryFee} ج.م`
-                                        : `خارج النطاق المسموح (${MAX_DELIVERY_DISTANCE} كم). يرجى تغيير الموقع.`}
+                                        : `خارج النطاق المسموح (${maxDistance || 12} كم). يرجى تغيير الموقع.`}
                                 </span>
                             </div>
                         )}

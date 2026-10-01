@@ -25,7 +25,8 @@ const PaymentPage = () => {
     const {
         cart, orderType, customerData, paymentMethod,
         deliveryFee, location, clearCart,
-        distanceKm, locationMethod, selectedAreaId
+        distanceKm, locationMethod, selectedAreaId,
+        restaurantSettings
     } = useCart();
 
     const navigate = useNavigate();
@@ -38,7 +39,6 @@ const PaymentPage = () => {
 
     // Calculations
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const calculateFee = calculateServiceFee;
 
     const isPickup = orderType === 'pickup';
     const isCash = paymentMethod === 'cash';
@@ -56,8 +56,8 @@ const PaymentPage = () => {
         paidNow = 0;
         remaining = totalOrderValue;
     } else {
-        // الرسوم تُحسب على إجمالي المبلغ المحول
-        serviceFee = calculateFee(totalOrderValue);
+        // الرسوم تُحسب ديناميكياً من إعدادات Supabase
+        serviceFee = calculateServiceFee(totalOrderValue, restaurantSettings);
         paidNow = totalOrderValue + serviceFee;
         remaining = 0;
     }
@@ -254,9 +254,12 @@ const PaymentPage = () => {
         }
     }, [successData]);
 
+    const instapayIpa = restaurantSettings?.payment_instapay_ipa || 'abu_khatar@instapay';
+    const walletNumber = restaurantSettings?.payment_wallet_number || '01144423700';
+
     const paymentNumber = paymentMethod === 'instapay'
-        ? 'abu_khatar@instapay'
-        : (paymentMethod === 'vodafone_cash' ? '01144423700' : '');
+        ? instapayIpa
+        : (paymentMethod === 'vodafone_cash' ? walletNumber : '');
 
     return (
         <div className="min-h-[100dvh] bg-dark-950 pb-[max(9rem,env(safe-area-inset-bottom,0px))] sm:pb-36 relative scroll-smooth overflow-x-hidden">

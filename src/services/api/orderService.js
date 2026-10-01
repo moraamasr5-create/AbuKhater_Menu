@@ -31,40 +31,40 @@ export const orderService = {
     async submitOrder(payload) {
         console.group('🚀 Submitting order via create_order RPC');
         try {
-            let screenshotUrl = payload.payment?.screenshot;
+            let screenshotStoragePath = null;
+            const rawScreenshot = payload.payment?.screenshot;
 
-            // 1. Handle payment screenshot upload if it's a base64 string
-            if (screenshotUrl && typeof screenshotUrl === 'string' && screenshotUrl.startsWith('data:image')) {
-                console.log('📸 Uploading payment screenshot to storage...');
-                const blob = base64ToBlob(screenshotUrl);
+            // 1. Handle payment screenshot upload if present
+            if (rawScreenshot && typeof rawScreenshot === 'string' && rawScreenshot.startsWith('data:image')) {
+                console.log('📸 Uploading payment screenshot to private storage bucket...');
+                const blob = base64ToBlob(rawScreenshot);
 
                 if (blob) {
                     const fileExt = blob.type.split('/')[1] || 'jpg';
                     const fileName = `${crypto.randomUUID()}.${fileExt}`;
                     const filePath = `payments/${fileName}`;
 
-                    const { error: uploadError } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await supabase.storage
                         .from('payment-screenshots')
                         .upload(filePath, blob, {
-                            contentType: blob.type,
+                            contentType: blob.type || 'image/jpeg',
                             cacheControl: '3600',
                             upsert: false
                         });
 
                     if (uploadError) {
-                        console.error('⚠️ Screenshot upload failed, falling back to original:', uploadError.message);
+                        console.error('⚠️ Screenshot upload failed:', uploadError.message);
                     } else {
-                        const { data: publicUrlData } = supabase.storage
-                            .from('payment-screenshots')
-                            .getPublicUrl(filePath);
-
-                        screenshotUrl = publicUrlData.publicUrl;
-                        console.log('✅ Screenshot uploaded successfully:', screenshotUrl);
+                        // Store relative storage path in DB (private bucket accessed via signed URLs by staff)
+                        screenshotStoragePath = uploadData?.path || filePath;
+                        console.log('✅ Screenshot uploaded to storage path:', screenshotStoragePath);
                     }
                 }
+            } else if (rawScreenshot && typeof rawScreenshot === 'string') {
+                screenshotStoragePath = rawScreenshot;
             }
 
-            // 2. Prepare items with genuine menu item IDs
+            // 2. Prepare items with genuine menu item UUIDs
             const itemsForRpc = (payload.items || []).map(item => ({
                 item_id: item.itemId || item.menuItemId || item.id,
                 name: item.name,
@@ -85,7 +85,7 @@ export const orderService = {
                 p_customer_phone_2: payload.customer?.phone_2 || null,
                 p_delivery_address: payload.customer?.delivery_info?.address || null,
                 p_payment_method: payload.customer?.payment_method || 'cash',
-                p_payment_screenshot: screenshotUrl || null,
+                p_payment_screenshot: screenshotStoragePath,
                 p_location_method: payload.customer?.delivery_info?.method || 'gps',
                 p_area_id: payload.customer?.delivery_info?.area_id || null,
                 p_latitude: payload.customer?.delivery_info?.coordinates?.lat ?? null,

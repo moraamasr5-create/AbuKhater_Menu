@@ -1,23 +1,25 @@
 import { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { calculateDistance, getDeliveryFee } from '../utils/calculations';
-import { RESTAURANT_LOCATION, FIXED_AREAS, DEFAULT_DELIVERY_FEE, MAX_DELIVERY_DISTANCE } from '../constants';
+import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils/calculations';
+import { RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../constants';
+import { settingsService } from '../../services/api';
 
 export const CartContext = createContext(null);
 
-/**
- * 🔴 مزود البيانات (Provider) لإدارة السلة وكل ما يتعلق بالطلب
- * بيتحكم في حالة المنتجات، الموقع، وطريقة الدفع في كل صفحات التطبيق
- */
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useLocalStorage('restaurant-cart', []);
-    const [orderType, setOrderType] = useState('delivery'); // 'delivery' للتوصيل أو 'pickup' للاستلام من الفرع
+    const [orderType, setOrderType] = useState('delivery'); // 'delivery' أو 'pickup'
     const [location, setLocation] = useState(null);
     const [locationMethod, setLocationMethod] = useState('gps'); // 'gps', 'fixed', 'map'
     const [selectedAreaId, setSelectedAreaId] = useState('');
     const [distanceKm, setDistanceKm] = useState(0);
     const [deliveryFee, setDeliveryFee] = useState(0);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+    // Dynamic settings & zones from Supabase (SSOT)
+    const [restaurantSettings, setRestaurantSettings] = useState({});
+    const [deliveryZones, setDeliveryZones] = useState([]);
+    const [isLoadingSettings, setIsLoadingSettings] = useState(true);
 
     // Customer Data Persistence
     const [customerData, setCustomerData] = useState({
@@ -28,8 +30,55 @@ export const CartProvider = ({ children }) => {
     });
     const [paymentMethod, setPaymentMethod] = useState('instapay');
 
-    // 🔴 مراقبة أي تغيير في الموقع أو طريقة الاستلام عشان نحسب التوصيل فوراً
-    // الحسبة دي بتتم في الخلفية وبتحمي السيستم من الأخطاء في مناطق التغطية
+    // 🔴 جلب الإعدادات ومناطق التوصيل من Supabase مع الاشتراك اللحظي
+    const loadSettingsAndZones = useCallback(async () => {
+        try {
+            const [settings, zones] = await Promise.all([
+                settingsService.fetchRestaurantSettings().catch(err => {
+                    console.warn('⚠️ Could not fetch settings:', err);
+                    return {};
+                }),
+                settingsService.fetchDeliveryZones().catch(err => {
+                    console.warn('⚠️ Could not fetch zones:', err);
+                    return [];
+                })
+            ]);
+            setRestaurantSettings(settings);
+            setDeliveryZones(zones);
+        } catch (error) {
+            console.error('❌ Failed to load initial settings:', error);
+        } finally {
+            setIsLoadingSettings(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        loadSettingsAndZones();
+
+        const channel = settingsService.subscribeToSettings(
+            () => {
+                settingsService.fetchRestaurantSettings().then(setRestaurantSettings).catch(console.error);
+            },
+            () => {
+                settingsService.fetchDeliveryZones().then(setDeliveryZones).catch(console.error);
+            }
+        );
+
+        return () => {
+            if (channel) {
+                // channel cleanup
+            }
+        };
+    }, [loadSettingsAndZones]);
+
+    // Restaurant coords & max distance derived from live settings
+    const restLat = parseFloat(restaurantSettings.restaurant_lat) || RESTAURANT_LOCATION.lat;
+    const restLng = parseFloat(restaurantSettings.restaurant_lng) || RESTAURANT_LOCATION.lon;
+    const maxDistance = parseFloat(restaurantSettings.max_delivery_distance_km) || MAX_DELIVERY_DISTANCE;
+    const isRestaurantOpen = restaurantSettings.is_restaurant_open !== 'false';
+    const isDeliveryEnabled = restaurantSettings.delivery_enabled !== 'false';
+
+    // 🔴 مراقبة أي تغيير في الموقع أو طريقة الاستلام لحساب التوصيل فوراً طبقاً لبيانات Supabase
     useEffect(() => {
         if (orderType !== 'delivery') {
             setDeliveryFee(0);
@@ -38,33 +87,32 @@ export const CartProvider = ({ children }) => {
 
         if ((locationMethod === 'gps' || locationMethod === 'map') && location) {
             const dist = calculateDistance(
-                RESTAURANT_LOCATION.lat,
-                RESTAURANT_LOCATION.lon,
+                restLat,
+                restLng,
                 location.lat,
                 location.lon
             );
 
-            if (dist > MAX_DELIVERY_DISTANCE) {
+            if (dist > maxDistance) {
                 setDistanceKm(dist);
                 setDeliveryFee(0); // Flag for out of range
             } else {
                 setDistanceKm(dist);
-                const exactFee = getDeliveryFee(dist);
-                setDeliveryFee(Math.round(exactFee / 5) * 5);
+                const exactFee = getDeliveryFee(dist, restaurantSettings);
+                setDeliveryFee(exactFee);
             }
         } else if (locationMethod === 'fixed' && selectedAreaId) {
-            const area = FIXED_AREAS.find(a => a.id === selectedAreaId);
-            setDeliveryFee(area ? Math.round(area.fee / 5) * 5 : 0);
+            const zone = deliveryZones.find(z => z.id === selectedAreaId || z.name === selectedAreaId);
+            setDeliveryFee(zone ? parseFloat(zone.fee) : 0);
             setDistanceKm(0);
         } else {
             setDeliveryFee(0);
             setDistanceKm(0);
         }
-    }, [location, locationMethod, selectedAreaId, orderType]);
+    }, [location, locationMethod, selectedAreaId, orderType, restaurantSettings, deliveryZones, restLat, restLng, maxDistance]);
 
     const addToCart = useCallback((item) => {
-        if (!item || !item.id) return; // 🛡️ حماية من إضافة عناصر غير صالحة
-        // العميل طلب إن السلة متفتحش أوتوماتيك أول ما يضيف صنف
+        if (!item || !item.id) return;
         setCart((prev) => {
             const existing = prev.find((i) => i.id === item.id);
             if (existing) {
@@ -85,7 +133,7 @@ export const CartProvider = ({ children }) => {
             return prev.map((item) => {
                 if (item.id === itemId) {
                     const newQty = item.quantity + delta;
-                    if (newQty <= 0) return null; // Remove if 0
+                    if (newQty <= 0) return null;
                     return { ...item, quantity: newQty };
                 }
                 return item;
@@ -116,8 +164,35 @@ export const CartProvider = ({ children }) => {
         customerData,
         setCustomerData,
         paymentMethod,
-        setPaymentMethod
-    }), [cart, orderType, location, locationMethod, selectedAreaId, distanceKm, deliveryFee, isCartOpen, customerData, paymentMethod, addToCart, removeFromCart, updateQuantity, clearCart]);
+        setPaymentMethod,
+        restaurantSettings,
+        deliveryZones,
+        isLoadingSettings,
+        isRestaurantOpen,
+        isDeliveryEnabled,
+        maxDistance
+    }), [
+        cart,
+        orderType,
+        location,
+        locationMethod,
+        selectedAreaId,
+        distanceKm,
+        deliveryFee,
+        isCartOpen,
+        customerData,
+        paymentMethod,
+        restaurantSettings,
+        deliveryZones,
+        isLoadingSettings,
+        isRestaurantOpen,
+        isDeliveryEnabled,
+        maxDistance,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart
+    ]);
 
     return (
         <CartContext.Provider value={value}>
@@ -125,5 +200,3 @@ export const CartProvider = ({ children }) => {
         </CartContext.Provider>
     );
 };
-
-

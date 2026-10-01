@@ -16,8 +16,10 @@ import {
     UtensilsCrossed
 } from 'lucide-react';
 import { reservationService } from '../../services/api';
+import useCart from '../../hooks/useCart';
 
 const ReservationModal = ({ isOpen, onClose }) => {
+    const { restaurantSettings } = useCart() || {};
     const [step, setStep] = useState(1); // 1: Info, 2: Payment
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -455,32 +457,51 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     ) : (
                         <div className="space-y-6" dir="rtl">
                             {/* Arboon Notice */}
-                            <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl text-center space-y-3">
-                                <h3 className="text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                    لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br />
-                                    <span className="text-2xl font-black text-white mt-2 block">105 ج.م</span>
-                                </p>
-                            </div>
+                            {(() => {
+                                const depositBase = parseFloat(restaurantSettings?.reservation_deposit_amount) || 100;
+                                const depositFee = parseFloat(restaurantSettings?.reservation_service_fee) || 5;
+                                const totalDeposit = depositBase + depositFee;
+                                const walletNum = restaurantSettings?.payment_wallet_number || '01144423700';
+                                const instapayIpa = restaurantSettings?.payment_instapay_ipa || 'abu_khatar@instapay';
+                                const accName = restaurantSettings?.payment_account_name || 'مطعم أبو خاطر';
 
-                            {/* Payment Info */}
-                            <div className="bg-dark-950/50 border border-white/5 p-6 rounded-3xl space-y-4">
-                                <h4 className="font-bold text-slate-400 border-b border-white/5 pb-2 text-sm flex items-center gap-2">
-                                    <CreditCard size={14} className="text-primary" /> بيانات التحويل
-                                </h4>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500">Instapay / Wallet:</span>
-                                        <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                                            01144423700
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500">الاسم :</span>
-                                        <span className="text-white font-black">مطعم أبو خاطر</span>
-                                    </div>
-                                </div>
-                            </div>
+                                return (
+                                    <>
+                                        <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl text-center space-y-3">
+                                            <h3 className="text-xl font-black text-primary">تأكيد الحجز يتطلب عربون</h3>
+                                            <p className="text-slate-300 text-sm leading-relaxed">
+                                                لضمان جدية الحجز وتجهيز الطاولة، نرجو تحويل مبلغ <br />
+                                                <span className="text-2xl font-black text-white mt-2 block">{totalDeposit} ج.م</span>
+                                            </p>
+                                        </div>
+
+                                        {/* Payment Info */}
+                                        <div className="bg-dark-950/50 border border-white/5 p-6 rounded-3xl space-y-4">
+                                            <h4 className="font-bold text-slate-400 border-b border-white/5 pb-2 text-sm flex items-center gap-2">
+                                                <CreditCard size={14} className="text-primary" /> بيانات التحويل
+                                            </h4>
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span className="text-slate-500">فودافون كاش / المحفظة:</span>
+                                                    <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-black tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                                                        {walletNum}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span className="text-slate-500">إنستاباي (Instapay):</span>
+                                                    <span className="bg-primary/10 text-primary border border-primary/30 px-3 py-1.5 rounded-xl font-black tracking-wider">
+                                                        {instapayIpa}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span className="text-slate-500">الاسم :</span>
+                                                    <span className="text-white font-black">{accName}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
 
                             {/* Upload Section */}
                             <div className="space-y-3">
