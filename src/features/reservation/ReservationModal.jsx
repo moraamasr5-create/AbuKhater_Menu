@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     X,
     Calendar,
@@ -25,6 +25,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [errors, setErrors] = useState({}); // Field-level errors
+    const hourScrollRef = useRef(null);
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -65,6 +66,24 @@ const ReservationModal = ({ isOpen, onClose }) => {
             }, 300);
         }
     }, [isOpen]);
+
+    // Vertical scroll peek hint when modal opens
+    useEffect(() => {
+        if (isOpen && step === 1) {
+            const timer = setTimeout(() => {
+                if (hourScrollRef.current) {
+                    hourScrollRef.current.scrollTo({ top: 48, behavior: 'smooth' });
+                    setTimeout(() => {
+                        if (hourScrollRef.current) {
+                            hourScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }, 400);
+                }
+            }, 450);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, step]);
 
     if (!isOpen) return null;
 
@@ -335,7 +354,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         {/* Hour (Scrollable on phones) */}
                                         <div className="space-y-2">
                                             <span className="block text-center text-xs font-bold text-slate-500">الساعة</span>
-                                            <div className="h-[92px] overflow-y-auto flex flex-col gap-1 pr-1 custom-scrollbar snap-y snap-mandatory rounded-xl touch-pan-y overscroll-contain">
+                                            <div ref={hourScrollRef} className="h-[92px] overflow-y-auto flex flex-col gap-1 pr-1 custom-scrollbar snap-y snap-mandatory rounded-xl touch-pan-y overscroll-contain">
                                                 {[...Array(12)].map((_, i) => {
                                                     const value = String(i + 1);
                                                     const isSelected = formData.timeHour === value;
@@ -402,7 +421,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                 {/* Location Type Select */}
                                 <div className="space-y-3 md:col-span-2">
                                     <label className="text-sm font-bold text-slate-400 pr-1 flex items-center gap-2">
-                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان (🍗   /   🍹)
+                                        <UtensilsCrossed size={14} className="text-primary" /> اختر المكان
                                     </label>
                                     <div className="grid grid-cols-2 gap-4">
                                         <button
