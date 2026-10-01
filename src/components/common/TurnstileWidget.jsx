@@ -9,7 +9,7 @@ export const TURNSTILE_SITE_KEY =
 
 /**
  * Cloudflare Turnstile CAPTCHA Widget
- * Zero external library dependencies, robust lifecycle handling & dark theme.
+ * Zero external library dependencies, stable singleton mounting (no re-render loops).
  */
 export const TurnstileWidget = ({
     onVerify,
@@ -22,6 +22,17 @@ export const TurnstileWidget = ({
     const widgetIdRef = useRef(null);
     const [widgetState, setWidgetState] = useState('loading'); // 'loading' | 'rendered' | 'verified' | 'error'
 
+    // Store callbacks in refs to prevent useEffect dependency triggers & infinite loops
+    const onVerifyRef = useRef(onVerify);
+    const onExpireRef = useRef(onExpire);
+    const onErrorRef = useRef(onError);
+
+    useEffect(() => {
+        onVerifyRef.current = onVerify;
+        onExpireRef.current = onExpire;
+        onErrorRef.current = onError;
+    });
+
     useEffect(() => {
         if (!TURNSTILE_SITE_KEY) {
             setWidgetState('idle');
@@ -31,7 +42,7 @@ export const TurnstileWidget = ({
         let isMounted = true;
         let intervalId = null;
 
-        // Dynamically ensure script is present if not already added in head
+        // Ensure Cloudflare API script is present in head
         if (!window.turnstile && !document.getElementById('cf-turnstile-script')) {
             const script = document.createElement('script');
             script.id = 'cf-turnstile-script';
@@ -43,29 +54,41 @@ export const TurnstileWidget = ({
 
         const renderTurnstile = () => {
             if (!isMounted) return;
-            if (window.turnstile && containerRef.current && !widgetIdRef.current) {
+            // Prevent rendering if container is gone or widget is already rendered
+            if (window.turnstile && containerRef.current && widgetIdRef.current === null) {
                 try {
-                    widgetIdRef.current = window.turnstile.render(containerRef.current, {
+                    // Clear container innerHTML first to avoid duplicate iframes
+                    containerRef.current.innerHTML = '';
+                    
+                    const id = window.turnstile.render(containerRef.current, {
                         sitekey: TURNSTILE_SITE_KEY,
                         theme,
                         language: 'ar',
                         callback: (token) => {
                             if (!isMounted) return;
                             setWidgetState('verified');
-                            if (onVerify) onVerify(token);
+                            if (onVerifyRef.current) {
+                                onVerifyRef.current(token);
+                            }
                         },
                         'expired-callback': () => {
                             if (!isMounted) return;
                             setWidgetState('rendered');
-                            if (onExpire) onExpire();
+                            if (onExpireRef.current) {
+                                onExpireRef.current();
+                            }
                         },
                         'error-callback': (err) => {
-                            console.warn('[Turnstile] Challenge error/failed:', err);
+                            console.warn('[Turnstile] Challenge error:', err);
                             if (!isMounted) return;
                             setWidgetState('error');
-                            if (onError) onError(err);
+                            if (onErrorRef.current) {
+                                onErrorRef.current(err);
+                            }
                         }
                     });
+
+                    widgetIdRef.current = id;
                     setWidgetState('rendered');
                     if (intervalId) clearInterval(intervalId);
                 } catch (e) {
@@ -78,7 +101,7 @@ export const TurnstileWidget = ({
             renderTurnstile();
         } else {
             intervalId = setInterval(() => {
-                if (window.turnstile) {
+                if (window.turnstile && isMounted) {
                     renderTurnstile();
                 }
             }, 100);
@@ -87,7 +110,7 @@ export const TurnstileWidget = ({
         return () => {
             isMounted = false;
             if (intervalId) clearInterval(intervalId);
-            if (window.turnstile && widgetIdRef.current) {
+            if (window.turnstile && widgetIdRef.current !== null) {
                 try {
                     window.turnstile.remove(widgetIdRef.current);
                 } catch {
@@ -96,7 +119,7 @@ export const TurnstileWidget = ({
                 widgetIdRef.current = null;
             }
         };
-    }, [theme, onVerify, onExpire, onError]);
+    }, [theme]); // ONLY re-run if theme changes, never on callback reference changes!
 
     if (!TURNSTILE_SITE_KEY) {
         return null;
@@ -121,7 +144,7 @@ export const TurnstileWidget = ({
             )}
             {widgetState === 'error' && (
                 <div className="text-red-400 text-xs font-bold mt-1.5 animate-in fade-in">
-                    تعذر إكمال التحقق الأمني، يرجى تحديث الصفحة أو التحقق من الدومين.
+                    تعذر إكمال التحقق الأمني، يرجى إعادة المحاولة.
                 </div>
             )}
         </div>
