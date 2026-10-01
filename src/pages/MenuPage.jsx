@@ -233,8 +233,39 @@ const MenuPage = () => {
     const [showFeedback, setShowFeedback] = useState(false);
     const [selectedDish, setSelectedDish] = useState(null);
     const [showTracking, setShowTracking] = useState(false);
+    const [showLogoModal, setShowLogoModal] = useState(false);
+    const [logoTouchStartY, setLogoTouchStartY] = useState(null);
+    const [logoTouchMoveY, setLogoTouchMoveY] = useState(0);
     const menuProductsRef = useRef(null);
     const skipCategoryScrollRef = useRef(true);
+
+    useEffect(() => {
+        if (!showLogoModal) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') setShowLogoModal(false);
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [showLogoModal]);
+
+    const handleLogoTouchStart = (e) => {
+        setLogoTouchStartY(e.touches[0].clientY);
+        setLogoTouchMoveY(0);
+    };
+
+    const handleLogoTouchMove = (e) => {
+        if (logoTouchStartY === null) return;
+        const currentY = e.touches[0].clientY;
+        setLogoTouchMoveY(currentY - logoTouchStartY);
+    };
+
+    const handleLogoTouchEnd = () => {
+        if (Math.abs(logoTouchMoveY) > 60) {
+            setShowLogoModal(false);
+        }
+        setLogoTouchStartY(null);
+        setLogoTouchMoveY(0);
+    };
 
     useEffect(() => {
         if (skipCategoryScrollRef.current) {
@@ -377,14 +408,23 @@ const MenuPage = () => {
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10">
                     <div className="mb-4 sm:mb-6 animate-float relative flex items-center justify-center">
                         <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-110 opacity-75"></div>
-                        <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center">
+                        <button
+                            type="button"
+                            onClick={() => setShowLogoModal(true)}
+                            className="group relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                            aria-label="تكبير شعار المطعم"
+                        >
                             <img
                                 src={restaurantLogo}
-                                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-transform duration-500 hover:scale-105"
+                                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110 pointer-events-none"
                                 alt="مطعم أبو خاطر"
                                 decoding="async"
                             />
-                        </div>
+                            {/* Zoom hint overlay */}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <ZoomIn className="text-white drop-shadow-md" size={24} />
+                            </div>
+                        </button>
                     </div>
                     <div className="relative group cursor-default mb-1">
                         {/* Ambient Glow behind title */}
@@ -668,6 +708,53 @@ const MenuPage = () => {
                     isOpen={showTracking}
                     onClose={() => setShowTracking(false)}
                 />
+            )}
+
+            {/* Enlarged Logo Lightbox */}
+            {showLogoModal && (
+                <div
+                    onClick={() => setShowLogoModal(false)}
+                    className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none touch-pan-y"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="عرض شعار المطعم بالحجم الكامل"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        onTouchStart={handleLogoTouchStart}
+                        onTouchMove={handleLogoTouchMove}
+                        onTouchEnd={handleLogoTouchEnd}
+                        style={{
+                            transform: logoTouchMoveY ? `translateY(${logoTouchMoveY}px)` : undefined,
+                            transition: logoTouchMoveY ? 'none' : 'transform 0.25s ease'
+                        }}
+                        className="relative flex flex-col items-center max-w-sm sm:max-w-md w-full animate-in zoom-in-95 duration-200"
+                    >
+                        {/* Close button X directly at top of the image */}
+                        <button
+                            type="button"
+                            onClick={() => setShowLogoModal(false)}
+                            aria-label="إغلاق"
+                            className="absolute -top-12 sm:-top-14 right-2 sm:right-0 p-2.5 bg-dark-800/90 hover:bg-red-500/30 text-white rounded-full border border-white/20 backdrop-blur-md transition-all shadow-xl active:scale-90"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        {/* Enlarged Image */}
+                        <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full border-4 border-primary/40 shadow-[0_0_60px_rgba(234,88,12,0.35)] overflow-hidden bg-dark-950 flex items-center justify-center">
+                            <img
+                                src={restaurantLogo}
+                                alt="مطعم أبو خاطر"
+                                className="w-full h-full object-cover select-none pointer-events-none"
+                            />
+                        </div>
+
+                        {/* Swipe / Click hint for phones */}
+                        <p className="text-slate-400 text-xs font-medium mt-4 text-center select-none pointer-events-none opacity-80">
+                            اسحب لأعلى أو لأسفل أو اضغط بالخارج للإغلاق
+                        </p>
+                    </div>
+                </div>
             )}
         </div>
     );
