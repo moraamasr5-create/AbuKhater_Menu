@@ -17,7 +17,7 @@ const ProgressSteps = memo(function ProgressSteps() {
         (location.pathname === '/' ? 1 : 0);
 
     return (
-        <nav className="w-full bg-dark-950/60 backdrop-blur-lg pt-3 pb-2.5 sm:pt-4 sm:pb-3 px-3 sm:px-4 border-b border-white/[0.06]" aria-label="خطوات إتمام الطلب">
+        <nav className="w-full bg-dark-950/60 backdrop-blur-lg pt-3 pb-2.5 sm:pt-4 sm:pb-3 px-1 sm:px-4 border-b border-white/[0.06]" aria-label="خطوات إتمام الطلب">
             <div className="flex items-center justify-between relative max-w-lg mx-auto">
                 <div className="absolute left-0 right-0 top-4 h-0.5 bg-dark-800/90 -z-0 rounded-full" aria-hidden />
 
