@@ -237,34 +237,17 @@ const CustomerPage = () => {
         return `${base} bg-dark-800/50 border-white/5 focus:border-primary`;
     };
 
-    // Helper to create glowing custom customer marker with boundary protection
-    const createCustomerMarker = (latlng, radiusKm, restLat, restLng) => {
+    // Helper to create glowing custom customer marker
+    const createCustomerMarker = (latlng) => {
         if (!window.L) return null;
-        const marker = window.L.marker(latlng, {
-            draggable: true,
-            autoPan: true,
+        return window.L.marker(latlng, {
             icon: window.L.divIcon({
                 className: 'customer-pin-marker',
-                html: '<div style="background: #ea580c; border: 3px solid #ffffff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(234, 88, 12, 0.8); font-size: 16px; cursor: grab;">📍</div>',
+                html: '<div style="background: #ea580c; border: 3px solid #ffffff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(234, 88, 12, 0.8); font-size: 16px; cursor: pointer;">📍</div>',
                 iconSize: [34, 34],
                 iconAnchor: [17, 17]
             })
         });
-
-        marker.on('dragend', (e) => {
-            const newLatLng = e.target.getLatLng();
-            const dist = calculateDistance(restLat, restLng, newLatLng.lat, newLatLng.lng);
-            if (dist > radiusKm) {
-                alert(`عفواً، الموقع خارج نطاق التوصيل المسموح (${radiusKm} كم).`);
-                if (location) {
-                    marker.setLatLng([location.lat, location.lon]);
-                }
-                return;
-            }
-            setLocation({ lat: newLatLng.lat, lon: newLatLng.lng });
-        });
-
-        return marker;
     };
 
     // Helper to create restaurant marker
@@ -280,7 +263,7 @@ const CustomerPage = () => {
         }).bindPopup('<b>مطعم أبو خاطر</b>');
     };
 
-    // Map Initialization (Leaflet - Highly Optimized for Mobile)
+    // Map Initialization (Leaflet)
     useEffect(() => {
         if (locationMethod === 'map' && mapRef.current) {
             if (mapInstance.current) {
@@ -292,19 +275,8 @@ const CustomerPage = () => {
             const timer = setTimeout(() => {
                 if (!mapRef.current || !window.L) return;
 
-                const restLat = RESTAURANT_LOCATION.lat;
-                const restLng = RESTAURANT_LOCATION.lon;
-                const radiusKm = parseFloat(maxDistance) || MAX_DELIVERY_DISTANCE || 12;
-
-                // Restrict map panning to only allowed delivery area
-                const latMargin = (radiusKm * 1.15) / 111.0;
-                const lonMargin = (radiusKm * 1.15) / (111.0 * Math.cos(restLat * (Math.PI / 180)));
-                const southWest = window.L.latLng(restLat - latMargin, restLng - lonMargin);
-                const northEast = window.L.latLng(restLat + latMargin, restLng + lonMargin);
-                const deliveryBounds = window.L.latLngBounds(southWest, northEast);
-
-                const center = location ? [location.lat, location.lon] : [restLat, restLng];
-                const initialZoom = location ? 16 : 14;
+                const center = location ? [location.lat, location.lon] : [RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon];
+                const zoom = location ? 16 : 13;
 
                 try {
                     mapInstance.current = window.L.map(mapRef.current, {
@@ -314,30 +286,21 @@ const CustomerPage = () => {
                         touchZoom: true,
                         scrollWheelZoom: true,
                         doubleClickZoom: true,
-                        tap: false,
-                        minZoom: 13,
-                        maxZoom: 18,
-                        maxBounds: deliveryBounds,
-                        maxBoundsViscosity: 1.0,
-                        preferCanvas: true
-                    }).setView(center, Math.min(Math.max(initialZoom, 13), 18));
+                        tap: false
+                    }).setView(center, zoom);
 
-                    // Lightweight Google Hybrid Tiles with buffer caching and idle updates
+                    // High performance Google Hybrid (Satellite + Arabic Streets/Landmarks)
                     window.L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
                         subdomains: ['0', '1', '2', '3'],
-                        minZoom: 13,
-                        maxZoom: 18,
-                        keepBuffer: 2,
-                        updateWhenIdle: true,
-                        updateWhenZooming: false
+                        maxZoom: 20
                     }).addTo(mapInstance.current);
 
                     // Restaurant Marker
-                    createRestaurantMarker([restLat, restLng]).addTo(mapInstance.current);
+                    createRestaurantMarker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon]).addTo(mapInstance.current);
 
                     // Delivery Range Circle
-                    const radiusMeters = radiusKm * 1000;
-                    window.L.circle([restLat, restLng], {
+                    const radiusMeters = (parseFloat(maxDistance) || MAX_DELIVERY_DISTANCE || 12) * 1000;
+                    window.L.circle([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon], {
                         color: '#ea580c',
                         fillColor: '#ea580c',
                         fillOpacity: 0.08,
@@ -348,22 +311,17 @@ const CustomerPage = () => {
 
                     // Customer initial marker if location exists
                     if (location) {
-                        markerInstance.current = createCustomerMarker([location.lat, location.lon], radiusKm, restLat, restLng);
+                        markerInstance.current = createCustomerMarker([location.lat, location.lon]);
                         if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
                     }
 
-                    // Click anywhere to place / move pin within delivery boundary
+                    // Click anywhere to place / move pin
                     mapInstance.current.on('click', (e) => {
                         const { lat, lng } = e.latlng;
-                        const dist = calculateDistance(restLat, restLng, lat, lng);
-                        if (dist > radiusKm) {
-                            alert(`عفواً، الموقع المختار خارج نطاق التوصيل المسموح (${radiusKm} كم).`);
-                            return;
-                        }
                         if (markerInstance.current) {
                             markerInstance.current.setLatLng(e.latlng);
                         } else {
-                            markerInstance.current = createCustomerMarker(e.latlng, radiusKm, restLat, restLng);
+                            markerInstance.current = createCustomerMarker(e.latlng);
                             if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
                         }
                         setLocation({ lat, lon: lng });
@@ -377,16 +335,13 @@ const CustomerPage = () => {
                             // Fly to pending GPS location if user clicked "أين أنا" from GPS tab
                             if (pendingGPSLocation.current && mapInstance.current) {
                                 const { lat, lon } = pendingGPSLocation.current;
-                                const dist = calculateDistance(restLat, restLng, lat, lon);
-                                if (dist <= radiusKm) {
-                                    const latlng = window.L.latLng(lat, lon);
-                                    mapInstance.current.flyTo(latlng, 16);
-                                    if (markerInstance.current) {
-                                        markerInstance.current.setLatLng(latlng);
-                                    } else {
-                                        markerInstance.current = createCustomerMarker(latlng, radiusKm, restLat, restLng);
-                                        if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
-                                    }
+                                const latlng = window.L.latLng(lat, lon);
+                                mapInstance.current.flyTo(latlng, 16);
+                                if (markerInstance.current) {
+                                    markerInstance.current.setLatLng(latlng);
+                                } else {
+                                    markerInstance.current = createCustomerMarker(latlng);
+                                    if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
                                 }
                                 pendingGPSLocation.current = null;
                             }
@@ -649,11 +604,14 @@ const CustomerPage = () => {
                             <h3 className="font-bold text-white uppercase tracking-wider text-xs">عنوان التوصيل</h3>
                         </div>
 
-                        {/* Location Methods Tabs */}
+                        {/* Location Methods Tabs (GPS + المناطق الثابتة فقط حالياً) */}
                         <div className="flex bg-dark-800/55 p-1.5 rounded-xl sm:rounded-2xl border border-white/[0.06] gap-0.5">
                             {[
-                                { id: 'gps', icon: Compass, label: 'GPS' },
-                                { id: 'map', icon: Map, label: 'الخريطة' },
+                                { id: 'gps', icon: Compass, label: 'تحديد تلقائي (GPS)' },
+                                /* 
+                                  [مؤقت - قيد التطوير لاحقاً] تم تعليق زر الخريطة مؤقتاً لحين استكمال تطويرها وإعادتها
+                                  { id: 'map', icon: Map, label: 'الخريطة' },
+                                */
                                 { id: 'fixed', icon: MapPin, label: 'مناطق ثابتة' }
                             ].map(method => (
                                 <button
@@ -686,41 +644,47 @@ const CustomerPage = () => {
                                             <>
                                                 <Compass size={32} className={`text-primary ${location ? 'animate-none' : 'animate-pulse'}`} />
                                                 <span className="font-bold text-sm text-slate-300">
-                                                    {location ? 'تم تحديث الموقع بنجاح ✓' : 'انقر لتحديد موقعك تلقائياً'}
+                                                    {location ? 'تم تحديث الموقع بنجاح ✓' : 'انقر لتحديد موقعك تلقائياً (GPS)'}
                                                 </span>
                                             </>
                                         )}
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleLocateAndSwitchToMap}
-                                        disabled={isLocating}
-                                        className="w-full bg-dark-800/70 border border-white/10 shadow text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
-                                    >
-                                        {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={16} />}
-                                        <span>أين انا! (على الخريطة)</span>
-                                    </button>
+                                    {/* 
+                                      [مؤقت - قيد التطوير لاحقاً] زر الانتقال للخريطة معلق مؤقتاً
+                                      <button
+                                          type="button"
+                                          onClick={handleLocateAndSwitchToMap}
+                                          disabled={isLocating}
+                                          className="w-full bg-dark-800/70 border border-white/10 shadow text-white px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
+                                      >
+                                          {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={16} />}
+                                          <span>أين انا! (على الخريطة)</span>
+                                      </button>
+                                    */}
                                     {gpsError && <p className="text-red-400 text-[10px] text-center">{gpsError}</p>}
                                 </div>
                             )}
 
-                            {locationMethod === 'map' && (
-                                <div className="w-full space-y-4">
-                                    <div className="relative w-full">
-                                        <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner transition-all z-0" />
-                                        <button
-                                            type="button"
-                                            onClick={handleLocateMeOnMap}
-                                            disabled={isLocating}
-                                            className="absolute bottom-4 left-4 z-[400] bg-dark-900/90 backdrop-blur border border-white/10 shadow-lg text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
-                                        >
-                                            {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={14} />}
-                                            <span>أين انا!</span>
-                                        </button>
-                                    </div>
-                                    <p className="text-[10px] text-slate-500 text-center italic">اسحب الخريطة وانقر لتحديد نقطة التوصيل الدقيقة</p>
-                                </div>
-                            )}
+                            {/* 
+                              [مؤقت - قيد التطوير لاحقاً] واجهة الخريطة معلقة مؤقتاً ومحفوظة بالكامل لإعادتها لاحقاً
+                              {locationMethod === 'map' && (
+                                  <div className="w-full space-y-4">
+                                      <div className="relative w-full">
+                                          <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner transition-all z-0" />
+                                          <button
+                                              type="button"
+                                              onClick={handleLocateMeOnMap}
+                                              disabled={isLocating}
+                                              className="absolute bottom-4 left-4 z-[400] bg-dark-900/90 backdrop-blur border border-white/10 shadow-lg text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-primary hover:border-primary transition-all disabled:opacity-50"
+                                          >
+                                              {isLocating ? <LoadingSpinner size={14} color="text-white" /> : <MapPin size={14} />}
+                                              <span>أين انا!</span>
+                                          </button>
+                                      </div>
+                                      <p className="text-[10px] text-slate-500 text-center italic">اسحب الخريطة وانقر لتحديد نقطة التوصيل الدقيقة</p>
+                                  </div>
+                              )}
+                            */}
 
                             {locationMethod === 'fixed' && (
                                 <div className="w-full">
