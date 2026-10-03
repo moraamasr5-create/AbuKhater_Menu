@@ -328,11 +328,10 @@ const TrackPage = () => {
                                             key={ord.order_id || idx}
                                             type="button"
                                             onClick={() => setSelectedIdx(idx)}
-                                            className={`py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${
-                                                isSelected
+                                            className={`py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${isSelected
                                                     ? 'bg-primary text-white shadow-md shadow-primary/30 scale-[1.01]'
                                                     : 'text-slate-400 hover:text-white hover:bg-dark-800'
-                                            }`}
+                                                }`}
                                         >
                                             <span className="font-black text-xs flex items-center gap-1.5">
                                                 <Layers size={13} />
@@ -434,13 +433,12 @@ const TrackPage = () => {
                                         return (
                                             <div key={step.key} className="relative flex items-start gap-4">
                                                 <div
-                                                    className={`relative z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
-                                                        isDone
+                                                    className={`relative z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${isDone
                                                             ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
                                                             : isCurrent
-                                                            ? 'bg-primary text-white shadow-xl shadow-primary/40 ring-4 ring-primary/20 animate-pulse'
-                                                            : 'bg-dark-800 text-slate-600 border border-white/5'
-                                                    }`}
+                                                                ? 'bg-primary text-white shadow-xl shadow-primary/40 ring-4 ring-primary/20 animate-pulse'
+                                                                : 'bg-dark-800 text-slate-600 border border-white/5'
+                                                        }`}
                                                 >
                                                     {isDone ? (
                                                         <CheckCircle2 size={18} />
@@ -452,19 +450,18 @@ const TrackPage = () => {
                                                 <div className="flex-1 min-w-0 pt-0.5">
                                                     <div className="flex items-center justify-between">
                                                         <h4
-                                                            className={`text-sm font-bold ${
-                                                                isCurrent
+                                                            className={`text-sm font-bold ${isCurrent
                                                                     ? 'text-primary font-black text-base'
                                                                     : isDone
-                                                                    ? 'text-white'
-                                                                    : 'text-slate-500'
-                                                            }`}
+                                                                        ? 'text-white'
+                                                                        : 'text-slate-500'
+                                                                }`}
                                                         >
                                                             {step.label}
                                                         </h4>
                                                         {isCurrent && (
                                                             <span className="text-[10px] font-black text-primary bg-primary/10 px-2.5 py-0.5 rounded-full animate-pulse border border-primary/20">
-                                                                جاري الآن
+                                                                جاري ...
                                                             </span>
                                                         )}
                                                     </div>
@@ -496,7 +493,7 @@ const TrackPage = () => {
                                 className="w-full py-4 bg-dark-900 hover:bg-dark-800 text-slate-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
                             >
                                 <Phone size={16} className="text-primary" />
-                                <span>الاتصال بإدارة المطعم (01038035884)</span>
+                                <span>الاتصال بإدارة المطعم (01144423700)</span>
                             </a>
                         </div>
                     </div>

@@ -405,7 +405,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                             </h5>
                                                             {isCurrent && (
                                                                 <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full animate-pulse border border-primary/20">
-                                                                    جاري الآن
+
                                                                 </span>
                                                             )}
                                                         </div>
