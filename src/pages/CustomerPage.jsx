@@ -422,6 +422,11 @@ const CustomerPage = () => {
     };
 
     const handleNext = () => {
+        if (orderType === 'pickup' && paymentMethod === 'cash') {
+            alert('عفوًا، لا يوجد خيار الدفع النقدي في خدمة استلام من الفرع');
+            return;
+        }
+
         if (isFormValid()) {
             const saved = JSON.parse(localStorage.getItem('saved_customers') || '[]');
             const newEntry = {
@@ -802,23 +807,31 @@ const CustomerPage = () => {
                         ].map(method => {
                             const IconComponent = method.icon;
                             const isSelected = paymentMethod === method.id;
+                            const isPickupCashUnavailable = orderType === 'pickup' && method.id === 'cash';
                             return (
                                 <button
                                     key={method.id}
                                     type="button"
                                     onClick={() => {
+                                        if (isPickupCashUnavailable) {
+                                            alert('عفوًا، لا يوجد خيار الدفع النقدي في خدمة استلام من الفرع');
+                                            return;
+                                        }
                                         if (navigator.vibrate) navigator.vibrate(15);
                                         setPaymentMethod(method.id);
                                     }}
-                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isSelected
-                                            ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
-                                            : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
+                                    aria-disabled={isPickupCashUnavailable}
+                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isPickupCashUnavailable
+                                        ? 'opacity-40 grayscale cursor-not-allowed border-white/[0.06] bg-dark-800/40 text-slate-500'
+                                        : isSelected
+                                        ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
+                                        : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between w-full">
                                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15' : 'bg-dark-700/50 text-slate-400'
                                             }`}>
-                                            <IconComponent size={18} />
+                                            <IconComponent size={15} />
                                         </div>
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/15 text-white' : 'bg-dark-700 text-slate-500'
                                             }`}>
@@ -866,5 +879,3 @@ const CustomerPage = () => {
 };
 
 export default CustomerPage;
-
-
