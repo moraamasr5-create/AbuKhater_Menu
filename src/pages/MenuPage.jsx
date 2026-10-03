@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback, memo, lazy, Suspense } from 'react';
 import { menuService } from '../services/api';
 import { supabase } from '../services/supabase/supabaseClient';
 import useCart from '../hooks/useCart';
 import StickyCartBar from '../features/cart/StickyCartBar';
 import ProgressSteps from '../features/checkout/ProgressSteps';
-import ReservationModal from '../features/reservation/ReservationModal';
-import FeedbackModal from '../features/feedback/FeedbackModal';
-import DishDetailModal from '../features/menu/DishDetailModal';
-import OrderTrackingModal from '../features/tracking/OrderTrackingModal';
 import {
     Search,
     RefreshCcw,
@@ -32,8 +28,14 @@ import {
     ZoomIn
 } from 'lucide-react';
 import restaurantLogo from '../assets/logo.png';
-import restaurantBanner from '../assets/banner.png';
+import restaurantBanner from '../assets/banner2.png';
 import { normalizeCategoryKey } from '../core/utils/menuItem';
+
+// Lazy loaded modals to keep initial bundle ultra-light
+const ReservationModal = lazy(() => import('../features/reservation/ReservationModal'));
+const FeedbackModal = lazy(() => import('../features/feedback/FeedbackModal'));
+const DishDetailModal = lazy(() => import('../features/menu/DishDetailModal'));
+const OrderTrackingModal = lazy(() => import('../features/tracking/OrderTrackingModal'));
 
 const CATEGORY_MAP = {
     all: { label: 'الكل', icon: LayoutGrid },
@@ -92,6 +94,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
     return (
         <div
             className={`group card-interactive-3d rounded-2xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
+            style={{ contentVisibility: 'auto', containIntrinsicSize: '120px 240px' }}
         >
             {/* Image / Thumbnail Container */}
             <div
@@ -226,7 +229,6 @@ const MenuPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeCategory, setActiveCategory] = useState('all');
-    const [categories, setCategories] = useState(['all']);
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
     const [showReservation, setShowReservation] = useState(false);
@@ -267,6 +269,39 @@ const MenuPage = () => {
         setLogoTouchMoveY(0);
     };
 
+    // Synchronously derive categories from menu items without extra render cycle
+    const categories = useMemo(() => {
+        if (!menuItems || menuItems.length === 0) return ['all'];
+        const categoryMap = new Map();
+        for (let i = 0; i < menuItems.length; i++) {
+            const item = menuItems[i];
+            const catKey = normalizeCategoryKey(item.category_slug || item.category);
+            if (catKey && !categoryMap.has(catKey)) {
+                categoryMap.set(catKey, {
+                    order: item.category_order ?? 999,
+                    label: item.category
+                });
+            }
+        }
+        const sorted = Array.from(categoryMap.entries())
+            .sort((a, b) => a[1].order - b[1].order)
+            .map(entry => entry[0]);
+        return ['all', ...sorted];
+    }, [menuItems]);
+
+    // Pre-calculate category counts once to replace O(C * N) filtering on every render
+    const categoryCounts = useMemo(() => {
+        const counts = { all: menuItems.length };
+        for (let i = 0; i < menuItems.length; i++) {
+            const item = menuItems[i];
+            const catKey = normalizeCategoryKey(item.category_slug || item.category);
+            if (catKey) {
+                counts[catKey] = (counts[catKey] || 0) + 1;
+            }
+        }
+        return counts;
+    }, [menuItems]);
+
     const hasScrolledCategoriesRef = useRef(false);
 
     useEffect(() => {
@@ -303,19 +338,28 @@ const MenuPage = () => {
         return () => cancelAnimationFrame(t);
     }, [activeCategory]);
 
+    // Throttled scroll listener: only trigger state update when crossing 100px boundary
     useEffect(() => {
+        let ticking = false;
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 100);
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrolled = window.scrollY > 100;
+                    setIsScrolled(prev => (prev !== scrolled ? scrolled : prev));
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const loadMenu = useCallback(async () => {
+    const loadMenu = useCallback(async (force = false) => {
         try {
             setLoading(true);
             setError(null);
-            const { items, error: remoteError } = await menuService.fetchMenu();
+            const { items, error: remoteError } = await menuService.fetchMenu({ force });
 
             if (remoteError) {
                 setError(remoteError);
@@ -354,7 +398,7 @@ const MenuPage = () => {
                     table: 'menu_items'
                 },
                 () => {
-                    loadMenu();
+                    loadMenu(true);
                 }
             )
             .subscribe();
@@ -364,55 +408,40 @@ const MenuPage = () => {
         };
     }, [loadMenu]);
 
-    /**
-     * 🔴 تحديث قائمة التصنيفات بشكل ديناميكي بناءً على بيانات Supabase
-     */
-    useEffect(() => {
-        if (menuItems.length > 0) {
-            const categoryMap = new Map();
-            menuItems.forEach((item) => {
-                const catKey = normalizeCategoryKey(item.category_slug || item.category);
-                if (catKey) {
-                    if (!categoryMap.has(catKey)) {
-                        categoryMap.set(catKey, {
-                            order: item.category_order ?? 999,
-                            label: item.category
-                        });
-                    }
-                }
-            });
+    const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
-            const sortedCategories = Array.from(categoryMap.entries())
-                .sort((a, b) => a[1].order - b[1].order)
-                .map(entry => entry[0]);
+    const filteredItems = useMemo(() => {
+        if (!menuItems.length) return [];
+        const isAll = activeCategory === 'all';
+        const normActiveCategory = isAll ? null : normalizeCategoryKey(activeCategory);
+        const hasSearch = searchLower.length > 0;
 
-            setCategories(['all', ...sortedCategories]);
-        }
-    }, [menuItems]);
+        return menuItems.filter((item) => {
+            const nameOk = item?.name != null && String(item.name).trim() !== '';
+            const idRaw = item?.id;
+            const idOk = idRaw != null && String(idRaw).trim() !== '';
+            if (!nameOk || !idOk) return false;
 
-    const searchLower = useMemo(() => searchQuery.toLowerCase(), [searchQuery]);
+            if (!isAll) {
+                const itemCatKey = normalizeCategoryKey(item.category_slug || item.category);
+                if (itemCatKey !== normActiveCategory) return false;
+            }
 
-    const filteredItems = useMemo(() => menuItems.filter((item) => {
-        const nameOk = item?.name != null && String(item.name).trim() !== '';
-        const idRaw = item?.id;
-        const idOk = idRaw != null && String(idRaw).trim() !== '';
-        if (!nameOk || !idOk) return false;
+            if (hasSearch) {
+                const nameMatches = item.name.toLowerCase().includes(searchLower);
+                if (nameMatches) return true;
+                return item.description ? item.description.toLowerCase().includes(searchLower) : false;
+            }
 
-        const itemCatKey = normalizeCategoryKey(item.category_slug || item.category);
-        const matchesCategory =
-            activeCategory === 'all' ||
-            itemCatKey === normalizeCategoryKey(activeCategory);
-
-        const matchesSearch =
-            item.name.toLowerCase().includes(searchLower) ||
-            (item.description && item.description.toLowerCase().includes(searchLower));
-
-        return matchesCategory && matchesSearch;
-    }), [menuItems, activeCategory, searchLower]);
+            return true;
+        });
+    }, [menuItems, activeCategory, searchLower]);
 
     const qtyByItemId = useMemo(() => {
         const m = new Map();
-        cart.forEach((line) => m.set(line.id, line.quantity));
+        for (let i = 0; i < cart.length; i++) {
+            m.set(cart[i].id, cart[i].quantity);
+        }
         return m;
     }, [cart]);
 
@@ -575,12 +604,7 @@ const MenuPage = () => {
                             {categories.map((catId) => {
                                 const mapped = CATEGORY_MAP[catId] || CATEGORY_MAP[normalizeCategoryKey(catId)] || { label: catId, icon: Utensils };
                                 const IconComp = typeof mapped.icon === 'function' || typeof mapped.icon === 'object' ? mapped.icon : Utensils;
-                                const count = catId === 'all'
-                                    ? menuItems.length
-                                    : menuItems.filter(
-                                        (i) => normalizeCategoryKey(i.category_slug || i.category) === normalizeCategoryKey(catId)
-                                    ).length;
-
+                                const count = categoryCounts[catId] || 0;
                                 const isActive = activeCategory === catId;
 
                                 return (
@@ -640,7 +664,7 @@ const MenuPage = () => {
                         </div>
                         <button
                             type="button"
-                            onClick={loadMenu}
+                            onClick={() => loadMenu(true)}
                             className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-white rounded-xl text-xs font-bold transition-all shrink-0"
                         >
                             إعادة المحاولة
@@ -702,31 +726,33 @@ const MenuPage = () => {
 
             <StickyCartBar />
 
-            {showReservation && (
-                <ReservationModal isOpen={showReservation} onClose={() => setShowReservation(false)} />
-            )}
+            <Suspense fallback={null}>
+                {showReservation && (
+                    <ReservationModal isOpen={showReservation} onClose={() => setShowReservation(false)} />
+                )}
 
-            {showFeedback && (
-                <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
-            )}
+                {showFeedback && (
+                    <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
+                )}
 
-            {selectedDish && (
-                <DishDetailModal
-                    item={selectedDish}
-                    isOpen={Boolean(selectedDish)}
-                    onClose={() => setSelectedDish(null)}
-                    currentQty={qtyByItemId.get(selectedDish.id) || 0}
-                    onAddToCart={addToCart}
-                    onUpdateQuantity={updateQuantity}
-                />
-            )}
+                {selectedDish && (
+                    <DishDetailModal
+                        item={selectedDish}
+                        isOpen={Boolean(selectedDish)}
+                        onClose={() => setSelectedDish(null)}
+                        currentQty={qtyByItemId.get(selectedDish.id) || 0}
+                        onAddToCart={addToCart}
+                        onUpdateQuantity={updateQuantity}
+                    />
+                )}
 
-            {showTracking && (
-                <OrderTrackingModal
-                    isOpen={showTracking}
-                    onClose={() => setShowTracking(false)}
-                />
-            )}
+                {showTracking && (
+                    <OrderTrackingModal
+                        isOpen={showTracking}
+                        onClose={() => setShowTracking(false)}
+                    />
+                )}
+            </Suspense>
 
             {/* Enlarged Logo Lightbox */}
             {showLogoModal && (

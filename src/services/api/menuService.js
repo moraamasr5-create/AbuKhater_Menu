@@ -2,11 +2,30 @@ import { supabase } from '../supabase/supabaseClient';
 import { isValidRawMenuItem, resolveItemCategory } from '../../core/utils/menuItem';
 import { normalizeGoogleDriveImageUrl } from '../../core/utils/googleDrive';
 
+let _menuCache = null;
+let _menuCacheTime = 0;
+const CACHE_TTL_MS = 60000; // 1 minute in-memory cache
+
 export const menuService = {
+    /**
+     * Invalidate in-memory menu cache
+     */
+    invalidateCache() {
+        _menuCache = null;
+        _menuCacheTime = 0;
+    },
+
     /**
      * Fetch menu items directly from Supabase (Single Source of Truth)
      */
-    async fetchMenu() {
+    async fetchMenu(options = {}) {
+        const force = options?.force === true;
+        const now = Date.now();
+
+        if (!force && _menuCache && (now - _menuCacheTime < CACHE_TTL_MS)) {
+            return { items: _menuCache, dataSource: 'cache' };
+        }
+
         try {
             const { data, error } = await supabase
                 .from('menu_items')
@@ -47,11 +66,14 @@ export const menuService = {
                     return (a.display_order || 0) - (b.display_order || 0);
                 });
 
+            _menuCache = mapped;
+            _menuCacheTime = Date.now();
+
             return { items: mapped, dataSource: 'supabase' };
         } catch (error) {
             console.error('❌ Failed to fetch menu from Supabase:', error);
             return {
-                items: [],
+                items: _menuCache || [],
                 dataSource: 'error',
                 error: error.message || 'فشل تحميل قائمة الطعام من الخادم'
             };

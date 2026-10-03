@@ -66,7 +66,7 @@ export const CartProvider = ({ children }) => {
 
         return () => {
             if (channel) {
-                // channel cleanup
+                supabase.removeChannel(channel);
             }
         };
     }, [loadSettingsAndZones]);
