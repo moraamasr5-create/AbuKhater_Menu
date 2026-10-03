@@ -404,7 +404,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     {step === 1 ? (
                         <form id="reservation-form" onSubmit={nextStep} className="space-y-4 sm:space-y-5" dir="rtl">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                                {/* Full Name */}
+                                {/* 1. الاسم ثنائي */}
                                 <div className="space-y-1.5 sm:space-y-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
                                         <User size={14} className="text-primary shrink-0" /> 
@@ -423,7 +423,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.fullName && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.fullName}</p>}
                                 </div>
 
-                                {/* Phone */}
+                                {/* 2. رقم الهاتف */}
                                 <div className="space-y-1.5 sm:space-y-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
                                         <Phone size={14} className="text-primary shrink-0" /> 
@@ -443,8 +443,42 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.phone && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.phone}</p>}
                                 </div>
 
-                                {/* Date Selection (Today or Tomorrow) */}
-                                <div className="space-y-1.5 sm:space-y-2">
+                                {/* 3. اختار المكان */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <UtensilsCrossed size={14} className="text-primary shrink-0" /> 
+                                        <span>اختر المكان</span>
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 h-[48px] sm:h-[52px]">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'restaurant'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <UtensilsCrossed size={16} />
+                                            <span>مطعم</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'cafe'
+                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-600/30 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-purple-300'
+                                            }`}
+                                        >
+                                            <Coffee size={16} />
+                                            <span>كافيه</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* 4. ميعاد الحجز */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center justify-between select-none">
                                         <span className="flex items-center gap-2">
                                             <Calendar size={14} className="text-primary shrink-0" /> 
@@ -491,75 +525,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.date && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.date}</p>}
                                 </div>
 
-                                {/* Guests */}
-                                <div className="space-y-1.5 sm:space-y-2">
-                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
-                                        <Users size={14} className="text-primary shrink-0" /> 
-                                        <span>عدد الأشخاص</span>
-                                    </label>
-                                    <div className={`flex items-center bg-dark-950/60 border ${errors.guests ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} rounded-xl sm:rounded-2xl p-1.5 h-[48px] sm:h-[52px]`}>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newVal = Math.max(1, formData.guests - 1);
-                                                setFormData(p => ({ ...p, guests: newVal }));
-                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
-                                            }}
-                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-dark-800 text-white rounded-lg sm:rounded-xl hover:bg-dark-700 font-bold transition-all active:scale-95"
-                                        >-</button>
-                                        <input
-                                            readOnly
-                                            value={formData.guests}
-                                            className="flex-1 text-center bg-transparent text-white font-black text-base sm:text-lg"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newVal = formData.guests + 1;
-                                                setFormData(p => ({ ...p, guests: newVal }));
-                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
-                                            }}
-                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary text-white rounded-lg sm:rounded-xl shadow-md shadow-primary/20 font-bold transition-all active:scale-95"
-                                        >+</button>
-                                    </div>
-                                    {errors.guests && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.guests}</p>}
-                                </div>
-
-                                {/* Location Type Select (Restaurant / Cafe) */}
-                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
-                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
-                                        <UtensilsCrossed size={14} className="text-primary shrink-0" /> 
-                                        <span>اختر المكان</span>
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 h-[48px] sm:h-[52px]">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
-                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'restaurant'
-                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
-                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
-                                            }`}
-                                        >
-                                            <UtensilsCrossed size={16} />
-                                            <span>مطعم</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
-                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'cafe'
-                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-600/30 scale-[1.01]'
-                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-purple-300'
-                                            }`}
-                                        >
-                                            <Coffee size={16} />
-                                            <span>كافيه</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Time (Hour, Minute, Period) */}
+                                {/* 5. الوقت */}
                                 <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
                                         <Clock size={14} className="text-primary shrink-0" /> 
@@ -633,7 +599,41 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     {errors.time && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.time}</p>}
                                 </div>
 
-                                {/* Notes */}
+                                {/* 6. عدد الأشخاص */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <Users size={14} className="text-primary shrink-0" /> 
+                                        <span>عدد الأشخاص</span>
+                                    </label>
+                                    <div className={`flex items-center bg-dark-950/60 border ${errors.guests ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} rounded-xl sm:rounded-2xl p-1.5 h-[48px] sm:h-[52px]`}>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newVal = Math.max(1, formData.guests - 1);
+                                                setFormData(p => ({ ...p, guests: newVal }));
+                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
+                                            }}
+                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-dark-800 text-white rounded-lg sm:rounded-xl hover:bg-dark-700 font-bold transition-all active:scale-95"
+                                        >-</button>
+                                        <input
+                                            readOnly
+                                            value={formData.guests}
+                                            className="flex-1 text-center bg-transparent text-white font-black text-base sm:text-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newVal = formData.guests + 1;
+                                                setFormData(p => ({ ...p, guests: newVal }));
+                                                setErrors(prev => ({ ...prev, guests: validateField('guests', newVal) }));
+                                            }}
+                                            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary text-white rounded-lg sm:rounded-xl shadow-md shadow-primary/20 font-bold transition-all active:scale-95"
+                                        >+</button>
+                                    </div>
+                                    {errors.guests && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.guests}</p>}
+                                </div>
+
+                                {/* 7. الملاحظات */}
                                 <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
                                         <FileText size={14} className="text-primary shrink-0" /> 
