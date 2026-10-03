@@ -404,40 +404,6 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     {step === 1 ? (
                         <form id="reservation-form" onSubmit={nextStep} className="space-y-4 sm:space-y-5" dir="rtl">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                                {/* Location Type Select (Restaurant / Cafe) */}
-                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
-                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
-                                        <UtensilsCrossed size={14} className="text-primary shrink-0" /> 
-                                        <span>اختر المكان</span>
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 h-[48px] sm:h-[52px]">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
-                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'restaurant'
-                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
-                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
-                                            }`}
-                                        >
-                                            <UtensilsCrossed size={16} />
-                                            <span>مطعم</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
-                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
-                                                formData.locationType === 'cafe'
-                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-600/30 scale-[1.01]'
-                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-purple-300'
-                                            }`}
-                                        >
-                                            <Coffee size={16} />
-                                            <span>كافيه</span>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 {/* Full Name */}
                                 <div className="space-y-1.5 sm:space-y-2">
                                     <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
@@ -557,6 +523,40 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                         >+</button>
                                     </div>
                                     {errors.guests && <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1"><AlertCircle size={12} className="shrink-0" /> {errors.guests}</p>}
+                                </div>
+
+                                {/* Location Type Select (Restaurant / Cafe) */}
+                                <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                                    <label className="text-xs sm:text-sm font-bold text-slate-300 pr-1 flex items-center gap-2 select-none">
+                                        <UtensilsCrossed size={14} className="text-primary shrink-0" /> 
+                                        <span>اختر المكان</span>
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3 h-[48px] sm:h-[52px]">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'restaurant' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'restaurant'
+                                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-white'
+                                            }`}
+                                        >
+                                            <UtensilsCrossed size={16} />
+                                            <span>مطعم</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(p => ({ ...p, locationType: 'cafe' }))}
+                                            className={`flex items-center justify-center gap-2 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 touch-manipulation active:scale-[0.98] ${
+                                                formData.locationType === 'cafe'
+                                                    ? 'bg-purple-600 border-purple-500 text-white shadow-md shadow-purple-600/30 scale-[1.01]'
+                                                    : 'bg-dark-950/60 border-white/[0.08] text-slate-400 hover:bg-dark-800 hover:text-purple-300'
+                                            }`}
+                                        >
+                                            <Coffee size={16} />
+                                            <span>كافيه</span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Time (Hour, Minute, Period) */}
