@@ -237,17 +237,34 @@ const CustomerPage = () => {
         return `${base} bg-dark-800/50 border-white/5 focus:border-primary`;
     };
 
-    // Helper to create glowing custom customer marker
-    const createCustomerMarker = (latlng) => {
+    // Helper to create glowing custom customer marker with boundary protection
+    const createCustomerMarker = (latlng, radiusKm, restLat, restLng) => {
         if (!window.L) return null;
-        return window.L.marker(latlng, {
+        const marker = window.L.marker(latlng, {
+            draggable: true,
+            autoPan: true,
             icon: window.L.divIcon({
                 className: 'customer-pin-marker',
-                html: '<div style="background: #ea580c; border: 3px solid #ffffff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(234, 88, 12, 0.8); font-size: 16px; cursor: pointer;">📍</div>',
+                html: '<div style="background: #ea580c; border: 3px solid #ffffff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(234, 88, 12, 0.8); font-size: 16px; cursor: grab;">📍</div>',
                 iconSize: [34, 34],
                 iconAnchor: [17, 17]
             })
         });
+
+        marker.on('dragend', (e) => {
+            const newLatLng = e.target.getLatLng();
+            const dist = calculateDistance(restLat, restLng, newLatLng.lat, newLatLng.lng);
+            if (dist > radiusKm) {
+                alert(`عفواً، الموقع خارج نطاق التوصيل المسموح (${radiusKm} كم).`);
+                if (location) {
+                    marker.setLatLng([location.lat, location.lon]);
+                }
+                return;
+            }
+            setLocation({ lat: newLatLng.lat, lon: newLatLng.lng });
+        });
+
+        return marker;
     };
 
     // Helper to create restaurant marker
@@ -263,7 +280,7 @@ const CustomerPage = () => {
         }).bindPopup('<b>مطعم أبو خاطر</b>');
     };
 
-    // Map Initialization (Leaflet)
+    // Map Initialization (Leaflet - Highly Optimized for Mobile)
     useEffect(() => {
         if (locationMethod === 'map' && mapRef.current) {
             if (mapInstance.current) {
@@ -275,8 +292,19 @@ const CustomerPage = () => {
             const timer = setTimeout(() => {
                 if (!mapRef.current || !window.L) return;
 
-                const center = location ? [location.lat, location.lon] : [RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon];
-                const zoom = location ? 16 : 13;
+                const restLat = RESTAURANT_LOCATION.lat;
+                const restLng = RESTAURANT_LOCATION.lon;
+                const radiusKm = parseFloat(maxDistance) || MAX_DELIVERY_DISTANCE || 12;
+
+                // Restrict map panning to only allowed delivery area
+                const latMargin = (radiusKm * 1.15) / 111.0;
+                const lonMargin = (radiusKm * 1.15) / (111.0 * Math.cos(restLat * (Math.PI / 180)));
+                const southWest = window.L.latLng(restLat - latMargin, restLng - lonMargin);
+                const northEast = window.L.latLng(restLat + latMargin, restLng + lonMargin);
+                const deliveryBounds = window.L.latLngBounds(southWest, northEast);
+
+                const center = location ? [location.lat, location.lon] : [restLat, restLng];
+                const initialZoom = location ? 16 : 14;
 
                 try {
                     mapInstance.current = window.L.map(mapRef.current, {
@@ -286,21 +314,30 @@ const CustomerPage = () => {
                         touchZoom: true,
                         scrollWheelZoom: true,
                         doubleClickZoom: true,
-                        tap: false
-                    }).setView(center, zoom);
+                        tap: false,
+                        minZoom: 13,
+                        maxZoom: 18,
+                        maxBounds: deliveryBounds,
+                        maxBoundsViscosity: 1.0,
+                        preferCanvas: true
+                    }).setView(center, Math.min(Math.max(initialZoom, 13), 18));
 
-                    // High performance Google Hybrid (Satellite + Arabic Streets/Landmarks)
+                    // Lightweight Google Hybrid Tiles with buffer caching and idle updates
                     window.L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
                         subdomains: ['0', '1', '2', '3'],
-                        maxZoom: 20
+                        minZoom: 13,
+                        maxZoom: 18,
+                        keepBuffer: 2,
+                        updateWhenIdle: true,
+                        updateWhenZooming: false
                     }).addTo(mapInstance.current);
 
                     // Restaurant Marker
-                    createRestaurantMarker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon]).addTo(mapInstance.current);
+                    createRestaurantMarker([restLat, restLng]).addTo(mapInstance.current);
 
                     // Delivery Range Circle
-                    const radiusMeters = (parseFloat(maxDistance) || MAX_DELIVERY_DISTANCE || 12) * 1000;
-                    window.L.circle([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lon], {
+                    const radiusMeters = radiusKm * 1000;
+                    window.L.circle([restLat, restLng], {
                         color: '#ea580c',
                         fillColor: '#ea580c',
                         fillOpacity: 0.08,
@@ -311,17 +348,22 @@ const CustomerPage = () => {
 
                     // Customer initial marker if location exists
                     if (location) {
-                        markerInstance.current = createCustomerMarker([location.lat, location.lon]);
+                        markerInstance.current = createCustomerMarker([location.lat, location.lon], radiusKm, restLat, restLng);
                         if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
                     }
 
-                    // Click anywhere to place / move pin
+                    // Click anywhere to place / move pin within delivery boundary
                     mapInstance.current.on('click', (e) => {
                         const { lat, lng } = e.latlng;
+                        const dist = calculateDistance(restLat, restLng, lat, lng);
+                        if (dist > radiusKm) {
+                            alert(`عفواً، الموقع المختار خارج نطاق التوصيل المسموح (${radiusKm} كم).`);
+                            return;
+                        }
                         if (markerInstance.current) {
                             markerInstance.current.setLatLng(e.latlng);
                         } else {
-                            markerInstance.current = createCustomerMarker(e.latlng);
+                            markerInstance.current = createCustomerMarker(e.latlng, radiusKm, restLat, restLng);
                             if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
                         }
                         setLocation({ lat, lon: lng });
@@ -335,13 +377,16 @@ const CustomerPage = () => {
                             // Fly to pending GPS location if user clicked "أين أنا" from GPS tab
                             if (pendingGPSLocation.current && mapInstance.current) {
                                 const { lat, lon } = pendingGPSLocation.current;
-                                const latlng = window.L.latLng(lat, lon);
-                                mapInstance.current.flyTo(latlng, 16);
-                                if (markerInstance.current) {
-                                    markerInstance.current.setLatLng(latlng);
-                                } else {
-                                    markerInstance.current = createCustomerMarker(latlng);
-                                    if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
+                                const dist = calculateDistance(restLat, restLng, lat, lon);
+                                if (dist <= radiusKm) {
+                                    const latlng = window.L.latLng(lat, lon);
+                                    mapInstance.current.flyTo(latlng, 16);
+                                    if (markerInstance.current) {
+                                        markerInstance.current.setLatLng(latlng);
+                                    } else {
+                                        markerInstance.current = createCustomerMarker(latlng, radiusKm, restLat, restLng);
+                                        if (markerInstance.current) markerInstance.current.addTo(mapInstance.current);
+                                    }
                                 }
                                 pendingGPSLocation.current = null;
                             }
