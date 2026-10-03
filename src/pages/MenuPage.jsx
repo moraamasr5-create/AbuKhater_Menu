@@ -80,8 +80,10 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
     const statusLabel = isOutOfStock ? 'نفذت الكمية' : (isPaused ? 'غير متاح مؤقتاً' : 'غير متاح');
 
     const hasRealImage = Boolean(item.image && item.image !== '/logo.jpg');
-    const hasConfig = item.has_configuration || (Array.isArray(item.variants) && item.variants.length > 0) || (Array.isArray(item.option_groups) && item.option_groups.length > 0);
     const hasVariants = Array.isArray(item.variants) && item.variants.length > 0;
+    const hasOptionGroups = Array.isArray(item.option_groups) && item.option_groups.length > 0;
+    const hasConfig = item.has_configuration || hasVariants || hasOptionGroups;
+    
     const minVariantPrice = hasVariants ? Math.min(...item.variants.map(v => v.price)) : item.price;
     const displayPriceText = hasVariants ? `من ${minVariantPrice}` : item.price;
 
@@ -216,18 +218,16 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                 <button
                                     type="button"
                                     onClick={handleAdd}
-                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary w-9 h-9 md:w-full md:min-h-[44px] md:py-3 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
+                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary min-h-[36px] px-2.5 py-1 md:w-full md:min-h-[44px] md:py-3 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 text-[11px] md:text-sm shadow-sm"
                                     aria-label={`أضف ${item.name} إلى السلة`}
                                 >
-                                    <span className="md:hidden text-lg font-bold leading-none" aria-hidden>+</span>
-                                    <Flame size={18} className="hidden md:block text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
-                                    <span className="hidden md:inline">{hasConfig ? 'اختر التخصيص' : 'إضافة للطلب'}</span>
+                                    <Flame size={15} className="text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
+                                    <span>{hasConfig ? 'اختر التخصيص' : '+ إضافة للطلب'}</span>
                                 </button>
                             )
                         ) : (
-                            <button type="button" disabled className="w-9 h-9 md:w-full bg-dark-800/40 text-slate-500 md:py-3 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[44px] flex items-center justify-center">
-                                <span className="md:hidden text-xs">×</span>
-                                <span className="hidden md:inline text-xs">{statusLabel}</span>
+                            <button type="button" disabled className="min-h-[36px] px-2 py-1 md:w-full bg-dark-800/40 text-slate-500 md:py-3 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[44px] flex items-center justify-center">
+                                <span className="text-[10px] md:text-xs">{statusLabel}</span>
                             </button>
                         )}
                     </div>

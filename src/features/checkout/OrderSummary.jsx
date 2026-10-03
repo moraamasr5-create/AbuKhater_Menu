@@ -63,7 +63,7 @@ const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderTyp
                                             <div className="flex flex-wrap gap-1 mt-1">
                                                 {item.selected_options.map((opt, idx) => (
                                                     <span key={idx} className="inline-block text-[10px] font-medium bg-dark-950/80 text-slate-300 px-1.5 py-0.5 rounded border border-white/5">
-                                                        {opt.option_name}
+                                                        {opt.option_name || opt.name}
                                                         {parseFloat(opt.price_delta) > 0 && ` (+${formatCurrency(opt.price_delta)})`}
                                                     </span>
                                                 ))}
