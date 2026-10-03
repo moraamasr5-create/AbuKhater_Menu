@@ -1,6 +1,6 @@
-import { supabase } from '../supabase/supabaseClient';
-import { isValidRawMenuItem, resolveItemCategory } from '../../core/utils/menuItem';
-import { normalizeGoogleDriveImageUrl } from '../../core/utils/googleDrive';
+import { supabase } from '../supabase/supabaseClient.js';
+import { isValidRawMenuItem, resolveItemCategory } from '../../core/utils/menuItem.js';
+import { normalizeGoogleDriveImageUrl } from '../../core/utils/googleDrive.js';
 
 let _menuCache = null;
 let _menuCacheTime = 0;
@@ -116,18 +116,35 @@ export const menuService = {
         const rawVariants = Array.isArray(item.menu_item_variants) ? item.menu_item_variants : [];
         const variants = rawVariants
             .filter(v => v && v.is_available !== false)
-            .map(v => ({
-                id: v.id,
-                name: String(v.name || '').trim(),
-                price: parseFloat(v.price) || 0,
-                is_available: v.is_available !== false,
-                display_order: parseInt(v.display_order, 10) || 0
-            }))
+            .map(v => {
+                let vName = String(v.name || '').trim();
+                // Fix legacy test label for burger variant if needed
+                if (item.name?.includes('برجر') && vName === 'عيش سوري') {
+                    vName = 'كبير';
+                }
+                return {
+                    id: v.id,
+                    name: vName,
+                    price: parseFloat(v.price) || 0,
+                    is_available: v.is_available !== false,
+                    display_order: parseInt(v.display_order, 10) || 0
+                };
+            })
             .sort((a, b) => a.display_order - b.display_order);
+
+        const hasVariants = variants.length > 0;
 
         // 2. Normalize and sort dynamic option groups & options (if any)
         const rawGroups = Array.isArray(item.menu_item_option_groups) ? item.menu_item_option_groups : [];
         const optionGroups = rawGroups
+            .filter(g => {
+                const grpName = String(g.name || '').trim();
+                // If item already defines bread types/sizes via Variants, remove redundant bread option group
+                if (hasVariants && (grpName === 'نوع العيش' || grpName === 'العيش')) {
+                    return false;
+                }
+                return true;
+            })
             .map(g => {
                 const rawOptions = Array.isArray(g.menu_item_options) ? g.menu_item_options : [];
                 const options = rawOptions
@@ -154,7 +171,6 @@ export const menuService = {
             })
             .sort((a, b) => a.display_order - b.display_order);
 
-        const hasVariants = variants.length > 0;
         const hasOptions = optionGroups.length > 0;
 
         return {
