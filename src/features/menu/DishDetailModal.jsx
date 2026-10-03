@@ -316,12 +316,12 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                         </div>
                     )}
 
-                    {/* 1. Dynamic Variants Selection (الحجم / الكمية) */}
+                    {/* 1. Dynamic Variants Selection (الحجم / نوع الخبز) */}
                     {hasVariants && (
                         <div className="space-y-2.5 pt-1">
                             <div className="flex items-center justify-between">
                                 <label className="text-xs sm:text-sm font-black text-white flex items-center gap-1.5">
-                                    <span>اختر الحجم / الفئة</span>
+                                    <span>اختر الحجم ونوع الخبز</span>
                                     <span className="text-red-400 text-xs">*</span>
                                 </label>
                                 <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">مطلوب</span>
