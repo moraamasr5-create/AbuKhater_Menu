@@ -118,8 +118,8 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     if (success) {
         return (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-                <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl animate-in zoom-in-95 duration-200">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <div className="surface-float-3d bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] p-6 sm:p-8 w-full max-w-md text-center shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]">
                         <CheckCircle className="text-emerald-500 w-8 h-8 sm:w-10 sm:h-10" />
                     </div>
                     <h2 className="text-xl sm:text-2xl font-black text-white mb-2 sm:mb-3">شكراً لاهتمامك!</h2>
@@ -128,7 +128,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                     </p>
                     <button
                         onClick={onClose}
-                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm"
+                        className="w-full btn-soft-3d-primary text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-95 text-xs sm:text-sm"
                     >
                         إغلاق
                     </button>
@@ -139,11 +139,11 @@ const FeedbackModal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-lg max-h-[min(90dvh,680px)] overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="surface-float-3d bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-lg max-h-[min(90dvh,680px)] overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/30 shrink-0">
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                             <MessageSquare size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div>
@@ -172,10 +172,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                             <button
                                 type="button"
                                 onClick={() => setFormData(p => ({ ...p, type: 'suggestion' }))}
-                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
+                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border active:scale-[0.98] ${
                                     formData.type === 'suggestion' 
-                                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 shadow-md shadow-emerald-500/10' 
-                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                        ? 'bg-emerald-500/15 border-emerald-500/60 text-emerald-400 shadow-[0_4px_14px_rgba(16,185,129,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] font-black' 
+                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800/80'
                                 }`}
                             >
                                 <ThumbsUp size={16} className="shrink-0" />
@@ -184,10 +184,10 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                             <button
                                 type="button"
                                 onClick={() => setFormData(p => ({ ...p, type: 'complaint' }))}
-                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border-2 active:scale-[0.98] ${
+                                className={`flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm transition-all border active:scale-[0.98] ${
                                     formData.type === 'complaint' 
-                                        ? 'bg-red-500/15 border-red-500 text-red-400 shadow-md shadow-red-500/10' 
-                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800'
+                                        ? 'bg-red-500/15 border-red-500/60 text-red-400 shadow-[0_4px_14px_rgba(239,68,68,0.2),inset_0_1px_1px_rgba(255,255,255,0.15)] font-black' 
+                                        : 'bg-dark-950/50 border-white/5 text-slate-400 hover:bg-dark-800/80'
                                 }`}
                             >
                                 <ThumbsDown size={16} className="shrink-0" />
@@ -208,7 +208,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 value={formData.fullName}
                                 onChange={handleInputChange}
                                 placeholder="أدخل اسمك الكريم..."
-                                className={`w-full bg-dark-950/60 border ${errors.fullName ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all`}
+                                className={`w-full surface-recessed-3d border ${errors.fullName ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all`}
                             />
                             {errors.fullName && (
                                 <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
@@ -232,7 +232,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 onChange={handleInputChange}
                                 placeholder="01xxxxxxxxx"
                                 maxLength={11}
-                                className={`w-full bg-dark-950/60 border ${errors.phone ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-mono`}
+                                className={`w-full surface-recessed-3d border ${errors.phone ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all font-mono`}
                             />
                             {errors.phone && (
                                 <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
@@ -254,7 +254,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                                 value={formData.message}
                                 onChange={handleInputChange}
                                 placeholder="اكتب مقترحك أو تفاصيل الشكوى هنا..."
-                                className={`w-full bg-dark-950/60 border ${errors.message ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all min-h-[110px] sm:min-h-[130px] resize-none leading-relaxed`}
+                                className={`w-full surface-recessed-3d border ${errors.message ? 'border-red-500/80 ring-1 ring-red-500/20' : 'border-white/[0.08]'} text-white placeholder-slate-500 text-xs sm:text-sm px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all min-h-[110px] sm:min-h-[130px] resize-none leading-relaxed`}
                             ></textarea>
                             {errors.message && (
                                 <p className="text-red-400 text-[11px] sm:text-xs font-bold mt-1.5 pr-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
@@ -280,7 +280,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary hover:bg-orange-600 disabled:opacity-50 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2.5 text-xs sm:text-sm md:text-base mt-2"
+                            className="w-full btn-soft-3d-primary disabled:opacity-50 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 text-xs sm:text-sm md:text-base mt-2"
                         >
                             {loading ? (
                                 <Loader2 className="animate-spin" size={20} />

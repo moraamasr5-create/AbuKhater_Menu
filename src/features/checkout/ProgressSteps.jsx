@@ -32,16 +32,16 @@ const ProgressSteps = memo(function ProgressSteps() {
                     const isActive = step.id === currentStepIndex;
                     const isUpcoming = step.id > currentStepIndex;
 
-                    const circleClass = `w-6 h-6 rounded-lg flex items-center justify-center font-black text-[9px] transition-all duration-300 border
+                    const circleClass = `w-7 h-7 rounded-xl flex items-center justify-center font-black text-[10px] transition-all duration-300 border
                                     ${isCompleted
-                            ? 'bg-teal-600 border-teal-500 text-white shadow-sm'
+                            ? 'bg-gradient-to-b from-teal-500 to-teal-600 border-teal-400/40 text-white shadow-md shadow-teal-900/30'
                             : isActive
-                                ? 'bg-primary border-primary text-white shadow-md shadow-primary/30 scale-105'
-                                : 'bg-dark-900 border-dark-700/60 text-slate-500'
+                                ? 'bg-gradient-to-b from-[#f97316] to-[#ea580c] border-white/30 text-white shadow-md shadow-orange-950/50 scale-110 ring-2 ring-primary/25'
+                                : 'bg-dark-900/90 border-white/[0.06] text-slate-500 shadow-inner'
                         }`;
 
-                    const labelClass = `text-[9px] mt-0.5 font-bold transition-all duration-300 tracking-tight text-center leading-tight
-                                    ${isActive ? 'text-primary' : isCompleted ? 'text-teal-400/90' : 'text-slate-500'}`;
+                    const labelClass = `text-[10px] mt-1 font-bold transition-all duration-300 tracking-tight text-center leading-tight
+                                    ${isActive ? 'text-primary' : isCompleted ? 'text-teal-400' : 'text-slate-500'}`;
 
                     if (isCompleted) {
                         return (
@@ -49,11 +49,11 @@ const ProgressSteps = memo(function ProgressSteps() {
                                 key={step.id}
                                 type="button"
                                 onClick={() => navigate(step.path)}
-                                className="flex flex-col items-center relative z-10 bg-dark-950 px-1 transition-all duration-300 rounded-md hover:opacity-95 focus-visible:ring-offset-dark-950"
+                                className="flex flex-col items-center relative z-10 bg-dark-950 px-1 transition-all duration-300 rounded-lg hover:scale-105 active:scale-95 focus-visible:ring-offset-dark-950"
                                 aria-label={`الرجوع إلى خطوة ${step.label}`}
                             >
                                 <span className={circleClass} aria-hidden>
-                                    <Check size={12} strokeWidth={3} />
+                                    <Check size={13} strokeWidth={3} />
                                 </span>
                                 <span className={labelClass}>{step.label}</span>
                             </button>

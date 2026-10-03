@@ -320,7 +320,7 @@ const TrackPage = () => {
                     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
                         {/* Two-Order Switcher Tabs if 2 recent orders exist */}
                         {orders.length > 1 && (
-                            <div className="bg-dark-900/90 p-1.5 rounded-2xl border border-white/10 grid grid-cols-2 gap-1.5 shadow-lg">
+                            <div className="surface-recessed-3d p-1.5 rounded-2xl grid grid-cols-2 gap-1.5">
                                 {orders.map((ord, idx) => {
                                     const isSelected = selectedIdx === idx;
                                     return (
@@ -329,8 +329,8 @@ const TrackPage = () => {
                                             type="button"
                                             onClick={() => setSelectedIdx(idx)}
                                             className={`py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${isSelected
-                                                    ? 'bg-primary text-white shadow-md shadow-primary/30 scale-[1.01]'
-                                                    : 'text-slate-400 hover:text-white hover:bg-dark-800'
+                                                    ? 'btn-soft-3d-primary text-white scale-[1.01]'
+                                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                                                 }`}
                                         >
                                             <span className="font-black text-xs flex items-center gap-1.5">
@@ -347,16 +347,16 @@ const TrackPage = () => {
                         )}
 
                         {/* Order Summary Card */}
-                        <div className="bg-dark-900 border border-white/10 rounded-3xl p-5 sm:p-6 shadow-xl space-y-4">
+                        <div className="card-soft-3d rounded-2xl sm:rounded-3xl p-5 sm:p-6 space-y-4">
                             <div className="flex justify-between items-start border-b border-white/5 pb-4">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">طلب رقم</span>
-                                        <span className="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20 font-mono">
+                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">طلب رقم</span>
+                                        <span className="badge-soft-3d text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20 font-mono">
                                             {currentOrder.order_number}
                                         </span>
                                     </div>
-                                    <span className="text-white font-mono font-black text-2xl block">
+                                    <span className="text-white font-mono font-black text-2xl block tracking-tight">
                                         {currentOrder.order_number}
                                     </span>
                                     {currentOrder.created_at && (
@@ -367,8 +367,8 @@ const TrackPage = () => {
                                 </div>
 
                                 <div className="text-left space-y-1">
-                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">الإجمالي</span>
-                                    <span className="text-emerald-400 font-black text-2xl block">
+                                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">الإجمالي</span>
+                                    <span className="text-emerald-400 font-black text-2xl block tabular-nums">
                                         {formatCurrency(currentOrder.total_amount)}
                                     </span>
                                     <span className="text-[11px] text-slate-400 font-medium block">
@@ -378,14 +378,14 @@ const TrackPage = () => {
                             </div>
 
                             <div className="grid grid-cols-2 gap-2.5 text-xs">
-                                <div className="p-3 bg-dark-950/60 rounded-xl border border-white/5">
-                                    <span className="text-[10px] text-slate-500 block font-bold mb-0.5">نوع الطلب</span>
+                                <div className="p-3 surface-recessed-3d rounded-xl">
+                                    <span className="text-[10px] text-slate-400 block font-bold mb-0.5">نوع الطلب</span>
                                     <span className="text-white font-bold">
                                         {currentOrder.order_type === 'delivery' ? 'توصيل منزلي 🛵' : 'استلام من المطعم 🥡'}
                                     </span>
                                 </div>
-                                <div className="p-3 bg-dark-950/60 rounded-xl border border-white/5">
-                                    <span className="text-[10px] text-slate-500 block font-bold mb-0.5">عدد الوجبات</span>
+                                <div className="p-3 surface-recessed-3d rounded-xl">
+                                    <span className="text-[10px] text-slate-400 block font-bold mb-0.5">عدد الوجبات</span>
                                     <span className="text-white font-bold font-mono">
                                         {currentOrder.items_count ? `${currentOrder.items_count} صنف` : 'وجبات مختارة'}
                                     </span>
@@ -394,9 +394,9 @@ const TrackPage = () => {
 
                             {/* Assigned Pilot Banner */}
                             {currentOrder.pilot_name && (
-                                <div className="p-3.5 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-between">
+                                <div className="p-3.5 bg-primary/10 border border-primary/25 rounded-2xl flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-2.5">
-                                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md">
+                                        <div className="w-10 h-10 rounded-xl btn-soft-3d-primary flex items-center justify-center text-white">
                                             <Bike size={20} />
                                         </div>
                                         <div>
@@ -404,7 +404,7 @@ const TrackPage = () => {
                                             <span className="text-white font-bold text-sm">{currentOrder.pilot_name}</span>
                                         </div>
                                     </div>
-                                    <span className="text-xs text-primary font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">
+                                    <span className="badge-soft-3d text-xs text-primary font-bold bg-primary/20 px-3 py-1 rounded-full border border-primary/30">
                                         في الطريق إليك
                                     </span>
                                 </div>
@@ -413,13 +413,13 @@ const TrackPage = () => {
 
                         {/* Live Execution Timeline */}
                         {!isCancelled ? (
-                            <div className="bg-dark-900 border border-white/10 rounded-3xl p-6 shadow-xl space-y-6">
+                            <div className="card-soft-3d rounded-2xl sm:rounded-3xl p-6 space-y-6">
                                 <div className="flex items-center justify-between border-b border-white/5 pb-3">
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
                                         <Sparkles size={16} className="text-primary" />
                                         <span>مراحل تجهيز وتوصيل الطلب</span>
                                     </h3>
-                                    <span className="text-[11px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                                    <span className="badge-soft-3d text-[11px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                                         تحديث فوري
                                     </span>
                                 </div>
@@ -434,10 +434,10 @@ const TrackPage = () => {
                                             <div key={step.key} className="relative flex items-start gap-4">
                                                 <div
                                                     className={`relative z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all ${isDone
-                                                            ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+                                                            ? 'bg-gradient-to-b from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-500/30 border border-emerald-300/40'
                                                             : isCurrent
-                                                                ? 'bg-primary text-white shadow-xl shadow-primary/40 ring-4 ring-primary/20 animate-pulse'
-                                                                : 'bg-dark-800 text-slate-600 border border-white/5'
+                                                                ? 'btn-soft-3d-primary text-white scale-105 ring-4 ring-primary/20'
+                                                                : 'bg-dark-800/90 text-slate-500 border border-white/5'
                                                         }`}
                                                 >
                                                     {isDone ? (
@@ -460,7 +460,7 @@ const TrackPage = () => {
                                                             {step.label}
                                                         </h4>
                                                         {isCurrent && (
-                                                            <span className="text-[10px] font-black text-primary bg-primary/10 px-2.5 py-0.5 rounded-full animate-pulse border border-primary/20">
+                                                            <span className="badge-soft-3d text-[10px] font-black text-primary bg-primary/10 px-2.5 py-0.5 rounded-full border border-primary/30">
                                                                 جاري ...
                                                             </span>
                                                         )}
@@ -490,7 +490,7 @@ const TrackPage = () => {
                         <div className="space-y-3 pt-2">
                             <a
                                 href="tel:01038035884"
-                                className="w-full py-4 bg-dark-900 hover:bg-dark-800 text-slate-200 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
+                                className="btn-soft-3d-dark w-full py-4 text-slate-200 hover:text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2"
                             >
                                 <Phone size={16} className="text-primary" />
                                 <span>الاتصال بإدارة المطعم (01144423700)</span>

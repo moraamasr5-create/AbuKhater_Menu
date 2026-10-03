@@ -226,16 +226,16 @@ const PhoneOtpModal = ({
             aria-labelledby="phone-otp-modal-title"
         >
             <div
-                className="bg-dark-900 border border-white/10 rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-md overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200"
+                className="surface-float-3d rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-md overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200"
                 dir="rtl"
             >
                 {/* Modal Header */}
-                <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-dark-800/40">
+                <div className="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
                     <button
                         type="button"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="p-2 bg-dark-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-xl transition-all disabled:opacity-50"
+                        className="btn-soft-3d-dark p-2 text-slate-400 hover:text-red-400 rounded-xl transition-all disabled:opacity-50"
                         aria-label="إلغاء"
                     >
                         <X size={18} />
@@ -264,7 +264,7 @@ const PhoneOtpModal = ({
                         /* Step 1: Phone Input */
                         <div className="space-y-4">
                             <div className="text-center space-y-1.5">
-                                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
+                                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-inner">
                                     <Phone size={22} />
                                 </div>
                                 <h3 className="text-base font-black text-white">أدخل رقم هاتفك</h3>
@@ -277,7 +277,7 @@ const PhoneOtpModal = ({
                                 <label htmlFor="phone-otp-input" className="block text-[11px] font-bold text-slate-400">
                                     رقم الهاتف (مصر)
                                 </label>
-                                <div className="relative flex items-center bg-dark-950 rounded-2xl border border-white/10 px-3.5 py-2.5 focus-within:border-primary transition-all">
+                                <div className="relative flex items-center surface-recessed-3d rounded-2xl px-3.5 py-2.5 focus-within:border-primary/60 transition-all">
                                     <span className="text-xs font-bold text-slate-400 ltr pl-2 border-l border-white/10">
                                         🇪🇬 +20
                                     </span>
@@ -304,7 +304,7 @@ const PhoneOtpModal = ({
                                 type="button"
                                 onClick={() => handleSendOtp(phone)}
                                 disabled={isLoading || !phone}
-                                className="w-full py-3.5 bg-gradient-to-r from-primary to-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
+                                className="btn-soft-3d-primary w-full py-3.5 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
                             >
                                 {isLoading ? (
                                     <LoadingSpinner size={18} color="text-white" />
@@ -320,7 +320,7 @@ const PhoneOtpModal = ({
                         /* Step 2: OTP Digits Input */
                         <div className="space-y-5">
                             <div className="text-center space-y-1">
-                                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
+                                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-inner">
                                     <KeyRound size={22} />
                                 </div>
                                 <h3 className="text-base font-black text-white">أدخل رمز التحقق</h3>
@@ -347,8 +347,8 @@ const PhoneOtpModal = ({
                                         disabled={isLoading}
                                         className={`w-11 h-13 sm:w-12 sm:h-14 rounded-2xl text-center text-xl font-mono font-black border transition-all outline-none ${
                                             digit
-                                                ? 'bg-primary/15 border-primary text-white shadow-md shadow-primary/20'
-                                                : 'bg-dark-950 border-white/10 text-slate-300 focus:border-primary'
+                                                ? 'bg-primary/20 border-primary text-white shadow-md shadow-primary/25'
+                                                : 'surface-recessed-3d text-slate-300 focus:border-primary/60'
                                         }`}
                                     />
                                 ))}
@@ -367,7 +367,7 @@ const PhoneOtpModal = ({
                                     type="button"
                                     onClick={() => handleVerifyOtp()}
                                     disabled={isLoading || otpDigits.some((d) => !d)}
-                                    className="w-full py-3.5 bg-gradient-to-r from-primary to-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
+                                    className="btn-soft-3d-primary w-full py-3.5 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
                                 >
                                     {isLoading ? (
                                         <LoadingSpinner size={18} color="text-white" />

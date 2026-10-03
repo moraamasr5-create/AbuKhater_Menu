@@ -365,11 +365,11 @@ const ReservationModal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-dark-900 border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-xl max-h-[min(90dvh,720px)] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200">
+            <div className="surface-float-3d rounded-[1.75rem] sm:rounded-[2.25rem] w-full max-w-xl max-h-[min(90dvh,720px)] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-dark-800/30 shrink-0">
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.02] shrink-0">
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-inner">
                             <Calendar size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div>
@@ -384,7 +384,7 @@ const ReservationModal = ({ isOpen, onClose }) => {
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-dark-800/80 border border-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all active:scale-95 shrink-0"
+                        className="btn-soft-3d-dark w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-400 hover:text-red-400 flex items-center justify-center transition-all shrink-0"
                         aria-label="إغلاق"
                     >
                         <X size={18} className="sm:w-5 sm:h-5" />
@@ -861,12 +861,12 @@ const ReservationModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-t border-white/[0.06] bg-dark-950/70 shrink-0 flex gap-3 sm:gap-4">
+                <div className="px-4 py-3.5 sm:px-6 sm:py-4.5 border-t border-white/[0.06] bg-dark-950/80 shrink-0 flex gap-3 sm:gap-4">
                     {step === 1 ? (
                         <button
                             form="reservation-form"
                             type="submit"
-                            className="flex-1 bg-primary hover:bg-orange-600 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
+                            className="btn-soft-3d-primary flex-1 text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
                         >
                             <span>التالي: خطوة العربون</span>
                         </button>
@@ -878,14 +878,14 @@ const ReservationModal = ({ isOpen, onClose }) => {
                                     e.preventDefault();
                                     setStep(1);
                                 }}
-                                className="w-1/3 bg-dark-800 hover:bg-dark-700 text-slate-300 font-bold py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] border border-white/5 text-xs sm:text-sm md:text-base"
+                                className="btn-soft-3d-dark w-1/3 text-slate-300 font-bold py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base"
                             >
                                 رجوع
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading}
-                                className="flex-1 bg-primary hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
+                                className="btn-soft-3d-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
                             >
                                 {loading ? (
                                     <>

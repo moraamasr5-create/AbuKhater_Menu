@@ -75,28 +75,18 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
             aria-modal="true"
             aria-labelledby="dish-modal-title"
             dir="rtl"
-            className="fixed inset-0 z-[150] bg-dark-950/85 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[150] bg-dark-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
             onClick={(e) => {
                 if (e.target === e.currentTarget) onClose();
             }}
         >
-            <div className="relative w-full max-w-lg bg-dark-900 border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-300">
+            <div className="relative w-full max-w-lg surface-float-3d rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden flex flex-col max-h-[90dvh] animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-300">
                 {/* Header Actions */}
                 <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                    {/* {hasRealImage && (
-                        <button
-                            type="button"
-                            onClick={() => setIsZoomed(!isZoomed)}
-                            className="w-10 h-10 rounded-full bg-dark-900/80 backdrop-blur-md text-white border border-white/10 flex items-center justify-center hover:bg-primary transition-all active:scale-90"
-                            aria-label={isZoomed ? "تصغير الصورة" : "تكبير الصورة"}
-                        >
-                            {isZoomed ? <ZoomOut size={18} /> : <ZoomIn size={18} />}
-                        </button>
-                    )} */}
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-10 h-10 rounded-full bg-dark-900/80 backdrop-blur-md text-white border border-white/10 flex items-center justify-center hover:bg-red-500/80 transition-all active:scale-90"
+                        className="btn-soft-3d-dark w-10 h-10 rounded-full text-white flex items-center justify-center hover:text-red-400 transition-all"
                         aria-label="إغلاق النافذة"
                     >
                         <X size={20} />
@@ -119,10 +109,10 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                                     } ${!isAvailable ? 'grayscale opacity-60' : ''}`}
                                 onClick={() => setIsZoomed(!isZoomed)}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/20 to-transparent pointer-events-none" />
                         </>
                     ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-dark-950 via-dark-900 to-dark-800 p-6 text-center border-b border-white/5">
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-dark-950 via-dark-900 to-dark-850 p-6 text-center border-b border-white/5">
                             <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-3 shadow-inner">
                                 <Utensils size={36} />
                             </div>
@@ -133,12 +123,12 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                     {/* Badges */}
                     <div className="absolute top-4 right-4 flex flex-col gap-1.5 z-10 pointer-events-none">
                         {item.is_popular && (
-                            <span className="inline-flex items-center gap-1 bg-amber-500/90 text-dark-950 font-black text-xs px-3 py-1 rounded-full shadow-lg backdrop-blur-sm">
+                            <span className="badge-soft-3d inline-flex items-center gap-1 bg-amber-500/90 text-dark-950 font-black text-xs px-3 py-1 rounded-full border border-amber-300/40">
                                 <Sparkles size={13} /> صنف مميز
                             </span>
                         )}
                         {!isAvailable && (
-                            <span className={`inline-flex items-center gap-1 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'
+                            <span className={`badge-soft-3d inline-flex items-center gap-1 text-white font-black text-xs px-3 py-1 rounded-full ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'
                                 }`}>
                                 <AlertCircle size={13} /> {statusLabel}
                             </span>
@@ -166,8 +156,8 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                         </div>
                     </div>
 
-                    <div className="bg-dark-950/60 rounded-2xl p-4 border border-white/5">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5"> الوصـف </h3>
+                    <div className="surface-recessed-3d rounded-2xl p-4">
+                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1.5"> الوصـف </h3>
                         <p className="text-sm text-slate-300 leading-relaxed">
                             {item.description || ' طازجة ومحضرة بأجود المكونات والتوابل الخاصة على طريقة مطاعم أبو خاطر.'}
                         </p>
@@ -175,11 +165,11 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                 </div>
 
                 {/* Footer Action */}
-                <div className="p-4 sm:p-6 bg-dark-950/80 border-t border-white/10 backdrop-blur-md flex items-center gap-3">
+                <div className="p-4 sm:p-6 bg-dark-950/90 border-t border-white/10 backdrop-blur-md flex items-center gap-3">
                     {isAvailable ? (
                         <>
                             {/* Quantity Controls */}
-                            <div className="flex items-center bg-dark-800 rounded-2xl p-1 border border-white/10 shrink-0">
+                            <div className="stepper-container-3d p-1 rounded-2xl flex items-center shrink-0">
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -187,7 +177,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                                         setLocalQty(q => Math.max(1, q - 1));
                                     }}
                                     disabled={localQty <= 1}
-                                    className="w-10 h-10 rounded-xl bg-dark-700/60 hover:bg-dark-600 text-white flex items-center justify-center transition-all disabled:opacity-30 active:scale-90"
+                                    className="btn-soft-3d-dark w-10 h-10 rounded-xl text-white flex items-center justify-center transition-all disabled:opacity-30"
                                     aria-label="تقليل الكمية"
                                 >
                                     <Minus size={16} />
@@ -201,7 +191,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                                         handleHaptic();
                                         setLocalQty(q => q + 1);
                                     }}
-                                    className="w-10 h-10 rounded-xl bg-primary hover:bg-orange-600 text-white flex items-center justify-center transition-all shadow-md shadow-primary/25 active:scale-90"
+                                    className="btn-soft-3d-primary w-10 h-10 rounded-xl text-white flex items-center justify-center transition-all"
                                     aria-label="زيادة الكمية"
                                 >
                                     <Plus size={16} />
@@ -212,7 +202,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                             <button
                                 type="button"
                                 onClick={handleAdd}
-                                className="flex-1 min-h-[48px] py-3.5 bg-gradient-to-r from-primary to-orange-600 hover:brightness-110 text-white font-black rounded-2xl shadow-xl shadow-primary/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm sm:text-base"
+                                className="btn-soft-3d-primary flex-1 min-h-[48px] py-3.5 text-white font-black rounded-2xl flex items-center justify-center gap-2 text-sm sm:text-base"
                             >
                                 <ShoppingBag size={18} />
                                 <span>{currentQty > 0 ? 'تحديث الطلب' : 'إضافة للطلب'}</span>
@@ -222,7 +212,7 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                             </button>
                         </>
                     ) : (
-                        <div className="w-full text-center py-3 bg-dark-800/60 rounded-2xl border border-white/5 text-slate-400 font-bold text-sm">
+                        <div className="w-full text-center py-3 bg-dark-800/40 rounded-2xl border border-white/5 text-slate-400 font-bold text-sm">
                             هذا الصنف {statusLabel} حالياً
                         </div>
                     )}

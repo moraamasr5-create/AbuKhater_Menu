@@ -329,19 +329,19 @@ const PaymentPage = () => {
                 />
 
                 {/* Amount Card */}
-                <div className="rounded-2xl sm:rounded-[1.5rem] overflow-hidden bg-gradient-to-br from-primary via-orange-600 to-orange-700 p-5 sm:p-6 text-center text-white relative shadow-lg shadow-primary/25 border border-white/10">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 -translate-y-12 blur-2xl"></div>
-                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -translate-x-8 translate-y-8 blur-xl"></div>
+                <div className="rounded-2xl sm:rounded-[1.5rem] overflow-hidden bg-gradient-to-b from-[#fa7814] to-[#ea580c] p-5 sm:p-6 text-center text-white relative shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),0_12px_28px_-6px_rgba(234,88,12,0.45)] border border-white/20">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-12 -translate-y-12 blur-2xl pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -translate-x-8 translate-y-8 blur-xl pointer-events-none"></div>
 
                     <div className="relative z-10 flex flex-col items-center gap-1.5">
-                        <CheckCircle size={32} className="opacity-90 mb-1" />
-                        <h3 className="text-[11px] font-black uppercase tracking-widest opacity-90">
+                        <CheckCircle size={32} className="opacity-90 mb-1 drop-shadow-sm" />
+                        <h3 className="text-[11px] font-black uppercase tracking-widest opacity-95">
                             {isCash ? (isPickup ? 'المبلغ المطلوب عند الاستلام' : 'المبلغ المطلوب عند التوصيل') : 'المبلغ المطلوب دفعه الآن'}
                         </h3>
-                        <div className="text-3xl sm:text-4xl font-black display-font tracking-tight tabular-nums">{formatCurrency(isCash ? remaining : paidNow)}</div>
+                        <div className="text-3xl sm:text-4xl font-black display-font tracking-tight tabular-nums drop-shadow-sm">{formatCurrency(isCash ? remaining : paidNow)}</div>
                         {!isCash && remaining > 0 && (
-                            <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/20 rounded-full backdrop-blur-sm">
-                                <span className="text-[10px] font-bold opacity-90">المتبقي عند الاستلام: {formatCurrency(remaining)}</span>
+                            <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-black/25 rounded-full backdrop-blur-sm border border-white/10">
+                                <span className="text-[10px] font-bold opacity-95">المتبقي عند الاستلام: {formatCurrency(remaining)}</span>
                             </div>
                         )}
                     </div>
@@ -351,12 +351,12 @@ const PaymentPage = () => {
                 {!isCash ? (
                     <div className="space-y-4">
                         {/* Bank Account Details */}
-                        <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.08] p-4 sm:p-5 shadow-lg space-y-3">
+                        <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-5 space-y-3">
                             <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
                                 <div className="flex items-center gap-2">
                                     <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${paymentMethod === 'instapay'
-                                        ? 'bg-purple-500/20 text-purple-400'
-                                        : 'bg-primary/20 text-primary'
+                                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                                        : 'bg-primary/20 text-primary border border-primary/30'
                                         }`}>
                                         {paymentMethod === 'instapay' ? <CreditCard size={18} /> : <Wallet size={18} />}
                                     </div>
@@ -364,14 +364,14 @@ const PaymentPage = () => {
                                         {paymentMethod === 'instapay' ? 'بيانات حساب انستاباي (InstaPay)' : 'رقم المحفظة الإلكترونية كاش'}
                                     </span>
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-400 bg-dark-800 px-2 py-0.5 rounded-full">
+                                <span className="text-[10px] font-bold text-slate-300 bg-dark-800 px-2 py-0.5 rounded-full border border-white/5">
                                     {paymentMethod === 'instapay' ? 'عنوان IPA' : 'رقم الهاتف'}
                                 </span>
                             </div>
 
-                            <div className="flex items-center justify-between gap-3 bg-dark-950/70 p-3.5 rounded-xl border border-white/5">
+                            <div className="flex items-center justify-between gap-3 surface-recessed-3d p-3.5 rounded-xl">
                                 <div className="min-w-0">
-                                    <span className="text-[10px] text-slate-500 font-bold block mb-0.5">حول المبلغ المطلوب إلى:</span>
+                                    <span className="text-[10px] text-slate-400 font-bold block mb-0.5">حول المبلغ المطلوب إلى:</span>
                                     <span className="text-base sm:text-lg font-mono font-black text-primary ltr select-all tracking-wide">
                                         {paymentNumber}
                                     </span>
@@ -379,9 +379,9 @@ const PaymentPage = () => {
                                 <button
                                     type="button"
                                     onClick={() => copyToClipboard(paymentNumber)}
-                                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-90 shrink-0 ${copied
+                                    className={`px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 ${copied
                                         ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                                        : 'bg-dark-800 hover:bg-primary text-slate-200 hover:text-white border border-white/10'
+                                        : 'btn-soft-3d-dark text-slate-200 hover:text-white'
                                         }`}
                                     aria-label="نسخ رقم الحساب"
                                 >
@@ -401,14 +401,14 @@ const PaymentPage = () => {
                         </div>
 
                         {/* Upload Section */}
-                        <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 shadow-sm">
+                        <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4">
                             <div className="flex items-center gap-2 mb-3">
                                 <Info size={14} className="text-primary shrink-0" />
                                 <span className="text-[11px] font-bold text-slate-300 leading-snug">إثبات التحويل (Screenshot)</span>
                             </div>
 
                             {!screenshot ? (
-                                <label className="flex flex-col items-center justify-center gap-3 p-5 sm:p-6 border-2 border-dashed border-dark-700/55 rounded-xl sm:rounded-[1.25rem] bg-dark-950/50 hover:bg-dark-800/80 hover:border-primary/45 transition-all cursor-pointer active:scale-[0.99]">
+                                <label className="flex flex-col items-center justify-center gap-3 p-5 sm:p-6 border-2 border-dashed border-white/10 rounded-xl sm:rounded-[1.25rem] surface-recessed-3d hover:border-primary/50 transition-all cursor-pointer active:scale-[0.99]">
                                     <input
                                         type="file"
                                         accept="image/*"
@@ -416,12 +416,12 @@ const PaymentPage = () => {
                                         onChange={handleFileChange}
                                         disabled={isProcessingFile}
                                     />
-                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20">
                                         {isProcessingFile ? <LoadingSpinner size={20} /> : <Upload size={20} />}
                                     </div>
                                     <div className="text-center space-y-1">
                                         <p className="text-sm font-bold text-white">اضغط لرفع الصورة</p>
-                                        <p className="text-[10px] text-slate-500 font-bold">JPG, PNG (الحد الأقصى 5MB)</p>
+                                        <p className="text-[10px] text-slate-400 font-bold">JPG, PNG (الحد الأقصى 5MB)</p>
                                     </div>
                                 </label>
                             ) : (
@@ -430,7 +430,7 @@ const PaymentPage = () => {
                                     <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
                                         <button onClick={removeScreenshot} className="p-3 bg-red-500/90 hover:bg-red-500 text-white rounded-xl shadow-lg active:scale-90 transition-transform flex items-center gap-2">
                                             <X size={16} />
-                                            <span className="text-xs font-bold">حذف للصورة</span>
+                                            <span className="text-xs font-bold">حذف الصورة</span>
                                         </button>
                                     </div>
                                     <div className="absolute bottom-3 right-3 bg-emerald-500/90 backdrop-blur-sm text-white px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-1.5 pointer-events-none">
@@ -442,9 +442,9 @@ const PaymentPage = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-teal-500/10 border border-teal-500/25 p-4 sm:p-5 rounded-2xl sm:rounded-[1.5rem] flex items-center gap-3 sm:gap-4 shadow-sm">
-                        <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 bg-teal-500/15 rounded-xl sm:rounded-2xl flex items-center justify-center text-teal-400">
-                            <Receipt size={50} />
+                    <div className="bg-teal-500/10 border border-teal-500/25 p-4 sm:p-5 rounded-2xl sm:rounded-[1.5rem] flex items-center gap-3 sm:gap-4 shadow-md">
+                        <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 bg-teal-500/15 rounded-xl sm:rounded-2xl flex items-center justify-center text-teal-400 border border-teal-500/20">
+                            <Receipt size={24} />
                         </div>
                         <div>
                             <h4 className="text-teal-400 font-bold text-sm mb-0.5">{isPickup ? 'الدفع كاش عند الاستلام' : 'الدفع كاش عند الباب'}</h4>
@@ -454,9 +454,9 @@ const PaymentPage = () => {
                 )}
 
                 {/* Order Details & Summary List */}
-                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
-                    <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                        <Receipt size={14} /> تفاصيل الحساب
+                <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-5 space-y-3 sm:space-y-4">
+                    <h4 className="text-[11px] font-black text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                        <Receipt size={14} className="text-primary" /> تفاصيل الحساب
                     </h4>
                     <div className="space-y-2.5 sm:space-y-3">
                         <div className="flex justify-between items-center text-xs font-bold gap-2">
@@ -466,24 +466,24 @@ const PaymentPage = () => {
                         {orderType === 'delivery' && (
                             <div className="flex justify-between items-center text-xs font-bold">
                                 <span className="text-slate-400">خدمة التوصيل</span>
-                                <span className="text-white">{formatCurrency(deliveryFee)}</span>
+                                <span className="text-white tabular-nums">{formatCurrency(deliveryFee)}</span>
                             </div>
                         )}
                         {serviceFee > 0 && (
                             <div className="flex justify-between items-center text-xs font-bold">
                                 <span className="text-slate-400">خدمة التحويل</span>
-                                <span className="text-white">{formatCurrency(serviceFee)}</span>
+                                <span className="text-white tabular-nums">{formatCurrency(serviceFee)}</span>
                             </div>
                         )}
 
-                        <div className="pt-3 border-t border-white/5 flex justify-between items-center">
+                        <div className="pt-3 border-t border-white/[0.08] flex justify-between items-center">
                             <span className="text-sm font-black text-white">الإجمالي الكلي</span>
-                            <span className="text-lg font-black text-primary display-font">{formatCurrency(finalTotal)}</span>
+                            <span className="text-lg sm:text-xl font-black text-primary display-font tabular-nums">{formatCurrency(finalTotal)}</span>
                         </div>
 
-                        <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                        <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
                             <div className="flex items-center gap-2 text-slate-400">
-                                <Clock size={14} />
+                                <Clock size={14} className="text-primary/80" />
                                 <span className="text-[10px] font-bold">وقت التحضير المتوقع:</span>
                             </div>
                             <span className="text-xs font-black text-white">{estimatedTime}</span>
@@ -513,7 +513,7 @@ const PaymentPage = () => {
                         type="button"
                         onClick={() => navigate('/customer')}
                         disabled={isSubmitting}
-                        className="flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold border border-white/[0.08] bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm disabled:opacity-50"
+                        className="btn-soft-3d-dark flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold text-slate-200 w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm disabled:opacity-50"
                         aria-label="تعديل بيانات العميل أو طريقة الدفع"
                     >
                         <ArrowRight size={18} aria-hidden />
@@ -523,7 +523,7 @@ const PaymentPage = () => {
                         type="button"
                         onClick={handleConfirmPayment}
                         disabled={isSubmitting}
-                        className="flex-[2] min-h-[52px] sm:h-14 bg-gradient-to-r from-primary to-orange-600 text-white rounded-xl sm:rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
+                        className="btn-soft-3d-primary flex-[2] min-h-[52px] sm:h-14 text-white rounded-xl sm:rounded-2xl font-black w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale"
                         aria-busy={isSubmitting}
                         aria-label={isSubmitting ? 'جاري إرسال الطلب' : 'تأكيد وإرسال الطلب'}
                     >
@@ -532,7 +532,7 @@ const PaymentPage = () => {
                         ) : (
                             <>
                                 <span className="text-[15px]">{isCash ? 'تأكيد الطلب' : 'إتمام الدفع'}</span>
-                                <CheckCircle size={18} className="opacity-80" />
+                                <CheckCircle size={18} className="opacity-90" />
                             </>
                         )}
                     </button>

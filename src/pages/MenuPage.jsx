@@ -91,19 +91,19 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
     return (
         <div
-            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-1.5 ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
+            className={`group card-interactive-3d rounded-2xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
         >
             {/* Image / Thumbnail Container */}
             <div
                 onClick={() => onOpenDetail(item)}
-                className="relative w-[96px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden bg-dark-950 cursor-pointer"
+                className="relative w-[104px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden bg-dark-950 cursor-pointer"
             >
                 {hasRealImage ? (
                     <>
                         <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-108"
                             loading="lazy"
                             decoding="async"
                             onError={(e) => { e.currentTarget.src = fallbackImage; }}
@@ -114,7 +114,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                 e.stopPropagation();
                                 onOpenDetail(item);
                             }}
-                            className="absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-dark-950/75 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center border border-white/10 hover:bg-primary transition-all active:scale-90"
+                            className="absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-dark-950/80 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center border border-white/15 hover:bg-primary transition-all active:scale-90 shadow-md"
                             title="تكبير الصورة"
                             aria-label={`تكبير صورة ${item.name}`}
                         >
@@ -132,7 +132,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     </div>
                 )}
 
-                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-60 pointer-events-none" />
+                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-950/90 via-dark-950/20 to-transparent pointer-events-none" />
 
                 {!isAvailable && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px]">
@@ -142,33 +142,33 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     </div>
                 )}
 
-                <div className="hidden md:block absolute bottom-4 right-4 bg-primary/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-lg pointer-events-none">
-                    <span className="text-white font-black text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-85 uppercase">ج.م</small></span>
+                <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3.5 py-1 rounded-full border border-white/20 pointer-events-none">
+                    <span className="text-white font-black text-base lg:text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-90 uppercase">ج.م</small></span>
                 </div>
             </div>
 
             {/* Content Details */}
-            <div className="flex-1 p-3 md:p-6 flex flex-col min-w-0 min-h-0">
-                <div className="mb-0 md:mb-4">
-                    <div className="flex items-center justify-between gap-1 mb-1 md:mb-2">
+            <div className="flex-1 p-3.5 md:p-5 flex flex-col min-w-0 min-h-0">
+                <div className="mb-0 md:mb-3">
+                    <div className="flex items-center justify-between gap-1 mb-1">
                         <h3
                             onClick={() => onOpenDetail(item)}
-                            className="text-sm md:text-xl font-bold text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
+                            className="text-[14px] md:text-lg font-black text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
                         >
                             {item.name}
                         </h3>
                         {item.is_popular && (
-                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2.5 py-0.5 rounded-full font-bold shadow-sm">
                                 ⭐ مميز
                             </span>
                         )}
                     </div>
-                    <p className="text-slate-400/90 text-xs md:text-sm line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.5rem]">
+                    <p className="text-slate-400/90 text-xs md:text-[13px] line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.4rem]">
                         {item.description || 'صنف طازج ومميز محضّر يومياً بأجود المكونات في مطعم أبو خاطر.'}
                     </p>
                 </div>
 
-                <div className="mt-auto pt-2 md:pt-4 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
+                <div className="mt-auto pt-2 md:pt-3.5 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
                     <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
                         {item.price} <small className="text-[9px] font-bold opacity-85">ج.م</small>
                     </span>
@@ -176,20 +176,20 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     <div className="shrink-0 md:w-full">
                         {isAvailable ? (
                             qty > 0 ? (
-                                <div className="flex items-center bg-dark-800/80 p-0.5 md:p-1.5 rounded-lg md:rounded-2xl border border-white/[0.08] shadow-inner gap-0 md:gap-1 md:justify-between md:w-full">
+                                <div className="stepper-container-3d p-1 md:p-1.5 rounded-xl md:rounded-2xl flex items-center gap-1 md:justify-between md:w-full">
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, -1)}
-                                        className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-dark-700/60 hover:bg-dark-600 text-white rounded-md md:rounded-xl transition-all active:scale-90"
+                                        className="btn-soft-3d-dark w-8 h-8 md:min-w-[40px] md:min-h-[40px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`تقليل كمية ${item.name}`}
                                     >
                                         <span className="text-lg md:text-xl font-bold" aria-hidden>−</span>
                                     </button>
-                                    <span className="text-sm md:text-lg font-black text-white w-7 md:w-12 text-center tabular-nums" aria-live="polite">{qty}</span>
+                                    <span className="text-sm md:text-base font-black text-white w-7 md:w-10 text-center tabular-nums" aria-live="polite">{qty}</span>
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, 1)}
-                                        className="w-8 h-8 md:min-w-[44px] md:min-h-[44px] flex items-center justify-center bg-primary hover:bg-orange-600 text-white rounded-md md:rounded-xl shadow-md shadow-primary/25 transition-all active:scale-90"
+                                        className="btn-soft-3d-primary w-8 h-8 md:min-w-[40px] md:min-h-[40px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`زيادة كمية ${item.name}`}
                                     >
                                         <span className="text-lg md:text-xl font-bold" aria-hidden>+</span>
@@ -199,18 +199,18 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                 <button
                                     type="button"
                                     onClick={handleAdd}
-                                    className="w-9 h-9 md:w-full md:min-h-[48px] md:py-3.5 bg-dark-800 hover:bg-primary text-slate-100 hover:text-white rounded-lg md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 md:gap-3 border border-white/[0.08] hover:border-primary active:scale-[0.98] shadow-md md:group-hover:shadow-primary/20 text-[15px] md:text-base"
+                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary w-9 h-9 md:w-full md:min-h-[44px] md:py-3 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-2 text-xs md:text-sm"
                                     aria-label={`أضف ${item.name} إلى السلة`}
                                 >
-                                    <span className="md:hidden text-xl font-bold leading-none" aria-hidden>+</span>
-                                    <Flame size={20} className="hidden md:block text-primary group-hover:text-white shrink-0" aria-hidden />
+                                    <span className="md:hidden text-lg font-bold leading-none" aria-hidden>+</span>
+                                    <Flame size={18} className="hidden md:block text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
                                     <span className="hidden md:inline">إضافة للطلب</span>
                                 </button>
                             )
                         ) : (
-                            <button type="button" disabled className="w-9 h-9 md:w-full bg-dark-800/50 text-slate-500 md:py-3.5 rounded-lg md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.05] opacity-50 md:min-h-[48px] flex items-center justify-center">
+                            <button type="button" disabled className="w-9 h-9 md:w-full bg-dark-800/40 text-slate-500 md:py-3 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[44px] flex items-center justify-center">
                                 <span className="md:hidden text-xs">×</span>
-                                <span className="hidden md:inline">{statusLabel}</span>
+                                <span className="hidden md:inline text-xs">{statusLabel}</span>
                             </button>
                         )}
                     </div>
@@ -482,10 +482,9 @@ const MenuPage = () => {
                 <button
                     type="button"
                     onClick={() => setShowReservation(true)}
-                    className="group relative overflow-hidden bg-gradient-to-r from-[#fa6c14] to-[#ea580c] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-orange-600/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
+                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
                     aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
                     <Calendar size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
                     <span className="leading-tight truncate relative z-10 drop-shadow-sm">حجز طاولة</span>
                 </button>
@@ -493,10 +492,9 @@ const MenuPage = () => {
                 <button
                     type="button"
                     onClick={() => setShowTracking(true)}
-                    className="group relative overflow-hidden bg-gradient-to-r from-[#fa7814] to-[#f97316] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-orange-500/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
+                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
                     aria-label="تتبع حالة طلبك"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
                     <Bike size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
                     <span className="leading-tight truncate relative z-10 drop-shadow-sm">تتبع طلبك</span>
                 </button>
@@ -504,36 +502,35 @@ const MenuPage = () => {
                 <button
                     type="button"
                     onClick={() => setShowFeedback(true)}
-                    className="group relative overflow-hidden bg-gradient-to-r from-[#f97316] to-[#d97706] hover:brightness-110 text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs shadow-lg shadow-amber-600/25 flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.96] border border-white/20 touch-manipulation"
+                    className="btn-soft-3d-dark group relative overflow-hidden text-slate-100 hover:text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
                     aria-label="إرسال شكوى أو مقترح للمطعم"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/20 pointer-events-none" />
-                    <MessageSquare size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
+                    <MessageSquare size={17} className="shrink-0 relative z-10 text-primary group-hover:text-white group-hover:scale-110 transition-all" />
                     <span className="leading-tight truncate relative z-10 drop-shadow-sm">الشكاوى</span>
                 </button>
             </div>
 
             {/* Floating Interaction Bar */}
             <div className="sticky top-3 sm:top-4 z-40 px-3 sm:px-4 transition-all duration-500">
-                <div className={`max-w-3xl mx-auto bg-dark-900/88 backdrop-blur-xl border border-white/[0.08] rounded-[1.75rem] sm:rounded-[2rem] shadow-[0_20px_56px_rgba(0,0,0,0.42)] p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 transition-all duration-300 ${isScrolled ? 'scale-[0.98] shadow-primary/10' : 'scale-100'}`}>
+                <div className={`max-w-3xl mx-auto surface-float-3d rounded-[1.75rem] sm:rounded-[2rem] p-3.5 sm:p-5 space-y-3 sm:space-y-4 transition-all duration-300 ${isScrolled ? 'scale-[0.98]' : 'scale-100'}`}>
                     {/* Search & Actions */}
-                    <div className="flex flex-col gap-3.5">
+                    <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-2 sm:gap-3">
                             <div className="relative flex-1">
-                                <Search className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={18} aria-hidden />
+                                <Search className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} aria-hidden />
                                 <input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="ابحث عن وجبتك المفضلة..."
                                     aria-label="البحث في قائمة الطعام"
-                                    className="w-full bg-dark-800/90 text-white text-xs sm:text-sm pr-10 sm:pr-11 pl-9 sm:pl-10 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl border border-white/[0.06] focus:border-primary/60 focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-500"
+                                    className="w-full surface-recessed-3d text-white text-xs sm:text-sm pr-10 sm:pr-11 pl-9 sm:pl-10 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl focus:border-primary/60 focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-500"
                                 />
                                 {searchQuery && (
                                     <button
                                         type="button"
                                         onClick={() => setSearchQuery('')}
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white p-1"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1 transition-colors"
                                         aria-label="مسح نص البحث"
                                     >
                                         <X size={14} aria-hidden />
@@ -545,11 +542,11 @@ const MenuPage = () => {
                                 type="button"
                                 onClick={loadMenu}
                                 disabled={loading}
-                                className="bg-dark-800 shrink-0 p-2.5 sm:p-2.5 rounded-xl sm:rounded-2xl border border-white/[0.06] text-slate-400 hover:text-primary hover:bg-dark-700/80 transition-all active:scale-90 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center disabled:opacity-60 disabled:pointer-events-none"
+                                className="btn-soft-3d-dark shrink-0 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl text-slate-400 hover:text-white transition-all min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center disabled:opacity-50 disabled:pointer-events-none"
                                 title="تحديث القائمة من الخادم"
                                 aria-label={loading ? 'جاري تحديث القائمة' : 'تحديث القائمة من الخادم'}
                             >
-                                <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} aria-hidden />
+                                <RefreshCcw size={18} className={loading ? 'animate-spin text-primary' : ''} aria-hidden />
                             </button>
                         </div>
                     </div>
@@ -562,7 +559,7 @@ const MenuPage = () => {
                                 const container = document.getElementById('categories-scroll');
                                 if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
                             }}
-                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-dark-800/50 border border-white/5 text-slate-400 hover:text-white hover:bg-primary transition-all active:scale-90"
+                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full btn-soft-3d-dark text-slate-400 hover:text-white transition-all"
                             aria-label="تمرير التصنيفات لليمين"
                         >
                             <ChevronRight size={16} aria-hidden />
@@ -597,14 +594,11 @@ const MenuPage = () => {
                                             if (navigator.vibrate) navigator.vibrate(10);
                                             setActiveCategory(catId);
                                         }}
-                                        className={`flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-black transition-all whitespace-nowrap border shrink-0 snap-start min-h-[40px] ${isActive
-                                            ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25 scale-[1.02]'
-                                            : 'bg-dark-800/60 border-white/[0.06] text-slate-400 hover:bg-dark-800 hover:text-slate-200'
-                                            }`}
+                                        className={`category-pill shrink-0 snap-start min-h-[40px] ${isActive ? 'active' : ''}`}
                                     >
                                         <IconComp size={15} className={`shrink-0 ${isActive ? 'text-white' : 'text-primary'}`} />
                                         <span>{mapped.label}</span>
-                                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md tabular-nums ${isActive ? 'bg-white/20 text-white' : 'bg-dark-700/60 text-slate-400'}`} aria-label={`${count} صنف`}>
+                                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md tabular-nums ${isActive ? 'bg-white/25 text-white' : 'bg-dark-800/80 text-slate-400'}`} aria-label={`${count} صنف`}>
                                             {count}
                                         </span>
                                     </button>
@@ -618,7 +612,7 @@ const MenuPage = () => {
                                 const container = document.getElementById('categories-scroll');
                                 if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
                             }}
-                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-dark-800/50 border border-white/5 text-slate-400 hover:text-white hover:bg-primary transition-all active:scale-90"
+                            className="hidden md:flex items-center justify-center w-8 h-8 rounded-full btn-soft-3d-dark text-slate-400 hover:text-white transition-all"
                             aria-label="تمرير التصنيفات لليسار"
                         >
                             <ChevronLeft size={16} aria-hidden />

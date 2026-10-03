@@ -46,7 +46,7 @@ const ReviewPage = () => {
                     <p className="text-slate-400/95 text-[13px] sm:text-xs font-semibold leading-relaxed px-1">تأكد من طلبك واختر طريقة الاستلام</p>
                 </header>
 
-                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-1 overflow-hidden shadow-md">
+                <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-1.5 overflow-hidden">
                     <OrderSummary
                         cart={cart}
                         subtotal={subtotal}
@@ -70,12 +70,12 @@ const ReviewPage = () => {
                                 if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
                                 setOrderType('delivery');
                             }}
-                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'delivery'
-                                ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
-                                : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'delivery'
+                                ? 'btn-soft-3d-primary text-white scale-[1.02]'
+                                : 'card-soft-3d text-slate-400 hover:text-slate-200'
                                 }`}
                         >
-                            <Bike size={28} className={`sm:w-8 sm:h-8 ${orderType === 'delivery' ? 'opacity-100' : 'opacity-70'}`} />
+                            <Bike size={28} className={`sm:w-8 sm:h-8 ${orderType === 'delivery' ? 'opacity-100 drop-shadow-sm' : 'opacity-70'}`} />
                             <span className="font-bold text-[13px] sm:text-sm text-center leading-snug">توصيل للمنزل</span>
                         </button>
 
@@ -85,12 +85,12 @@ const ReviewPage = () => {
                                 if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
                                 setOrderType('pickup');
                             }}
-                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] border-2 transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'pickup'
-                                ? 'bg-gradient-to-br from-primary to-orange-600 border-transparent text-white shadow-lg shadow-primary/25'
-                                : 'bg-dark-900 border-dark-800/80 text-slate-400 hover:bg-dark-800 hover:text-slate-200'
+                            className={`p-4 sm:p-5 min-h-[120px] sm:min-h-0 rounded-xl sm:rounded-[1.25rem] transition-all flex flex-col items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] ${orderType === 'pickup'
+                                ? 'btn-soft-3d-primary text-white scale-[1.02]'
+                                : 'card-soft-3d text-slate-400 hover:text-slate-200'
                                 }`}
                         >
-                            <Store size={28} className={`sm:w-8 sm:h-8 ${orderType === 'pickup' ? 'opacity-100' : 'opacity-70'}`} />
+                            <Store size={28} className={`sm:w-8 sm:h-8 ${orderType === 'pickup' ? 'opacity-100 drop-shadow-sm' : 'opacity-70'}`} />
                             <div className="text-center space-y-0.5">
                                 <span className="block font-bold text-[13px] sm:text-sm leading-snug">استلام من المطعم</span>
                             </div>
@@ -105,7 +105,7 @@ const ReviewPage = () => {
                     <button
                         type="button"
                         onClick={() => navigate('/')}
-                        className="flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold border border-white/[0.08] bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
+                        className="btn-soft-3d-dark flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold text-slate-200 w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
                         aria-label="العودة إلى قائمة الطعام لإضافة المزيد"
                     >
                         <ArrowRight size={18} aria-hidden />
@@ -114,10 +114,10 @@ const ReviewPage = () => {
                     <button
                         type="button"
                         onClick={() => navigate('/customer')}
-                        className="flex-[2] min-h-[52px] sm:h-14 bg-gradient-to-r from-primary to-orange-600 text-white rounded-xl sm:rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2"
+                        className="btn-soft-3d-primary flex-[2] min-h-[52px] sm:h-14 text-white rounded-xl sm:rounded-2xl font-black w-full flex items-center justify-center gap-2"
                         aria-label="المتابعة لإدخال بيانات التوصيل والدفع"
                     >
-                        <span className="text-[15px] sm:text-[15px]">المتابعة للبيانات</span>
+                        <span className="text-[15px]">المتابعة للبيانات</span>
                         <ArrowLeft size={18} className="rtl:rotate-180" aria-hidden />
                     </button>
                 </div>

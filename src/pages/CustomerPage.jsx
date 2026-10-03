@@ -232,9 +232,9 @@ const CustomerPage = () => {
     // Helper for Input Class
     const getInputClass = (field) => {
         const hasError = touched[field] && errors[field];
-        const base = "w-full px-4 py-3.5 sm:p-4 rounded-xl sm:rounded-2xl border text-white placeholder-slate-600 outline-none transition-all text-[15px] sm:text-base leading-normal";
-        if (hasError) return `${base} bg-red-500/5 border-red-500/50 focus:border-red-500`;
-        return `${base} bg-dark-800/50 border-white/5 focus:border-primary`;
+        const base = "w-full px-4 py-3.5 sm:p-4 rounded-xl sm:rounded-2xl border text-white placeholder-slate-500 outline-none transition-all text-[15px] sm:text-base leading-normal surface-recessed-3d";
+        if (hasError) return `${base} bg-red-500/5 border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500/30`;
+        return `${base} focus:border-primary/70 focus:ring-2 focus:ring-primary/20`;
     };
 
     // Helper to create glowing custom customer marker
@@ -494,7 +494,7 @@ const CustomerPage = () => {
                 )}
 
                 {/* Section 1: Personal Info */}
-                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-5 space-y-4 sm:space-y-5">
                     <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                         <User className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">البيانات الشخصية</h3>
@@ -525,20 +525,20 @@ const CustomerPage = () => {
                             )}
 
                             {showSuggestions && savedCustomers.length > 0 && (
-                                <div className="absolute top-[100%] left-0 w-full mt-1 bg-dark-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+                                <div className="absolute top-[100%] left-0 w-full mt-1 surface-float-3d border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
                                     {savedCustomers.map((entry, idx) => (
-                                        <div
+                                         <div
                                             key={idx}
-                                            className="flex justify-between items-center px-4 py-3 hover:bg-dark-800 cursor-pointer border-b border-white/5 last:border-0"
+                                            className="flex justify-between items-center px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0"
                                             onClick={() => handleSelectCustomer(entry)}
                                         >
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-white text-sm">{entry.name}</span>
-                                                <span className="text-xs text-slate-500">{entry.phone1}</span>
+                                                <span className="text-xs text-slate-400">{entry.phone1}</span>
                                             </div>
                                             <button
                                                 type="button"
-                                                className="text-slate-500 hover:text-red-400 text-xs p-1"
+                                                className="text-slate-400 hover:text-red-400 text-xs p-1"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleDeleteCustomer(entry.phone1);
@@ -598,28 +598,24 @@ const CustomerPage = () => {
 
                 {/* Section 2: Delivery Control */}
                 {orderType === 'delivery' && (
-                    <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                    <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-5 space-y-4 sm:space-y-5">
                         <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                             <MapPin className="text-primary" size={20} />
                             <h3 className="font-bold text-white uppercase tracking-wider text-xs">عنوان التوصيل</h3>
                         </div>
 
-                        {/* Location Methods Tabs (GPS + المناطق الثابتة فقط حالياً) */}
-                        <div className="flex bg-dark-800/55 p-1.5 rounded-xl sm:rounded-2xl border border-white/[0.06] gap-0.5">
+                        {/* Location Methods Tabs */}
+                        <div className="flex surface-recessed-3d p-1.5 rounded-xl sm:rounded-2xl gap-1">
                             {[
                                 { id: 'gps', icon: Compass, label: 'تحديد تلقائي (GPS)' },
-                                /* 
-                                  [مؤقت - قيد التطوير لاحقاً] تم تعليق زر الخريطة مؤقتاً لحين استكمال تطويرها وإعادتها
-                                  { id: 'map', icon: Map, label: 'الخريطة' },
-                                */
                                 { id: 'fixed', icon: MapPin, label: 'مناطق ثابتة' }
                             ].map(method => (
                                 <button
                                     key={method.id}
                                     onClick={() => setLocationMethod(method.id)}
                                     className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-3 min-h-[44px] rounded-lg sm:rounded-xl transition-all font-bold text-[11px] sm:text-xs ${locationMethod === method.id
-                                        ? 'bg-primary text-white shadow-md shadow-primary/25'
-                                        : 'text-slate-500 hover:text-slate-300'
+                                        ? 'btn-soft-3d-primary text-white'
+                                        : 'text-slate-400 hover:text-slate-200'
                                         }`}
                                 >
                                     <method.icon size={16} />
@@ -799,7 +795,7 @@ const CustomerPage = () => {
                 )}
 
                 {/* Section 3: Payment Method */}
-                <div className="bg-dark-900 rounded-2xl sm:rounded-[1.5rem] border border-white/[0.07] p-4 sm:p-5 shadow-sm space-y-4 sm:space-y-5">
+                <div className="card-soft-3d rounded-2xl sm:rounded-[1.5rem] p-4 sm:p-5 space-y-4 sm:space-y-5">
                     <div className="flex items-center gap-3 border-b border-white/[0.06] pb-3 sm:pb-4">
                         <Lock className="text-primary" size={20} />
                         <h3 className="font-bold text-white uppercase tracking-wider text-xs">طريقة الدفع للمطعم</h3>
@@ -813,7 +809,7 @@ const CustomerPage = () => {
                                 desc: 'نقداً عند الاستلام',
                                 icon: Receipt,
                                 badge: 'الأسهل',
-                                activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                                activeColor: 'border-emerald-500/70 bg-gradient-to-b from-emerald-950/60 to-dark-900 text-emerald-400 shadow-[inset_0_1px_0_0_rgba(52,211,153,0.3),0_8px_20px_-4px_rgba(16,185,129,0.25)]'
                             },
                             {
                                 id: 'vodafone_cash',
@@ -821,7 +817,7 @@ const CustomerPage = () => {
                                 desc: 'فودافون / اتصالات / أورانج',
                                 icon: Wallet,
                                 badge: 'سريع',
-                                activeColor: 'border-primary bg-primary/10 text-primary'
+                                activeColor: 'border-primary/70 bg-gradient-to-b from-orange-950/60 to-dark-900 text-primary shadow-[inset_0_1px_0_0_rgba(249,115,22,0.3),0_8px_20px_-4px_rgba(234,88,12,0.25)]'
                             },
                             {
                                 id: 'instapay',
@@ -829,7 +825,7 @@ const CustomerPage = () => {
                                 desc: 'تحويل بنكي',
                                 icon: CreditCard,
                                 badge: 'سريع',
-                                activeColor: 'border-purple-500 bg-purple-500/10 text-purple-400'
+                                activeColor: 'border-purple-500/70 bg-gradient-to-b from-purple-950/60 to-dark-900 text-purple-400 shadow-[inset_0_1px_0_0_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(168,85,247,0.25)]'
                             }
                         ].map(method => {
                             const IconComponent = method.icon;
@@ -848,19 +844,19 @@ const CustomerPage = () => {
                                         setPaymentMethod(method.id);
                                     }}
                                     aria-disabled={isPickupCashUnavailable}
-                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isPickupCashUnavailable
-                                        ? 'opacity-40 grayscale cursor-not-allowed border-white/[0.06] bg-dark-800/40 text-slate-500'
+                                    className={`p-3.5 sm:p-4 rounded-2xl border transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isPickupCashUnavailable
+                                        ? 'opacity-40 grayscale cursor-not-allowed border-white/[0.04] bg-dark-900/40 text-slate-500'
                                         : isSelected
-                                            ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
-                                            : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
+                                            ? method.activeColor + ' scale-[1.02]'
+                                            : 'card-soft-3d text-slate-400 hover:text-slate-200 hover:border-white/15'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between w-full">
-                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15' : 'bg-dark-700/50 text-slate-400'
+                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15' : 'bg-dark-800/80 text-slate-400'
                                             }`}>
                                             <IconComponent size={15} />
                                         </div>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/15 text-white' : 'bg-dark-700 text-slate-500'
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-dark-800 text-slate-400'
                                             }`}>
                                             {method.badge}
                                         </span>
@@ -883,7 +879,7 @@ const CustomerPage = () => {
                     <button
                         type="button"
                         onClick={() => navigate('/review')}
-                        className="flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold border border-white/[0.08] bg-dark-800 text-slate-300 hover:bg-dark-700 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
+                        className="btn-soft-3d-dark flex-1 min-h-[52px] sm:h-14 rounded-xl sm:rounded-2xl font-bold text-slate-200 w-full flex items-center justify-center gap-2 text-[15px] sm:text-sm"
                         aria-label="الرجوع لمراجعة السلة"
                     >
                         <ArrowRight size={18} aria-hidden />
@@ -893,7 +889,7 @@ const CustomerPage = () => {
                         type="button"
                         onClick={handleNext}
                         disabled={!isFormValid()}
-                        className="flex-[2] min-h-[52px] sm:h-14 bg-gradient-to-r from-primary to-orange-600 text-white rounded-xl sm:rounded-2xl font-black shadow-lg shadow-primary/25 hover:brightness-110 active:scale-[0.98] transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                        className="btn-soft-3d-primary flex-[2] min-h-[52px] sm:h-14 text-white rounded-xl sm:rounded-2xl font-black w-full flex items-center justify-center gap-2 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed"
                         aria-label={isFormValid() ? 'المتابعة إلى صفحة الدفع' : 'أكمل الحقول المطلوبة للمتابعة'}
                     >
                         <span className="text-[15px]">تأكيد والمتابعة للدفع</span>

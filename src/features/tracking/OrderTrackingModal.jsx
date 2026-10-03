@@ -156,7 +156,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
             aria-labelledby="tracking-modal-title"
         >
             <div
-                className="bg-dark-900 border border-white/10 rounded-[1.75rem] sm:rounded-[2.5rem] w-full max-w-xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200"
+                className="surface-float-3d bg-dark-900 border border-white/10 rounded-[1.75rem] sm:rounded-[2.5rem] w-full max-w-xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200"
                 dir="rtl"
             >
                 {/* Header */}
@@ -217,7 +217,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                     {/* Unauthenticated State: Prompt Phone OTP */}
                     {!loading && !user && (
                         <div className="py-8 text-center space-y-5">
-                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary">
+                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
                                 <ShieldCheck size={32} />
                             </div>
                             <div className="space-y-2">
@@ -229,7 +229,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                             <button
                                 type="button"
                                 onClick={() => setShowOtpModal(true)}
-                                className="w-full py-3.5 bg-gradient-to-r from-primary to-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                                className="w-full py-3.5 btn-soft-3d-primary text-white font-black text-sm rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                             >
                                 <Phone size={16} />
                                 <span>تسجيل الدخول برمز OTP</span>
@@ -240,7 +240,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                     {/* Empty State: Authenticated but No Recent Orders */}
                     {!loading && user && orders.length === 0 && (
                         <div className="py-8 text-center space-y-5">
-                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary">
+                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mx-auto text-primary shadow-[inset_0_1px_2px_rgba(255,255,255,0.15)]">
                                 <ShoppingBag size={30} />
                             </div>
                             <div className="space-y-2">
@@ -252,7 +252,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="w-full py-3.5 bg-primary hover:bg-orange-600 text-white font-black text-sm rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                                className="w-full py-3.5 btn-soft-3d-primary text-white font-black text-sm rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                             >
                                 <Utensils size={16} />
                                 <span>تصفح المنيو واطلب الآن</span>
@@ -265,7 +265,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                         <div className="space-y-4">
                             {/* Two-Order Switcher Tabs if 2 orders exist */}
                             {orders.length > 1 && (
-                                <div className="bg-dark-950/80 p-1.5 rounded-2xl border border-white/10 grid grid-cols-2 gap-1.5 shadow-md">
+                                <div className="surface-recessed-3d p-1.5 rounded-2xl border border-white/10 grid grid-cols-2 gap-1.5">
                                     {orders.map((ord, idx) => {
                                         const isSelected = selectedIdx === idx;
                                         return (
@@ -275,7 +275,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                 onClick={() => setSelectedIdx(idx)}
                                                 className={`py-2 px-2.5 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${
                                                     isSelected
-                                                        ? 'bg-primary text-white shadow-md shadow-primary/30 scale-[1.01]'
+                                                        ? 'btn-soft-3d-primary text-white'
                                                         : 'text-slate-400 hover:text-white hover:bg-dark-800'
                                                 }`}
                                             >
@@ -283,7 +283,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                     <Layers size={12} />
                                                     {idx === 0 ? 'الطلب الأحدث' : 'الطلب السابق'} ({ord.order_number})
                                                 </span>
-                                                <span className={`text-[10px] truncate max-w-full ${isSelected ? 'text-white/90' : 'text-slate-500'}`}>
+                                                <span className={`text-[10px] truncate max-w-full ${isSelected ? 'text-white/95 font-bold' : 'text-slate-500'}`}>
                                                     {ord.status_label_ar || 'قيد المعالجة'}
                                                 </span>
                                             </button>
@@ -293,7 +293,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                             )}
 
                             {/* Summary Card */}
-                            <div className="bg-dark-950/60 border border-white/5 rounded-2xl p-4 sm:p-5 space-y-3">
+                            <div className="card-soft-3d bg-dark-950/60 border border-white/5 rounded-2xl p-4 sm:p-5 space-y-3">
                                 <div className="flex justify-between items-start border-b border-white/5 pb-3">
                                     <div className="space-y-0.5">
                                         <div className="flex items-center gap-2">
@@ -324,13 +324,13 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div className="p-2.5 bg-dark-900 rounded-xl border border-white/5">
+                                    <div className="p-2.5 surface-recessed-3d rounded-xl border border-white/5">
                                         <span className="text-[10px] text-slate-500 block font-bold mb-0.5">نوع الطلب</span>
                                         <span className="text-white font-bold">
                                             {currentOrder.order_type === 'delivery' ? 'توصيل منزلي 🛵' : 'استلام من المطعم 🥡'}
                                         </span>
                                     </div>
-                                    <div className="p-2.5 bg-dark-900 rounded-xl border border-white/5">
+                                    <div className="p-2.5 surface-recessed-3d rounded-xl border border-white/5">
                                         <span className="text-[10px] text-slate-500 block font-bold mb-0.5">عدد الوجبات</span>
                                         <span className="text-white font-bold font-mono">
                                             {currentOrder.items_count ? `${currentOrder.items_count} صنف` : 'وجبات مختارة'}
@@ -339,7 +339,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                 </div>
 
                                 {currentOrder.pilot_name && (
-                                    <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between">
+                                    <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                                         <div className="flex items-center gap-2">
                                             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-sm">
                                                 <Bike size={16} />
@@ -358,7 +358,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
 
                             {/* Execution Steps */}
                             {!isCancelled ? (
-                                <div className="bg-dark-950/60 border border-white/5 rounded-2xl p-5 space-y-5">
+                                <div className="card-soft-3d bg-dark-950/60 border border-white/5 rounded-2xl p-5 space-y-5">
                                     <div className="flex items-center justify-between border-b border-white/5 pb-2">
                                         <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
                                             <Sparkles size={14} className="text-primary" />
@@ -436,7 +436,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                             {/* Direct Contact Button */}
                             <a
                                 href="tel:01038035884"
-                                className="w-full py-3.5 bg-dark-950 hover:bg-dark-800 text-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
+                                className="w-full py-3.5 btn-soft-3d-dark text-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all active:scale-[0.99]"
                             >
                                 <Phone size={15} className="text-primary" />
                                 <span>الاتصال بإدارة المطعم (01038035884)</span>
