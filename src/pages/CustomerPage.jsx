@@ -482,7 +482,7 @@ const CustomerPage = () => {
                             <Store size={20} />
                         </div>
                         <div>
-                            <h4 className="font-bold text-teal-400 text-xs sm:text-sm">استلام من المطعم (بدون رسوم توصيل)</h4>
+                            <h4 className="font-bold text-teal-400 text-xs sm:text-sm">استلام من المطعم</h4>
                             <p className="text-[11px] text-slate-400 font-medium mt-0.5">فرع مطعم أبو خاطر الرئيسي — يرجى تجهيز الاسم ورقم الهاتف عند الاستلام.</p>
                         </div>
                     </div>
@@ -793,15 +793,15 @@ const CustomerPage = () => {
                                 label: 'محفظة كاش',
                                 desc: 'فودافون / اتصالات / أورانج',
                                 icon: Wallet,
-                                badge: 'فوري',
+                                badge: 'سريع',
                                 activeColor: 'border-primary bg-primary/10 text-primary'
                             },
                             {
                                 id: 'instapay',
                                 label: 'انستاباي (InstaPay)',
-                                desc: 'تحويل بنكي لحظي',
+                                desc: 'تحويل بنكي',
                                 icon: CreditCard,
-                                badge: 'لحظي ⚡',
+                                badge: 'سريع',
                                 activeColor: 'border-purple-500 bg-purple-500/10 text-purple-400'
                             }
                         ].map(method => {
@@ -824,8 +824,8 @@ const CustomerPage = () => {
                                     className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isPickupCashUnavailable
                                         ? 'opacity-40 grayscale cursor-not-allowed border-white/[0.06] bg-dark-800/40 text-slate-500'
                                         : isSelected
-                                        ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
-                                        : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
+                                            ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
+                                            : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between w-full">
