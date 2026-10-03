@@ -51,9 +51,11 @@ const CATEGORY_MAP = {
     casseroles: { label: 'الطواجن', icon: ChefHat },
     'طواجن': { label: 'الطواجن', icon: ChefHat },
     'طـواجـن': { label: 'الطواجن', icon: ChefHat },
-    crepes: { label: 'كريب', icon: Layers },
-    'كريب': { label: 'كريب', icon: Layers },
-    'كـريب': { label: 'كريب', icon: Layers },
+    crepes: { label: 'الصواريخ', icon: Layers },
+    'كريب': { label: 'الصواريخ', icon: Layers },
+    'كـريب': { label: 'الصواريخ', icon: Layers },
+    'الصواريخ': { label: 'الصواريخ', icon: Layers },
+    'صواريخ': { label: 'الصواريخ', icon: Layers },
     sandwiches: { label: 'ساندوتشات', icon: UtensilsCrossed },
     'سندوتشات': { label: 'ساندوتشات', icon: UtensilsCrossed },
     'ساندوتشات': { label: 'ساندوتشات', icon: UtensilsCrossed },
@@ -79,6 +81,9 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
     const hasRealImage = Boolean(item.image && item.image !== '/logo.jpg');
     const hasConfig = item.has_configuration || (Array.isArray(item.variants) && item.variants.length > 0) || (Array.isArray(item.option_groups) && item.option_groups.length > 0);
+    const hasVariants = Array.isArray(item.variants) && item.variants.length > 0;
+    const minVariantPrice = hasVariants ? Math.min(...item.variants.map(v => v.price)) : item.price;
+    const displayPriceText = hasVariants ? `من ${minVariantPrice}` : item.price;
 
     const handleAdd = (e) => {
         e.stopPropagation();
@@ -155,7 +160,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                 )}
 
                 <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3.5 py-1 rounded-full border border-white/20 pointer-events-none">
-                    <span className="text-white font-black text-base lg:text-lg tabular-nums">{item.price} <small className="text-[10px] font-bold opacity-90 uppercase">ج.م</small></span>
+                    <span className="text-white font-black text-base lg:text-lg tabular-nums">{displayPriceText} <small className="text-[10px] font-bold opacity-90 uppercase">ج.م</small></span>
                 </div>
             </div>
 
@@ -182,7 +187,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
                 <div className="mt-auto pt-2 md:pt-3.5 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
                     <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
-                        {item.price} <small className="text-[9px] font-bold opacity-85">ج.م</small>
+                        {displayPriceText} <small className="text-[9px] font-bold opacity-85">ج.م</small>
                     </span>
 
                     <div className="shrink-0 md:w-full">
@@ -216,7 +221,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                 >
                                     <span className="md:hidden text-lg font-bold leading-none" aria-hidden>+</span>
                                     <Flame size={18} className="hidden md:block text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
-                                    <span className="hidden md:inline">إضافة للطلب</span>
+                                    <span className="hidden md:inline">{hasConfig ? 'اختر التخصيص' : 'إضافة للطلب'}</span>
                                 </button>
                             )
                         ) : (

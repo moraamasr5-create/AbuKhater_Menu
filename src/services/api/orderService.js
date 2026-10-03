@@ -64,13 +64,28 @@ export const orderService = {
                 screenshotStoragePath = rawScreenshot;
             }
 
-            // 2. Prepare items with genuine menu item UUIDs
-            const itemsForRpc = (payload.items || []).map(item => ({
-                item_id: item.itemId || item.menuItemId || item.id,
-                name: item.name,
-                quantity: parseInt(item.quantity || item.count || 1, 10),
-                notes: item.notes || null
-            }));
+            // 2. Prepare items with genuine menu item UUIDs and formatted names
+            const itemsForRpc = (payload.items || []).map(item => {
+                let formattedName = item.name || '';
+                if (item.selected_variant?.name) {
+                    formattedName += ` (${item.selected_variant.name})`;
+                }
+                if (Array.isArray(item.selected_options) && item.selected_options.length > 0) {
+                    const optNames = item.selected_options.map(o => o.option_name || o.name).filter(Boolean);
+                    if (optNames.length > 0) {
+                        formattedName += ` + [${optNames.join(', ')}]`;
+                    }
+                }
+
+                const canonicalItemId = item.product_id || item.itemId || item.menuItemId || item.id;
+
+                return {
+                    item_id: canonicalItemId,
+                    name: formattedName,
+                    quantity: parseInt(item.quantity || item.count || 1, 10),
+                    notes: item.notes || null
+                };
+            });
 
             const idempotencyKey = payload.idempotency_key || (
                 typeof crypto !== 'undefined' && crypto.randomUUID

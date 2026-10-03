@@ -168,8 +168,12 @@ const PaymentPage = () => {
             },
             turnstile_token: turnstileToken,
             items: cart.map(item => ({
-                id: item.id || item.menuItemId || item.item_id,
+                id: item.product_id || item.id,
+                product_id: item.product_id || item.id,
                 name: item.name,
+                selected_variant: item.selected_variant || null,
+                selected_options: item.selected_options || [],
+                notes: item.notes || null,
                 category: item.category || "عام",
                 quantity: item.quantity,
                 price: item.price,
