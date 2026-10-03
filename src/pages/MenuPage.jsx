@@ -422,18 +422,11 @@ const MenuPage = () => {
             <ProgressSteps />
 
             {/* Banner Section */}
-            <div
-                className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden"
-                style={isBannerZoomedOut ? {
-                    backgroundImage: `url(${restaurantBanner})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                } : undefined}
-            >
+            <div className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-dark-950 z-10 pointer-events-none"></div>
                 <img
                     src={restaurantBanner}
-                    className={`w-full h-full object-center ${isBannerZoomedOut ? 'object-contain' : 'object-cover'}`}
+                    className={`w-full h-full object-cover object-center transition-transform duration-500 ease-out ${isBannerZoomedOut ? 'scale-[0.85]' : 'scale-100'}`}
                     alt=""
                     fetchPriority="high"
                     decoding="async"
@@ -442,7 +435,7 @@ const MenuPage = () => {
                     type="button"
                     onClick={() => setIsBannerZoomedOut(prev => !prev)}
                     className="absolute inset-0 z-[15] cursor-zoom-out"
-                    aria-label={isBannerZoomedOut ? 'العودة إلى عرض الصورة المقصوصة' : 'عرض الصورة كاملة'}
+                    aria-label={isBannerZoomedOut ? 'إعادة تكبير صورة الخلفية' : 'تصغير صورة الخلفية'}
                 />
                 <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10 pointer-events-none">
                     <div className="mb-4 sm:mb-6 animate-float relative flex items-center justify-center">
