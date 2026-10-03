@@ -15,7 +15,8 @@ import {
     X,
     ChevronDown,
     ChevronUp,
-    Bike
+    Bike,
+    ShoppingBag
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { formatCurrency } from '../../core/utils/formatters';
@@ -281,8 +282,17 @@ const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
                             }}
                             className="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:brightness-110 text-white rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-950/40 transition-all active:scale-[0.98] border border-emerald-400/20"
                         >
-                            <Bike size={20} className="animate-bounce" />
-                            <span>متابعة حالة طلبك لحظة بلحظة 🚚</span>
+                            {orderData.orderType === 'pickup' ? (
+                                <>
+                                    <ShoppingBag size={20} className="animate-bounce" />
+                                    <span>متابعة تجهيز واستلام طلبك 🛍️</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Bike size={20} className="animate-bounce" />
+                                    <span>متابعة حالة طلبك لحظة بلحظة 🚚</span>
+                                </>
+                            )}
                         </button>
 
                         <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -319,10 +329,12 @@ OrderConfirmation.propTypes = {
     orderData: PropTypes.shape({
         orderNumber: PropTypes.string,
         orderId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        orderType: PropTypes.string,
         totalAmount: PropTypes.number.isRequired,
         estimatedTime: PropTypes.string.isRequired,
         itemsCount: PropTypes.number.isRequired,
         customerName: PropTypes.string,
+        customerPhone: PropTypes.string,
         items: PropTypes.array,
         paymentMethod: PropTypes.string,
         paymentNumber: PropTypes.string,

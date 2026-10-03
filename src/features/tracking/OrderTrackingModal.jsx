@@ -20,15 +20,40 @@ import { formatCurrency } from '../../core/utils/formatters';
 import { orderService } from '../../services/api';
 import PhoneOtpModal from '../../components/common/PhoneOtpModal';
 
-const STATUS_STEPS = [
+const DELIVERY_STEPS = [
     { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك ومراجعته في النظام', icon: Clock },
-    { key: 'preparing', label: 'جاري التحضير', desc: 'يتم تجهيز وجباتك طازجة في المطبخ', icon: ChefHat },
-    { key: 'ready', label: 'الطلب جاهز', desc: 'تم تجهيز الوجبة وجاهزة للخروج مع المندوب', icon: CheckCircle2 },
-    { key: 'out_for_delivery', label: 'في الطريق إليك', desc: 'الطلب مع مندوب التوصيل في طريقه لعنوانك', icon: Bike },
-    { key: 'delivered', label: 'تم التسليم بنجاح', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
+    { key: 'preparing', label: 'جاري التحضير بالمطبخ', desc: 'يتم تجهيز وجباتك طازجة في المطبخ 🍳', icon: ChefHat },
+    { key: 'driver_assigned', label: 'تم إسناد الطيار', desc: 'تم تعيين كابتن التوصيل وجاري تسليمه الطلب', icon: Bike },
+    { key: 'out_for_delivery', label: 'في الطريق إليك 🛵', desc: 'الطلب مع مندوب التوصيل في طريقه لعنوانك', icon: Bike },
+    { key: 'delivered', label: 'تم التوصيل بنجاح ✅', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
 ];
 
-const getStepIndex = (status) => {
+const PICKUP_STEPS = [
+    { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
+    { key: 'preparing', label: 'جاري التحضير بالمطبخ 🍳', desc: 'يتم تجهيز وجباتك طازجة في المطبخ', icon: ChefHat },
+    { key: 'ready', label: 'جاهز للاستلام بالفرع 🛍️', desc: 'طلبك جاهز تماماً للاستلام من فرع المطعم', icon: ShoppingBag },
+    { key: 'delivered', label: 'تم استلام الطلب بنجاح ✅', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
+];
+
+const getStepIndex = (status, orderType = 'delivery') => {
+    if (orderType === 'pickup') {
+        switch (status) {
+            case 'pending':
+            case 'pending_timer':
+                return 0;
+            case 'preparing':
+                return 1;
+            case 'ready':
+                return 2;
+            case 'delivered':
+            case 'completed':
+            case 'picked_up':
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
     switch (status) {
         case 'pending':
         case 'pending_timer':
@@ -36,9 +61,8 @@ const getStepIndex = (status) => {
             return 0;
         case 'preparing':
             return 1;
-        case 'ready':
-            return 2;
         case 'driver_assigned':
+            return 2;
         case 'out_for_delivery':
             return 3;
         case 'delivered':
@@ -145,8 +169,11 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
     if (!isOpen) return null;
 
     const currentOrder = orders[selectedIdx] || null;
-    const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status) : -1;
+    const isPickup = currentOrder?.order_type === 'pickup';
+    const currentSteps = isPickup ? PICKUP_STEPS : DELIVERY_STEPS;
+    const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status, currentOrder.order_type) : -1;
     const isCancelled = currentOrder && ['cancelled', 'failed_delivery'].includes(currentOrder.status);
+    const isFailedDelivery = currentOrder?.status === 'failed_delivery';
 
     return (
         <div
@@ -338,7 +365,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                     </div>
                                 </div>
 
-                                {currentOrder.pilot_name && (
+                                {!isPickup && currentOrder.pilot_name && (
                                     <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                                         <div className="flex items-center gap-2">
                                             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-sm">
@@ -362,7 +389,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                     <div className="flex items-center justify-between border-b border-white/5 pb-2">
                                         <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
                                             <Sparkles size={14} className="text-primary" />
-                                            <span>مراحل تجهيز وتوصيل الطلب</span>
+                                            <span>{isPickup ? 'مراحل تجهيز واستلام الطلب' : 'مراحل تجهيز وتوصيل الطلب'}</span>
                                         </h4>
                                         <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                                             مباشر
@@ -370,7 +397,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                     </div>
 
                                     <div className="relative space-y-6 before:absolute before:right-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-dark-800">
-                                        {STATUS_STEPS.map((step, idx) => {
+                                        {currentSteps.map((step, idx) => {
                                             const isDone = idx < currentStepIndex;
                                             const isCurrent = idx === currentStepIndex;
                                             const StepIcon = step.icon;
@@ -408,7 +435,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                             </h5>
                                                             {isCurrent && (
                                                                 <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full animate-pulse border border-primary/20">
-
+                                                                    جاري ...
                                                                 </span>
                                                             )}
                                                         </div>
@@ -425,9 +452,13 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-3 text-red-400">
                                     <XCircle size={24} className="shrink-0" />
                                     <div>
-                                        <h5 className="font-black text-sm">تم إلغاء الطلب</h5>
+                                        <h5 className="font-black text-sm">
+                                            {isFailedDelivery ? 'تعذر توصيل الطلب' : 'تم إلغاء الطلب'}
+                                        </h5>
                                         <p className="text-[11px] text-slate-400 mt-0.5">
-                                            تم إلغاء هذا الطلب من قبل إدارة المطعم. يرجى التواصل هاتفياً لمزيد من التفاصيل.
+                                            {isFailedDelivery
+                                                ? 'تعذر على مندوب التوصيل تسليم الطلب للعنوان المحدد. يرجى التواصل هاتفياً مع الإدارة.'
+                                                : 'تم إلغاء هذا الطلب من قبل إدارة المطعم. يرجى التواصل هاتفياً لمزيد من التفاصيل.'}
                                         </p>
                                     </div>
                                 </div>

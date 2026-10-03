@@ -58,6 +58,13 @@ const PaymentPage = () => {
 
     totalOrderValue = subtotal + (isPickup ? 0 : deliveryFee);
 
+    const instapayIpa = restaurantSettings?.payment_instapay_ipa || 'abu_khatar@instapay';
+    const walletNumber = restaurantSettings?.payment_wallet_number || '01144423700';
+
+    const paymentNumber = paymentMethod === 'instapay'
+        ? instapayIpa
+        : (paymentMethod === 'vodafone_cash' ? walletNumber : '');
+
     if (isCash) {
         serviceFee = 0;
         paidNow = 0;
@@ -185,6 +192,7 @@ const PaymentPage = () => {
                 orderId: authoritativeOrderNumber,
                 orderNumber: authoritativeOrderNumber,
                 supabaseId: result.order_id,
+                orderType: orderType,
                 customerName: customerData.name,
                 customerPhone: customerData.phone1,
                 totalAmount: authoritativeTotal,
@@ -291,13 +299,6 @@ const PaymentPage = () => {
             navigate('/track');
         }
     }, [successData, clearCart, navigate]);
-
-    const instapayIpa = restaurantSettings?.payment_instapay_ipa || 'abu_khatar@instapay';
-    const walletNumber = restaurantSettings?.payment_wallet_number || '01144423700';
-
-    const paymentNumber = paymentMethod === 'instapay'
-        ? instapayIpa
-        : (paymentMethod === 'vodafone_cash' ? walletNumber : '');
 
     return (
         <div className="min-h-[100dvh] bg-dark-950 pb-[max(9rem,env(safe-area-inset-bottom,0px))] sm:pb-36 relative scroll-smooth overflow-x-hidden">

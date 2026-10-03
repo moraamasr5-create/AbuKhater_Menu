@@ -22,15 +22,40 @@ import { formatCurrency } from '../core/utils/formatters';
 import { orderService } from '../services/api';
 import PhoneOtpModal from '../components/common/PhoneOtpModal';
 
-const STATUS_STEPS = [
-    { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
-    { key: 'preparing', label: 'جاري التحضير', desc: 'يتم تجهيز وجباتك طازجة في المطبخ', icon: ChefHat },
-    { key: 'ready', label: 'الطلب جاهز', desc: 'تم تجهيز الوجبة وجاهزة للتسليم', icon: CheckCircle2 },
-    { key: 'out_for_delivery', label: 'في الطريق إليك', desc: 'الطلب مع مندوب التوصيل', icon: Bike },
-    { key: 'delivered', label: 'تم التسليم', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
+const DELIVERY_STEPS = [
+    { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك ومراجعته في النظام', icon: Clock },
+    { key: 'preparing', label: 'جاري التحضير بالمطبخ', desc: 'يتم تجهيز وجباتك طازجة في المطبخ 🍳', icon: ChefHat },
+    { key: 'driver_assigned', label: 'تم إسناد الطيار', desc: 'تم تعيين كابتن التوصيل وجاري تسليمه الطلب', icon: Bike },
+    { key: 'out_for_delivery', label: 'في الطريق إليك 🛵', desc: 'الطلب مع مندوب التوصيل في طريقه لعنوانك', icon: Bike },
+    { key: 'delivered', label: 'تم التوصيل بنجاح ✅', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
 ];
 
-const getStepIndex = (status) => {
+const PICKUP_STEPS = [
+    { key: 'pending', label: 'تم استلام الطلب', desc: 'تم استلام طلبك وبانتظار بدء التحضير', icon: Clock },
+    { key: 'preparing', label: 'جاري التحضير بالمطبخ 🍳', desc: 'يتم تجهيز وجباتك طازجة في المطبخ', icon: ChefHat },
+    { key: 'ready', label: 'جاهز للاستلام بالفرع 🛍️', desc: 'طلبك جاهز تماماً للاستلام من فرع المطعم', icon: ShoppingBag },
+    { key: 'delivered', label: 'تم استلام الطلب بنجاح ✅', desc: 'بالهناء والشفاء! نتمنى لك وجبة شهية', icon: Sparkles }
+];
+
+const getStepIndex = (status, orderType = 'delivery') => {
+    if (orderType === 'pickup') {
+        switch (status) {
+            case 'pending':
+            case 'pending_timer':
+                return 0;
+            case 'preparing':
+                return 1;
+            case 'ready':
+                return 2;
+            case 'delivered':
+            case 'completed':
+            case 'picked_up':
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
     switch (status) {
         case 'pending':
         case 'pending_timer':
@@ -38,9 +63,8 @@ const getStepIndex = (status) => {
             return 0;
         case 'preparing':
             return 1;
-        case 'ready':
-            return 2;
         case 'driver_assigned':
+            return 2;
         case 'out_for_delivery':
             return 3;
         case 'delivered':
@@ -171,8 +195,11 @@ const TrackPage = () => {
     };
 
     const currentOrder = orders[selectedIdx] || null;
-    const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status) : -1;
+    const isPickup = currentOrder?.order_type === 'pickup';
+    const currentSteps = isPickup ? PICKUP_STEPS : DELIVERY_STEPS;
+    const currentStepIndex = currentOrder ? getStepIndex(currentOrder.status, currentOrder.order_type) : -1;
     const isCancelled = currentOrder && ['cancelled', 'failed_delivery'].includes(currentOrder.status);
+    const isFailedDelivery = currentOrder?.status === 'failed_delivery';
 
     return (
         <div className="min-h-screen bg-dark-950 pb-20 font-sans" dir="rtl">
@@ -392,8 +419,8 @@ const TrackPage = () => {
                                 </div>
                             </div>
 
-                            {/* Assigned Pilot Banner */}
-                            {currentOrder.pilot_name && (
+                            {/* Assigned Pilot Banner (Delivery Only) */}
+                            {!isPickup && currentOrder.pilot_name && (
                                 <div className="p-3.5 bg-primary/10 border border-primary/25 rounded-2xl flex items-center justify-between shadow-sm">
                                     <div className="flex items-center gap-2.5">
                                         <div className="w-10 h-10 rounded-xl btn-soft-3d-primary flex items-center justify-center text-white">
@@ -417,7 +444,7 @@ const TrackPage = () => {
                                 <div className="flex items-center justify-between border-b border-white/5 pb-3">
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
                                         <Sparkles size={16} className="text-primary" />
-                                        <span>مراحل تجهيز وتوصيل الطلب</span>
+                                        <span>{isPickup ? 'مراحل تجهيز واستلام الطلب' : 'مراحل تجهيز وتوصيل الطلب'}</span>
                                     </h3>
                                     <span className="badge-soft-3d text-[11px] font-black text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                                         تحديث فوري
@@ -425,7 +452,7 @@ const TrackPage = () => {
                                 </div>
 
                                 <div className="relative space-y-7 before:absolute before:right-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-dark-800">
-                                    {STATUS_STEPS.map((step, idx) => {
+                                    {currentSteps.map((step, idx) => {
                                         const isDone = idx < currentStepIndex;
                                         const isCurrent = idx === currentStepIndex;
                                         const StepIcon = step.icon;
@@ -478,9 +505,13 @@ const TrackPage = () => {
                             <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-5 flex items-center gap-3.5 text-red-400 shadow-xl">
                                 <XCircle size={28} className="shrink-0" />
                                 <div>
-                                    <h4 className="font-black text-base">تم إلغاء الطلب</h4>
+                                    <h4 className="font-black text-base">
+                                        {isFailedDelivery ? 'تعذر توصيل الطلب' : 'تم إلغاء الطلب'}
+                                    </h4>
                                     <p className="text-xs text-slate-400 mt-0.5">
-                                        تم إلغاء هذا الطلب من قبل إدارة المطعم. يرجى التواصل هاتفياً لمزيد من التفاصيل.
+                                        {isFailedDelivery
+                                            ? 'تعذر على مندوب التوصيل تسليم الطلب للعنوان المحدد. يرجى التواصل هاتفياً مع الإدارة.'
+                                            : 'تم إلغاء هذا الطلب من قبل إدارة المطعم. يرجى التواصل هاتفياً لمزيد من التفاصيل.'}
                                     </p>
                                 </div>
                             </div>

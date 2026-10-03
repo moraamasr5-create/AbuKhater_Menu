@@ -3,6 +3,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils/calculations';
 import { RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../constants';
 import { settingsService } from '../../services/api';
+import { supabase } from '../../services/supabase/supabaseClient';
 
 export const CartContext = createContext(null);
 
