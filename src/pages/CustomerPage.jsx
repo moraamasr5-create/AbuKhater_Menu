@@ -58,10 +58,10 @@ const CustomerPage = () => {
             phone2: entry.phone2,
             address: entry.address
         }));
-        
+
         const match = entry.address?.match(/شارع (.*?) - مبنى (.*?) - شقة (.*)/);
         if (match) setAddressDetails({ street: match[1], building: match[2], apartment: match[3] });
-        
+
         setShowSuggestions(false);
     };
 
@@ -517,8 +517,8 @@ const CustomerPage = () => {
                             {showSuggestions && savedCustomers.length > 0 && (
                                 <div className="absolute top-[100%] left-0 w-full mt-1 bg-dark-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
                                     {savedCustomers.map((entry, idx) => (
-                                        <div 
-                                            key={idx} 
+                                        <div
+                                            key={idx}
                                             className="flex justify-between items-center px-4 py-3 hover:bg-dark-800 cursor-pointer border-b border-white/5 last:border-0"
                                             onClick={() => handleSelectCustomer(entry)}
                                         >
@@ -526,7 +526,7 @@ const CustomerPage = () => {
                                                 <span className="font-bold text-white text-sm">{entry.name}</span>
                                                 <span className="text-xs text-slate-500">{entry.phone1}</span>
                                             </div>
-                                            <button 
+                                            <button
                                                 type="button"
                                                 className="text-slate-500 hover:text-red-400 text-xs p-1"
                                                 onClick={(e) => {
@@ -775,14 +775,14 @@ const CustomerPage = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                         {[
-                            {
-                                id: 'cash',
-                                label: 'الدفع كاش',
-                                desc: 'نقداً عند الاستلام',
-                                icon: Receipt,
-                                badge: 'الأسهل',
-                                activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                            },
+                            // {
+                            //     id: 'cash',
+                            //     label: 'الدفع كاش',
+                            //     desc: 'نقداً عند الاستلام',
+                            //     icon: Receipt,
+                            //     badge: 'الأسهل',
+                            //     activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                            // },
                             {
                                 id: 'vodafone_cash',
                                 label: 'محفظة كاش',
@@ -810,21 +810,18 @@ const CustomerPage = () => {
                                         if (navigator.vibrate) navigator.vibrate(15);
                                         setPaymentMethod(method.id);
                                     }}
-                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${
-                                        isSelected
+                                    className={`p-3.5 sm:p-4 rounded-2xl border-2 transition-all text-right flex flex-col justify-between gap-2.5 active:scale-[0.98] ${isSelected
                                             ? method.activeColor + ' shadow-lg shadow-black/40 ring-1 ring-white/10'
                                             : 'border-white/[0.06] bg-dark-800/40 text-slate-400 hover:border-white/15'
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex items-center justify-between w-full">
-                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                                            isSelected ? 'bg-white/15' : 'bg-dark-700/50 text-slate-400'
-                                        }`}>
+                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/15' : 'bg-dark-700/50 text-slate-400'
+                                            }`}>
                                             <IconComponent size={18} />
                                         </div>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                            isSelected ? 'bg-white/15 text-white' : 'bg-dark-700 text-slate-500'
-                                        }`}>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/15 text-white' : 'bg-dark-700 text-slate-500'
+                                            }`}>
                                             {method.badge}
                                         </span>
                                     </div>
