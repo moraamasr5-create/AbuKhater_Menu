@@ -444,7 +444,7 @@ const PaymentPage = () => {
                 ) : (
                     <div className="bg-teal-500/10 border border-teal-500/25 p-4 sm:p-5 rounded-2xl sm:rounded-[1.5rem] flex items-center gap-3 sm:gap-4 shadow-sm">
                         <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 bg-teal-500/15 rounded-xl sm:rounded-2xl flex items-center justify-center text-teal-400">
-                            <Receipt size={24} />
+                            <Receipt size={50} />
                         </div>
                         <div>
                             <h4 className="text-teal-400 font-bold text-sm mb-0.5">{isPickup ? 'الدفع كاش عند الاستلام' : 'الدفع كاش عند الباب'}</h4>

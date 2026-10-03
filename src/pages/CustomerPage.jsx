@@ -775,14 +775,14 @@ const CustomerPage = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                         {[
-                            // {
-                            //     id: 'cash',
-                            //     label: 'الدفع كاش',
-                            //     desc: 'نقداً عند الاستلام',
-                            //     icon: Receipt,
-                            //     badge: 'الأسهل',
-                            //     activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                            // },
+                            {
+                                id: 'cash',
+                                label: 'الدفع كاش',
+                                desc: 'نقداً عند الاستلام',
+                                icon: Receipt,
+                                badge: 'الأسهل',
+                                activeColor: 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                            },
                             {
                                 id: 'vodafone_cash',
                                 label: 'محفظة كاش',
