@@ -46,6 +46,29 @@ export const menuService = {
                         name,
                         slug,
                         display_order
+                    ),
+                    menu_item_variants (
+                        id,
+                        name,
+                        price,
+                        is_available,
+                        display_order
+                    ),
+                    menu_item_option_groups (
+                        id,
+                        name,
+                        selection_type,
+                        required,
+                        min_selections,
+                        max_selections,
+                        display_order,
+                        menu_item_options (
+                            id,
+                            name,
+                            price_delta,
+                            is_available,
+                            display_order
+                        )
                     )
                 `)
                 .neq('status', 'hidden')
@@ -89,6 +112,51 @@ export const menuService = {
         const resolvedCategory = resolveItemCategory(item, bucketCategory);
         const rawStatus = String(item.status || 'available').trim().toLowerCase();
 
+        // 1. Normalize and sort dynamic variants (if any)
+        const rawVariants = Array.isArray(item.menu_item_variants) ? item.menu_item_variants : [];
+        const variants = rawVariants
+            .filter(v => v && v.is_available !== false)
+            .map(v => ({
+                id: v.id,
+                name: String(v.name || '').trim(),
+                price: parseFloat(v.price) || 0,
+                is_available: v.is_available !== false,
+                display_order: parseInt(v.display_order, 10) || 0
+            }))
+            .sort((a, b) => a.display_order - b.display_order);
+
+        // 2. Normalize and sort dynamic option groups & options (if any)
+        const rawGroups = Array.isArray(item.menu_item_option_groups) ? item.menu_item_option_groups : [];
+        const optionGroups = rawGroups
+            .map(g => {
+                const rawOptions = Array.isArray(g.menu_item_options) ? g.menu_item_options : [];
+                const options = rawOptions
+                    .filter(opt => opt && opt.is_available !== false)
+                    .map(opt => ({
+                        id: opt.id,
+                        name: String(opt.name || '').trim(),
+                        price_delta: parseFloat(opt.price_delta) || 0,
+                        is_available: opt.is_available !== false,
+                        display_order: parseInt(opt.display_order, 10) || 0
+                    }))
+                    .sort((a, b) => a.display_order - b.display_order);
+
+                return {
+                    id: g.id,
+                    name: String(g.name || '').trim(),
+                    selection_type: g.selection_type === 'multiple' ? 'multiple' : 'single',
+                    required: Boolean(g.required),
+                    min_selections: parseInt(g.min_selections, 10) || 0,
+                    max_selections: g.max_selections != null ? parseInt(g.max_selections, 10) : 1,
+                    display_order: parseInt(g.display_order, 10) || 0,
+                    options
+                };
+            })
+            .sort((a, b) => a.display_order - b.display_order);
+
+        const hasVariants = variants.length > 0;
+        const hasOptions = optionGroups.length > 0;
+
         return {
             id: item.id,
             name: String(item.name).trim(),
@@ -104,6 +172,11 @@ export const menuService = {
             is_popular: Boolean(item.is_popular),
             display_order: item.display_order || 0,
             category_order: item.categories?.display_order || 999,
+            variants,
+            has_variants: hasVariants,
+            option_groups: optionGroups,
+            has_options: hasOptions,
+            has_configuration: hasVariants || hasOptions,
             originalItem: item
         };
     }

@@ -78,17 +78,26 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
     const statusLabel = isOutOfStock ? 'نفذت الكمية' : (isPaused ? 'غير متاح مؤقتاً' : 'غير متاح');
 
     const hasRealImage = Boolean(item.image && item.image !== '/logo.jpg');
+    const hasConfig = item.has_configuration || (Array.isArray(item.variants) && item.variants.length > 0) || (Array.isArray(item.option_groups) && item.option_groups.length > 0);
 
     const handleAdd = (e) => {
         e.stopPropagation();
         if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
-        addToCart(item);
+        if (hasConfig) {
+            onOpenDetail(item);
+        } else {
+            addToCart(item);
+        }
     };
 
     const handleUpdateQty = (e, delta) => {
         e.stopPropagation();
         if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
-        updateQuantity(item.id, delta);
+        if (hasConfig) {
+            onOpenDetail(item);
+        } else {
+            updateQuantity(item.id, delta);
+        }
     };
 
     return (
@@ -440,7 +449,8 @@ const MenuPage = () => {
     const qtyByItemId = useMemo(() => {
         const m = new Map();
         for (let i = 0; i < cart.length; i++) {
-            m.set(cart[i].id, cart[i].quantity);
+            const pid = cart[i].product_id || cart[i].id;
+            m.set(pid, (m.get(pid) || 0) + (cart[i].quantity || 0));
         }
         return m;
     }, [cart]);

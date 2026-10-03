@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils/calculations';
+import { generateCartItemKey, calculateItemUnitPrice } from '../utils/cartUtils';
 import { RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../constants';
 import { settingsService } from '../../services/api';
 import { supabase } from '../../services/supabase/supabaseClient';
@@ -112,27 +113,52 @@ export const CartProvider = ({ children }) => {
         }
     }, [location, locationMethod, selectedAreaId, orderType, restaurantSettings, deliveryZones, restLat, restLng, maxDistance]);
 
-    const addToCart = useCallback((item) => {
-        if (!item || !item.id) return;
+    const addToCart = useCallback((item, quantity = 1) => {
+        if (!item) return;
+        const productId = item.product_id || item.id;
+        if (!productId) return;
+
+        const qtyToAdd = Math.max(1, parseInt(quantity || item.quantity, 10) || 1);
+        const cartKey = generateCartItemKey(item);
+        const unitPrice = calculateItemUnitPrice(item);
+
         setCart((prev) => {
-            const existing = prev.find((i) => i.id === item.id);
-            if (existing) {
-                return prev.map((i) =>
-                    i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-                );
+            const existingIndex = prev.findIndex((i) => (i.cart_item_key || i.id) === cartKey);
+            if (existingIndex > -1) {
+                const updated = [...prev];
+                const existing = updated[existingIndex];
+                updated[existingIndex] = {
+                    ...existing,
+                    quantity: existing.quantity + qtyToAdd,
+                    notes: item.notes || existing.notes
+                };
+                return updated;
             }
-            return [...prev, { ...item, quantity: 1 }];
+
+            const newItem = {
+                ...item,
+                id: cartKey,
+                cart_item_key: cartKey,
+                product_id: productId,
+                price: unitPrice,
+                unit_price: unitPrice,
+                quantity: qtyToAdd
+            };
+            return [...prev, newItem];
         });
     }, [setCart]);
 
-    const removeFromCart = useCallback((itemId) => {
-        setCart((prev) => prev.filter((i) => i.id !== itemId));
+    const removeFromCart = useCallback((cartKeyOrId) => {
+        if (!cartKeyOrId) return;
+        setCart((prev) => prev.filter((i) => (i.cart_item_key || i.id) !== cartKeyOrId && i.id !== cartKeyOrId));
     }, [setCart]);
 
-    const updateQuantity = useCallback((itemId, delta) => {
+    const updateQuantity = useCallback((cartKeyOrId, delta) => {
+        if (!cartKeyOrId) return;
         setCart((prev) => {
             return prev.map((item) => {
-                if (item.id === itemId) {
+                const itemKey = item.cart_item_key || item.id;
+                if (itemKey === cartKeyOrId || item.id === cartKeyOrId) {
                     const newQty = item.quantity + delta;
                     if (newQty <= 0) return null;
                     return { ...item, quantity: newQty };
