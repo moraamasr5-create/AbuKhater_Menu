@@ -273,11 +273,10 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                 key={ord.order_id || idx}
                                                 type="button"
                                                 onClick={() => setSelectedIdx(idx)}
-                                                className={`py-2 px-2.5 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${
-                                                    isSelected
+                                                className={`py-2 px-2.5 rounded-xl font-bold text-xs transition-all flex flex-col items-center justify-center gap-0.5 ${isSelected
                                                         ? 'bg-primary text-white shadow-md shadow-primary/30 scale-[1.01]'
                                                         : 'text-slate-400 hover:text-white hover:bg-dark-800'
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="font-black text-xs flex items-center gap-1">
                                                     <Layers size={12} />
@@ -378,13 +377,12 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                             return (
                                                 <div key={step.key} className="relative flex items-start gap-3.5">
                                                     <div
-                                                        className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                                                            isDone
+                                                        className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all ${isDone
                                                                 ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
                                                                 : isCurrent
-                                                                ? 'bg-primary text-white shadow-lg shadow-primary/40 ring-4 ring-primary/20 animate-pulse'
-                                                                : 'bg-dark-800 text-slate-600 border border-white/5'
-                                                        }`}
+                                                                    ? 'bg-primary text-white shadow-lg shadow-primary/40 ring-4 ring-primary/20 animate-pulse'
+                                                                    : 'bg-dark-800 text-slate-600 border border-white/5'
+                                                            }`}
                                                     >
                                                         {isDone ? (
                                                             <CheckCircle2 size={16} />
@@ -396,13 +394,12 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                                     <div className="flex-1 min-w-0 pt-0.5">
                                                         <div className="flex items-center justify-between">
                                                             <h5
-                                                                className={`text-xs font-bold ${
-                                                                    isCurrent
+                                                                className={`text-xs font-bold ${isCurrent
                                                                         ? 'text-primary font-black text-sm'
                                                                         : isDone
-                                                                        ? 'text-white'
-                                                                        : 'text-slate-500'
-                                                                }`}
+                                                                            ? 'text-white'
+                                                                            : 'text-slate-500'
+                                                                    }`}
                                                             >
                                                                 {step.label}
                                                             </h5>
@@ -439,7 +436,7 @@ const OrderTrackingModal = ({ isOpen, onClose, initialPhone = '' }) => {
                                 className="w-full py-3.5 bg-dark-950 hover:bg-dark-800 text-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all shadow-md active:scale-[0.99]"
                             >
                                 <Phone size={15} className="text-primary" />
-                                <span>الاتصال بإدارة المطعم (01038035884)</span>
+                                <span>الاتصال بإدارة المطعم (01144423700)</span>
                             </a>
                         </div>
                     )}
