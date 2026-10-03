@@ -71,16 +71,18 @@
   /* ==========================================================================
      PREMIUM SOFT 3D DESIGN SYSTEM - Abu Khater
      Subtle depth, clean hierarchy, tactile feedback, mobile-first & dark-mode tuned
+     Uses warm amber & specular multi-layer shadows for crisp visibility on dark backgrounds
      ========================================================================== */
 
   /* Base Elevated Soft 3D Card */
   .card-soft-3d {
-    background: linear-gradient(180deg, rgba(39, 39, 42, 0.65) 0%, rgba(24, 24, 27, 0.8) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(42, 42, 48, 0.75) 0%, rgba(26, 26, 30, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
-      0 4px 6px -1px rgba(0, 0, 0, 0.3),
-      0 12px 24px -4px rgba(0, 0, 0, 0.45);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
+      0 2px 10px -2px rgba(234, 88, 12, 0.08),
+      0 8px 24px -4px rgba(234, 88, 12, 0.06),
+      0 16px 36px -6px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
@@ -88,12 +90,13 @@
   /* Interactive Soft 3D Card with Hover/Active Physics */
   .card-interactive-3d,
   .glass-card {
-    background: linear-gradient(180deg, rgba(39, 39, 42, 0.65) 0%, rgba(24, 24, 27, 0.85) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(42, 42, 48, 0.78) 0%, rgba(26, 26, 30, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
-      0 4px 8px -2px rgba(0, 0, 0, 0.35),
-      0 12px 28px -6px rgba(0, 0, 0, 0.45);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+      0 3px 14px -2px rgba(234, 88, 12, 0.1),
+      0 8px 24px -4px rgba(234, 88, 12, 0.08),
+      0 16px 32px -6px rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
@@ -107,12 +110,12 @@
     .card-interactive-3d:hover,
     .glass-card:hover {
       transform: translateY(-3px);
-      border-color: rgba(255, 255, 255, 0.16);
+      border-color: rgba(251, 146, 60, 0.4);
       box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
-        0 8px 16px -4px rgba(0, 0, 0, 0.4),
-        0 20px 36px -8px rgba(0, 0, 0, 0.55),
-        0 0 24px -4px rgba(234, 88, 12, 0.12);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
+        0 4px 18px -2px rgba(234, 88, 12, 0.28),
+        0 12px 32px -4px rgba(234, 88, 12, 0.2),
+        0 24px 44px -8px rgba(0, 0, 0, 0.75);
     }
   }
 
@@ -120,39 +123,43 @@
   .glass-card:active {
     transform: scale(0.985);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
-      0 2px 4px rgba(0, 0, 0, 0.3);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+      0 2px 8px -1px rgba(234, 88, 12, 0.12),
+      0 4px 12px rgba(0, 0, 0, 0.5);
   }
 
   /* Deep Floating Surface (Sticky Bar, Search Bar, Modals) */
   .surface-float-3d {
-    background: linear-gradient(180deg, rgba(28, 28, 32, 0.92) 0%, rgba(18, 18, 21, 0.96) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: linear-gradient(180deg, rgba(32, 32, 37, 0.95) 0%, rgba(20, 20, 24, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-      0 10px 25px -5px rgba(0, 0, 0, 0.5),
-      0 24px 48px -12px rgba(0, 0, 0, 0.65);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
+      0 -2px 18px 0 rgba(234, 88, 12, 0.12),
+      0 10px 30px -4px rgba(234, 88, 12, 0.14),
+      0 24px 50px -10px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 
   /* Recessed/Inset Container (Search inputs, inner summary blocks) */
   .surface-recessed-3d {
-    background: rgba(14, 14, 17, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(14, 14, 18, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 
-      inset 0 2px 4px 0 rgba(0, 0, 0, 0.45),
-      0 1px 0 0 rgba(255, 255, 255, 0.03);
+      inset 0 2px 5px 0 rgba(0, 0, 0, 0.6),
+      inset 0 0 12px 0 rgba(0, 0, 0, 0.35),
+      0 1px 0 0 rgba(255, 255, 255, 0.06);
   }
 
   /* Soft 3D Primary Button */
   .btn-soft-3d-primary {
     background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
-      0 4px 14px -2px rgba(234, 88, 12, 0.4),
-      0 8px 20px -4px rgba(0, 0, 0, 0.3);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      0 4px 16px -1px rgba(234, 88, 12, 0.5),
+      0 10px 24px -4px rgba(234, 88, 12, 0.3),
+      0 12px 28px -6px rgba(0, 0, 0, 0.4);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
                 box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
                 filter 0.2s ease;
@@ -160,29 +167,31 @@
 
   @media (hover: hover) and (pointer: fine) {
     .btn-soft-3d-primary:hover {
-      filter: brightness(1.06);
+      filter: brightness(1.08);
       box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-        0 6px 18px -2px rgba(234, 88, 12, 0.55),
-        0 12px 26px -4px rgba(0, 0, 0, 0.35);
-      transform: translateY(-1px);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
+        0 6px 22px -1px rgba(234, 88, 12, 0.65),
+        0 14px 30px -4px rgba(234, 88, 12, 0.4),
+        0 16px 36px -6px rgba(0, 0, 0, 0.45);
+      transform: translateY(-1.5px);
     }
   }
 
   .btn-soft-3d-primary:active {
     transform: scale(0.975) translateY(0);
     box-shadow: 
-      inset 0 2px 4px 0 rgba(0, 0, 0, 0.3),
-      0 2px 6px -1px rgba(234, 88, 12, 0.3);
+      inset 0 2px 4px 0 rgba(0, 0, 0, 0.4),
+      0 2px 8px -1px rgba(234, 88, 12, 0.4);
   }
 
   /* Soft 3D Dark/Neutral Button */
   .btn-soft-3d-dark {
-    background: linear-gradient(180deg, rgba(45, 45, 50, 0.9) 0%, rgba(32, 32, 36, 0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: linear-gradient(180deg, rgba(48, 48, 54, 0.92) 0%, rgba(34, 34, 39, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-      0 3px 8px -2px rgba(0, 0, 0, 0.35);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+      0 3px 12px -2px rgba(234, 88, 12, 0.12),
+      0 6px 18px -3px rgba(0, 0, 0, 0.5);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
                 box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
                 background-color 0.2s ease,
@@ -192,10 +201,11 @@
   @media (hover: hover) and (pointer: fine) {
     .btn-soft-3d-dark:hover {
       background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%);
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.25);
       box-shadow: 
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-        0 6px 16px -2px rgba(234, 88, 12, 0.4);
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
+        0 6px 20px -2px rgba(234, 88, 12, 0.48),
+        0 12px 26px -4px rgba(0, 0, 0, 0.4);
       transform: translateY(-1px);
     }
   }
@@ -208,7 +218,8 @@
   /* Soft 3D Capsule Pill / Badge */
   .badge-soft-3d {
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+      0 3px 10px -1px rgba(234, 88, 12, 0.35),
       0 2px 6px -1px rgba(0, 0, 0, 0.3);
   }
 
@@ -260,26 +271,31 @@
     border-color: rgba(255, 255, 255, 0.25);
     color: #ffffff;
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
-      0 4px 14px -2px rgba(234, 88, 12, 0.45),
-      0 8px 18px -4px rgba(0, 0, 0, 0.35);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      0 5px 18px -2px rgba(234, 88, 12, 0.55),
+      0 10px 24px -4px rgba(234, 88, 12, 0.35),
+      0 12px 28px -4px rgba(0, 0, 0, 0.4);
     transform: scale(1.03);
   }
 
   .category-pill:not(.active) {
-    background: linear-gradient(180deg, rgba(39, 39, 42, 0.6) 0%, rgba(24, 24, 27, 0.75) 100%);
+    background: linear-gradient(180deg, rgba(42, 42, 48, 0.7) 0%, rgba(26, 26, 30, 0.85) 100%);
     color: #94a3b8;
-    border-color: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
-      0 2px 6px -1px rgba(0, 0, 0, 0.25);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+      0 2px 8px -2px rgba(234, 88, 12, 0.08),
+      0 4px 12px -2px rgba(0, 0, 0, 0.4);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .category-pill:not(.active):hover {
-      background: linear-gradient(180deg, rgba(50, 50, 56, 0.8) 0%, rgba(32, 32, 36, 0.9) 100%);
+      background: linear-gradient(180deg, rgba(55, 55, 62, 0.85) 0%, rgba(36, 36, 42, 0.95) 100%);
       color: #f1f5f9;
-      border-color: rgba(255, 255, 255, 0.12);
+      border-color: rgba(251, 146, 60, 0.3);
+      box-shadow: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+        0 4px 14px -2px rgba(234, 88, 12, 0.25);
       transform: translateY(-1px);
     }
   }
