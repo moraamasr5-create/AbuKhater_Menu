@@ -234,7 +234,6 @@ const MenuPage = () => {
     const [selectedDish, setSelectedDish] = useState(null);
     const [showTracking, setShowTracking] = useState(false);
     const [showLogoModal, setShowLogoModal] = useState(false);
-    const [isBannerZoomedOut, setIsBannerZoomedOut] = useState(false);
     const [logoTouchStartY, setLogoTouchStartY] = useState(null);
     const [logoTouchMoveY, setLogoTouchMoveY] = useState(0);
     const menuProductsRef = useRef(null);
@@ -423,27 +422,21 @@ const MenuPage = () => {
 
             {/* Banner Section */}
             <div className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-dark-950 z-10 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-dark-950 z-10"></div>
                 <img
                     src={restaurantBanner}
-                    className={`w-full h-full object-cover object-center transition-transform duration-500 ease-out ${isBannerZoomedOut ? 'scale-[0.85]' : 'scale-100'}`}
+                    className="w-full h-full object-cover object-center"
                     alt=""
                     fetchPriority="high"
                     decoding="async"
                 />
-                <button
-                    type="button"
-                    onClick={() => setIsBannerZoomedOut(prev => !prev)}
-                    className="absolute inset-0 z-[15] cursor-zoom-out"
-                    aria-label={isBannerZoomedOut ? 'إعادة تكبير صورة الخلفية' : 'تصغير صورة الخلفية'}
-                />
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10 pointer-events-none">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10">
                     <div className="mb-4 sm:mb-6 animate-float relative flex items-center justify-center">
                         <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-110 opacity-75"></div>
                         <button
                             type="button"
                             onClick={() => setShowLogoModal(true)}
-                            className="group relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none pointer-events-auto"
+                            className="group relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
                             aria-label="تكبير شعار المطعم"
                         >
                             <img
