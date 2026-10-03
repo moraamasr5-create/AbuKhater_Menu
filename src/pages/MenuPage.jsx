@@ -91,7 +91,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
     return (
         <div
-            className={`group glass-card rounded-2xl md:rounded-3xl shadow-[0_4px_16px_rgba(0,0,0,0.32)] overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-1.5 ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
+            className={`group glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:shadow-primary/12 md:hover:-translate-y-1.5 ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
         >
             {/* Image / Thumbnail Container */}
             <div
@@ -660,7 +660,7 @@ const MenuPage = () => {
                 {loading && menuItems.length === 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                         {[1, 2, 3, 4, 5, 6].map((n) => (
-                            <div key={n} className="glass-card rounded-2xl md:rounded-3xl shadow-[0_4px_16px_rgba(0,0,0,0.32)] overflow-hidden flex flex-row md:flex-col border border-white/5">
+                            <div key={n} className="glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col border border-white/5">
                                 <div className="w-[96px] md:w-full h-28 md:h-52 bg-dark-800 shimmer shrink-0" />
                                 <div className="p-3 md:p-6 flex-1 space-y-2.5">
                                     <div className="h-4 bg-dark-800 rounded-md w-3/4 shimmer" />
