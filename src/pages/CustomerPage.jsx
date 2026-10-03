@@ -102,7 +102,8 @@ const CustomerPage = () => {
 
     const handleLocationFetch = () => {
         if (!navigator.geolocation) {
-            setGpsError("المتصفح لا يدعم تحديد الموقع");
+            setGpsError("المتصفح لا يدعم تحديد الموقع، يمكنك اختيار منطقتك من القائمة.");
+            setLocationMethod('fixed');
             return;
         }
 
@@ -117,10 +118,11 @@ const CustomerPage = () => {
             },
             (error) => {
                 console.error("GPS Error:", error);
-                let msg = "فشل تحديد الموقع. يرجى تفعيل الـ GPS.";
-                if (error.code === 1) msg = "تم رفض الوصول للمكان. يرجى السماح للمتصفح بالوصول.";
+                let msg = "تعذر تحديد الموقع تلقائياً. تم تحويلك لاختيار منطقتك من القائمة.";
+                if (error.code === 1) msg = "تم رفض إذن الموقع. يمكنك اختيار منطقتك من القائمة أدناه.";
                 setGpsError(msg);
                 setIsLocating(false);
+                setLocationMethod('fixed');
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
@@ -280,14 +282,17 @@ const CustomerPage = () => {
                     mapInstance.current = window.L.map(mapRef.current, {
                         attributionControl: false,
                         zoomControl: true,
-                        tap: false,
-                        touchZoom: true
+                        dragging: true,
+                        touchZoom: true,
+                        scrollWheelZoom: true,
+                        doubleClickZoom: true,
+                        tap: false
                     }).setView(center, zoom);
 
-                    // High performance tile layer with clear Arabic landmarks
-                    window.L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                        subdomains: 'abcd',
-                        maxZoom: 19
+                    // High performance Google Hybrid (Satellite + Arabic Streets/Landmarks)
+                    window.L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                        subdomains: ['0', '1', '2', '3'],
+                        maxZoom: 20
                     }).addTo(mapInstance.current);
 
                     // Restaurant Marker
@@ -323,7 +328,7 @@ const CustomerPage = () => {
                     });
 
                     // Size invalidations for smooth zero-glitch rendering
-                    [100, 300, 600].forEach(delay => {
+                    [100, 300, 600, 1000].forEach(delay => {
                         setTimeout(() => {
                             mapInstance.current?.invalidateSize();
 
@@ -657,7 +662,7 @@ const CustomerPage = () => {
                             {locationMethod === 'map' && (
                                 <div className="w-full space-y-4">
                                     <div className="relative w-full">
-                                        <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner grayscale-[0.5] hover:grayscale-0 transition-all z-0" />
+                                        <div ref={mapRef} className="w-full h-56 sm:h-64 rounded-xl sm:rounded-2xl border border-white/[0.08] overflow-hidden shadow-inner transition-all z-0" />
                                         <button
                                             type="button"
                                             onClick={handleLocateMeOnMap}
@@ -689,17 +694,30 @@ const CustomerPage = () => {
                         </div>
 
                         {/* Status Feedback */}
-                        {location && orderType === 'delivery' && (
-                            <div className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-3 border ${deliveryFee > 0
-                                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
-                                {deliveryFee > 0 ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-                                <span>
-                                    {deliveryFee > 0
-                                        ? `موقعك ضمن النطاق. المسافة: ${distanceKm.toFixed(1)} كم | رسوم التوصيل: ${deliveryFee} ج.م`
-                                        : `خارج النطاق المسموح (${maxDistance || 12} كم). يرجى تغيير الموقع.`}
-                                </span>
-                            </div>
+                        {orderType === 'delivery' && (
+                            <>
+                                {locationMethod === 'fixed' && selectedAreaId && (
+                                    <div className="p-4 rounded-2xl text-xs font-bold flex items-center gap-3 border bg-emerald-500/10 border-emerald-500/20 text-emerald-400 animate-in fade-in">
+                                        <CheckCircle2 size={16} className="shrink-0" />
+                                        <span>
+                                            المنطقة المختارة: {(deliveryZones || []).find(z => z.id === selectedAreaId || z.name === selectedAreaId)?.name || 'المنطقة المحددة'} | رسوم التوصيل: {deliveryFee} ج.م
+                                        </span>
+                                    </div>
+                                )}
+
+                                {(locationMethod === 'gps' || locationMethod === 'map') && location && (
+                                    <div className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-3 border animate-in fade-in ${deliveryFee > 0
+                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                        : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+                                        {deliveryFee > 0 ? <CheckCircle2 size={16} className="shrink-0" /> : <AlertCircle size={16} className="shrink-0" />}
+                                        <span>
+                                            {deliveryFee > 0
+                                                ? `موقعك ضمن النطاق | المسافة: ${distanceKm.toFixed(1)} كم | رسوم التوصيل: ${deliveryFee} ج.م`
+                                                : `خارج النطاق المسموح (${maxDistance || 12} كم). يرجى اختيار منطقة ثابتة أو تغيير الموقع.`}
+                                        </span>
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         <div className="space-y-4">
