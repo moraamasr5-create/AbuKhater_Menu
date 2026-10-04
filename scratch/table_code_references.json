@@ -1,0 +1,352 @@
+{
+  "app_config": {
+    "menuReferences": [],
+    "deliveryReferences": [
+      "src\\context\\AppContext.jsx",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "supabase\\close_shift_rpc.sql",
+      "supabase\\fix_close_shift_orphan_orders.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+      "supabase\\migrations\\20261001_phase7_menu_availability_and_telegram_security.sql",
+      "supabase\\restaurant_settings_rls.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\shift_governance.sql"
+    ]
+  },
+  "applied_mutations": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "supabase\\pilot_sync_and_lifecycle.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "categories": {
+    "menuReferences": [
+      "scratch\\phase6_data_alignment.sql",
+      "src\\core\\utils\\pricingEngine.js",
+      "src\\pages\\MenuPage.jsx",
+      "src\\services\\api\\menuService.js"
+    ],
+    "deliveryReferences": [
+      "src\\components\\settings\\MenuManagementView.jsx",
+      "src\\components\\settings\\SettingsView.jsx",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "supabase\\migrations\\20261001_phase7_menu_availability_and_telegram_security.sql"
+    ]
+  },
+  "delivery": {
+    "menuReferences": [
+      "src\\core\\context\\CartContext.jsx",
+      "src\\core\\utils\\calculations.js",
+      "src\\core\\utils\\deviceTracker.js",
+      "src\\features\\checkout\\OrderSummary.jsx",
+      "src\\features\\tracking\\OrderTrackingModal.jsx",
+      "src\\pages\\CustomerPage.jsx",
+      "src\\pages\\PaymentPage.jsx",
+      "src\\pages\\ReviewPage.jsx",
+      "src\\pages\\TrackPage.jsx",
+      "src\\services\\api\\orderService.js",
+      "src\\services\\api\\settingsService.js"
+    ],
+    "deliveryReferences": [
+      "package-lock.json",
+      "package.json",
+      "src\\components\\orders\\OrderInbox.jsx",
+      "src\\components\\settings\\SettingsView.jsx",
+      "src\\context\\AppContext.jsx",
+      "src\\services\\printerService.js",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\canonical_order_state_machine.sql",
+      "supabase\\close_shift_rpc.sql",
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+      "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\per_order_trip_start.sql",
+      "supabase\\pilot_sync_and_lifecycle.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_authoritative_manual_order.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\shift_governance.sql"
+    ]
+  },
+  "delivery_shift_logs": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "supabase\\close_shift_rpc.sql",
+      "supabase\\fix_close_shift_orphan_orders.sql",
+      "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+      "supabase\\pilot_sync_and_lifecycle.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\shift_governance.sql"
+    ]
+  },
+  "delivery_zones": {
+    "menuReferences": [
+      "src\\services\\api\\settingsService.js"
+    ],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\server_authoritative_create_order.sql"
+    ]
+  },
+  "driver_transactions": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "feedback": {
+    "menuReferences": [
+      "src\\pages\\CustomerPage.jsx",
+      "src\\pages\\MenuPage.jsx",
+      "src\\services\\api\\feedbackService.js"
+    ],
+    "deliveryReferences": [
+      "src\\App.jsx",
+      "src\\components\\common\\ui.jsx",
+      "src\\components\\feedback\\FeedbackView.jsx",
+      "src\\components\\layout\\Sidebar.jsx",
+      "src\\components\\settings\\MenuManagementView.jsx",
+      "src\\components\\settings\\SettingsView.jsx",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\migrations\\20261001_phase10_feedback_schema_fix.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\public_inputs_protection.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "menu_availability": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "menu_item_option_groups": {
+    "menuReferences": [
+      "src\\core\\utils\\pricingEngine.js",
+      "src\\services\\api\\menuService.js"
+    ],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "menu_item_options": {
+    "menuReferences": [
+      "src\\services\\api\\menuService.js"
+    ],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "menu_item_variants": {
+    "menuReferences": [
+      "scratch\\phase1_canonical_alignment.sql",
+      "scratch\\phase6_data_alignment.sql",
+      "scratch\\phase8_5_commercial_variants.sql",
+      "src\\core\\utils\\pricingEngine.js",
+      "src\\services\\api\\menuService.js"
+    ],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "menu_items": {
+    "menuReferences": [
+      "scratch\\phase1_canonical_alignment.sql",
+      "scratch\\phase6_data_alignment.sql",
+      "src\\pages\\MenuPage.jsx",
+      "src\\services\\api\\menuService.js"
+    ],
+    "deliveryReferences": [
+      "src\\components\\settings\\SettingsView.jsx",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "supabase\\alter_order_items.sql",
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase7_menu_availability_and_telegram_security.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_authoritative_manual_order.sql"
+    ]
+  },
+  "notifications": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "order_assignments": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "supabase\\pilot_sync_and_lifecycle.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "order_events": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "order_items": {
+    "menuReferences": [],
+    "deliveryReferences": [
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "supabase\\alter_order_items.sql",
+      "supabase\\canonical_order_state_machine.sql",
+      "supabase\\cleanup_legacy_orders_policies.sql",
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase8_customer_recent_orders.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_authoritative_manual_order.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "order_status_history": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "supabase\\pilot_sync_and_lifecycle.sql"
+    ]
+  },
+  "orders": {
+    "menuReferences": [
+      "scratch\\phase6_data_alignment.sql",
+      "src\\core\\utils\\deviceTracker.js",
+      "src\\features\\tracking\\OrderTrackingModal.jsx",
+      "src\\pages\\TrackPage.jsx",
+      "src\\services\\api\\orderService.js"
+    ],
+    "deliveryReferences": [
+      "src\\App.jsx",
+      "src\\components\\layout\\Sidebar.jsx",
+      "src\\components\\orders\\OrderInbox.jsx",
+      "src\\components\\reports\\ReportsView.jsx",
+      "src\\context\\AppContext.jsx",
+      "src\\services\\storageService.js",
+      "src\\services\\supabaseService.js",
+      "src\\utils\\pilotCalculations.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\canonical_order_state_machine.sql",
+      "supabase\\cleanup_legacy_orders_policies.sql",
+      "supabase\\close_shift_rpc.sql",
+      "supabase\\fix_close_shift_orphan_orders.sql",
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+      "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+      "supabase\\migrations\\20261001_phase8_customer_recent_orders.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\per_order_trip_start.sql",
+      "supabase\\pilot_sync_and_lifecycle.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_authoritative_manual_order.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\shift_governance.sql"
+    ]
+  },
+  "profiles": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "reservations": {
+    "menuReferences": [
+      "src\\services\\api\\reservationService.js"
+    ],
+    "deliveryReferences": [
+      "src\\App.jsx",
+      "src\\components\\layout\\Sidebar.jsx",
+      "src\\components\\reports\\ReportsView.jsx",
+      "src\\components\\settings\\SettingsView.jsx",
+      "src\\context\\AppContext.jsx",
+      "src\\services\\storageService.js",
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+      "supabase\\migrations\\20261001_phase5_private_storage.sql",
+      "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\public_inputs_protection.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "restaurant_settings": {
+    "menuReferences": [
+      "src\\core\\constants\\index.js",
+      "src\\services\\api\\settingsService.js"
+    ],
+    "deliveryReferences": [
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase5_private_storage.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\public_inputs_protection.sql",
+      "supabase\\restaurant_settings_rls.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_enforced_authorization.sql"
+    ]
+  },
+  "shifts": {
+    "menuReferences": [],
+    "deliveryReferences": [
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\close_shift_rpc.sql",
+      "supabase\\fix_close_shift_orphan_orders.sql",
+      "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+      "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+      "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+      "supabase\\server_authoritative_create_order.sql",
+      "supabase\\server_authoritative_manual_order.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\shift_governance.sql"
+    ]
+  },
+  "staff_roles": {
+    "menuReferences": [],
+    "deliveryReferences": [
+      "src\\services\\supabaseService.js"
+    ],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\server_enforced_authorization.sql",
+      "supabase\\staff_auth_and_roles.sql"
+    ]
+  },
+  "sync_queue": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": []
+  },
+  "telegram_logs": {
+    "menuReferences": [],
+    "deliveryReferences": [],
+    "sqlReferences": [
+      "scratch\\test_phase14_1_unified.sql",
+      "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql"
+    ]
+  }
+}

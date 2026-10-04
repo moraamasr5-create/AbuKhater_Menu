@@ -1,0 +1,502 @@
+[
+  {
+    "table": "app_config",
+    "rowCount": 24,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "key",
+      "value",
+      "description",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "applied_mutations",
+    "rowCount": 240,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "client_mutation_id",
+      "operation",
+      "entity_type",
+      "entity_id",
+      "result",
+      "created_at"
+    ]
+  },
+  {
+    "table": "categories",
+    "rowCount": 11,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "name",
+      "slug",
+      "display_order",
+      "created_at"
+    ]
+  },
+  {
+    "table": "delivery",
+    "rowCount": 4,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "created_at",
+      "name",
+      "phone",
+      "number_motor",
+      "number_id",
+      "start_shift",
+      "end_shift",
+      "id_delivery",
+      "shift_started_at",
+      "shift_ended_at",
+      "state",
+      "last_return_time",
+      "total_minutes",
+      "orders_count",
+      "shift_used"
+    ]
+  },
+  {
+    "table": "delivery_shift_logs",
+    "rowCount": 3,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "delivery_id",
+      "shift_started_at",
+      "shift_ended_at",
+      "total_minutes",
+      "orders_count",
+      "created_at",
+      "total_value",
+      "shift_id"
+    ]
+  },
+  {
+    "table": "delivery_zones",
+    "rowCount": 16,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "name",
+      "zone_number",
+      "fee",
+      "latitude",
+      "longitude",
+      "is_active",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "driver_transactions",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "feedback",
+    "rowCount": 0,
+    "error": "permission denied for table feedback",
+    "code": "42501",
+    "sampleCols": []
+  },
+  {
+    "table": "menu_availability",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "menu_item_option_groups",
+    "rowCount": 2,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "menu_item_id",
+      "name",
+      "selection_type",
+      "required",
+      "min_selections",
+      "max_selections",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "menu_item_options",
+    "rowCount": 6,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "group_id",
+      "name",
+      "price_delta",
+      "is_available",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "menu_item_variants",
+    "rowCount": 84,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "menu_item_id",
+      "name",
+      "price",
+      "is_available",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "menu_items",
+    "rowCount": 174,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "category_id",
+      "name",
+      "description",
+      "price",
+      "image_url",
+      "unit_type",
+      "base_qty",
+      "status",
+      "is_popular",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  {
+    "table": "notifications",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "order_assignments",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "order_events",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "order_items",
+    "rowCount": 15,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "order_id",
+      "product_name",
+      "quantity",
+      "unit_price",
+      "total_price",
+      "created_at",
+      "item_id"
+    ]
+  },
+  {
+    "table": "order_status_history",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "orders",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "profiles",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "reservations",
+    "rowCount": 0,
+    "error": "permission denied for table reservations",
+    "code": "42501",
+    "sampleCols": []
+  },
+  {
+    "table": "restaurant_settings",
+    "rowCount": 30,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "key",
+      "value",
+      "updated_at",
+      "description"
+    ]
+  },
+  {
+    "table": "shifts",
+    "rowCount": 11,
+    "error": null,
+    "code": null,
+    "sampleCols": [
+      "id",
+      "date",
+      "start_time",
+      "end_time",
+      "status",
+      "total_orders",
+      "stats",
+      "created_at"
+    ]
+  },
+  {
+    "table": "staff_roles",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "sync_queue",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "telegram_logs",
+    "rowCount": 0,
+    "error": "permission denied for table telegram_logs",
+    "code": "42501",
+    "sampleCols": []
+  },
+  {
+    "table": "shift_expenses",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.shift_expenses' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "phone_otps",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.phone_otps' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "user_orders",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.user_orders' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "turnstile_logs",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.turnstile_logs' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "customer_profiles",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.customer_profiles' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "mutation_log",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.mutation_log' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "audit_logs",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.audit_logs' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "shifts_summary",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.shifts_summary' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "system_logs",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.system_logs' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "rate_limits",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.rate_limits' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "telegram_subscribers",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.telegram_subscribers' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "bot_settings",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.bot_settings' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "shift_reports",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.shift_reports' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "payment_screenshots",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.payment_screenshots' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "expenses",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.expenses' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "drivers",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.drivers' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "pilots",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.pilots' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "areas",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.areas' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "zones",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.zones' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "coupons",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.coupons' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "discounts",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.discounts' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "users",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.users' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "customers",
+    "rowCount": 0,
+    "error": null,
+    "code": null,
+    "sampleCols": []
+  },
+  {
+    "table": "admins",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.admins' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "cashiers",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.cashiers' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "settings",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.settings' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "config",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.config' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  },
+  {
+    "table": "logs",
+    "rowCount": 0,
+    "error": "Could not find the table 'public.logs' in the schema cache",
+    "code": "PGRST205",
+    "sampleCols": []
+  }
+]

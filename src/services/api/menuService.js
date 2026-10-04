@@ -1,6 +1,7 @@
 import { supabase } from '../supabase/supabaseClient';
 import { isValidRawMenuItem, resolveItemCategory } from '../../core/utils/menuItem';
 import { normalizeGoogleDriveImageUrl } from '../../core/utils/googleDrive';
+import { getCommercialItemType, getNormalizedVariants } from '../../core/utils/pricingEngine';
 
 let _menuCache = null;
 let _menuCacheTime = 0;
@@ -112,18 +113,11 @@ export const menuService = {
         const resolvedCategory = resolveItemCategory(item, bucketCategory);
         const rawStatus = String(item.status || 'available').trim().toLowerCase();
 
-        // 1. Normalize and sort dynamic variants (if any)
-        const rawVariants = Array.isArray(item.menu_item_variants) ? item.menu_item_variants : [];
-        const variants = rawVariants
-            .filter(v => v && v.is_available !== false)
-            .map(v => ({
-                id: v.id,
-                name: String(v.name || '').trim(),
-                price: parseFloat(v.price) || 0,
-                is_available: v.is_available !== false,
-                display_order: parseInt(v.display_order, 10) || 0
-            }))
-            .sort((a, b) => a.display_order - b.display_order);
+        // Commercial classification
+        const commercialType = getCommercialItemType(item);
+
+        // 1. Normalize and sort dynamic variants (including weight variants)
+        const variants = getNormalizedVariants({ ...item, commercial_type: commercialType });
 
         // 2. Normalize and sort dynamic option groups & options (if any)
         const rawGroups = Array.isArray(item.menu_item_option_groups) ? item.menu_item_option_groups : [];
@@ -175,8 +169,9 @@ export const menuService = {
             category: resolvedCategory,
             category_id: item.category_id || null,
             category_slug: item.categories?.slug || null,
-            unit_type: item.unit_type || 'qty',
+            unit_type: item.unit_type || (commercialType === 'WEIGHT_BASED' ? 'kg' : 'qty'),
             base_qty: parseInt(item.base_qty, 10) || 1,
+            commercial_type: commercialType,
             status: rawStatus, // 'available' | 'out_of_stock' | 'paused'
             is_popular: Boolean(item.is_popular),
             display_order: item.display_order || 0,

@@ -30,6 +30,7 @@ import {
 import restaurantLogo from '../assets/logo.png';
 import restaurantBanner from '../assets/banner2.png';
 import { normalizeCategoryKey } from '../core/utils/menuItem';
+import { getCommercialDisplayPrice } from '../core/utils/pricingEngine';
 
 // Lazy loaded modals to keep initial bundle ultra-light
 const ReservationModal = lazy(() => import('../features/reservation/ReservationModal'));
@@ -84,8 +85,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
     const hasOptionGroups = Array.isArray(item.option_groups) && item.option_groups.length > 0;
     const hasConfig = item.has_configuration || hasVariants || hasOptionGroups;
     
-    const minVariantPrice = hasVariants ? Math.min(...item.variants.map(v => v.price)) : item.price;
-    const displayPriceText = hasVariants ? `من ${minVariantPrice}` : item.price;
+    const priceDisplay = getCommercialDisplayPrice(item);
 
     const handleAdd = (e) => {
         e.stopPropagation();
@@ -162,7 +162,9 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                 )}
 
                 <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3.5 py-1 rounded-full border border-white/20 pointer-events-none">
-                    <span className="text-white font-black text-base lg:text-lg tabular-nums">{displayPriceText} <small className="text-[10px] font-bold opacity-90 uppercase">ج.م</small></span>
+                    <span className="text-white font-black text-base lg:text-lg tabular-nums">
+                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[10px] font-bold opacity-90">{priceDisplay.unit}</small>
+                    </span>
                 </div>
             </div>
 
@@ -189,7 +191,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
                 <div className="mt-auto pt-2 md:pt-3.5 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
                     <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
-                        {displayPriceText} <small className="text-[9px] font-bold opacity-85">ج.م</small>
+                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[9px] font-bold opacity-85">{priceDisplay.unit}</small>
                     </span>
 
                     <div className="shrink-0 md:w-full">

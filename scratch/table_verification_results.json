@@ -1,0 +1,905 @@
+{
+  "_shift_operational_bounds": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public._shift_operational_bounds' in the schema cache",
+    "code": "PGRST205"
+  },
+  "alter": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.alter' in the schema cache",
+    "code": "PGRST205"
+  },
+  "and": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.and' in the schema cache",
+    "code": "PGRST205"
+  },
+  "anon": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.anon' in the schema cache",
+    "code": "PGRST205"
+  },
+  "anonymous": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.anonymous' in the schema cache",
+    "code": "PGRST205"
+  },
+  "any": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.any' in the schema cache",
+    "code": "PGRST205"
+  },
+  "app_config": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 24,
+    "sampleColumns": [
+      "key",
+      "value",
+      "description",
+      "updated_at"
+    ]
+  },
+  "applied_mutations": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 240,
+    "sampleColumns": [
+      "client_mutation_id",
+      "operation",
+      "entity_type",
+      "entity_id",
+      "result",
+      "created_at"
+    ]
+  },
+  "audit_logs": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.audit_logs' in the schema cache",
+    "code": "PGRST205"
+  },
+  "auth": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.auth' in the schema cache",
+    "code": "PGRST205"
+  },
+  "authenticated": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.authenticated' in the schema cache",
+    "code": "PGRST205"
+  },
+  "bot_settings": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.bot_settings' in the schema cache",
+    "code": "PGRST205"
+  },
+  "cancellation_reason": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.cancellation_reason' in the schema cache",
+    "code": "PGRST205"
+  },
+  "categories": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 11,
+    "sampleColumns": [
+      "id",
+      "name",
+      "slug",
+      "display_order",
+      "created_at"
+    ]
+  },
+  "class": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.class' in the schema cache",
+    "code": "PGRST205"
+  },
+  "classname": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.classname' in the schema cache",
+    "code": "PGRST205"
+  },
+  "const": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.const' in the schema cache",
+    "code": "PGRST205"
+  },
+  "context": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.context' in the schema cache",
+    "code": "PGRST205"
+  },
+  "create": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.create' in the schema cache",
+    "code": "PGRST205"
+  },
+  "customer_profiles": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.customer_profiles' in the schema cache",
+    "code": "PGRST205"
+  },
+  "database": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.database' in the schema cache",
+    "code": "PGRST205"
+  },
+  "delivery": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 4,
+    "sampleColumns": [
+      "id",
+      "created_at",
+      "name",
+      "phone",
+      "number_motor",
+      "number_id",
+      "start_shift",
+      "end_shift",
+      "id_delivery",
+      "shift_started_at",
+      "shift_ended_at",
+      "state",
+      "last_return_time",
+      "total_minutes",
+      "orders_count",
+      "shift_used"
+    ]
+  },
+  "delivery_shift_logs": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 3,
+    "sampleColumns": [
+      "id",
+      "delivery_id",
+      "shift_started_at",
+      "shift_ended_at",
+      "total_minutes",
+      "orders_count",
+      "created_at",
+      "total_value",
+      "shift_id"
+    ]
+  },
+  "delivery_zones": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 16,
+    "sampleColumns": [
+      "id",
+      "name",
+      "zone_number",
+      "fee",
+      "latitude",
+      "longitude",
+      "is_active",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "did": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.did' in the schema cache",
+    "code": "PGRST205"
+  },
+  "does": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.does' in the schema cache",
+    "code": "PGRST205"
+  },
+  "driver_transactions": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "drop": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.drop' in the schema cache",
+    "code": "PGRST205"
+  },
+  "eslint": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.eslint' in the schema cache",
+    "code": "PGRST205"
+  },
+  "failed": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.failed' in the schema cache",
+    "code": "PGRST205"
+  },
+  "feedback": {
+    "exists": true,
+    "rlsBlocked": true,
+    "rowCount": "Protected by RLS (42501)",
+    "sampleColumns": []
+  },
+  "for": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.for' in the schema cache",
+    "code": "PGRST205"
+  },
+  "framer": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.framer' in the schema cache",
+    "code": "PGRST205"
+  },
+  "from": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.from' in the schema cache",
+    "code": "PGRST205"
+  },
+  "functions": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.functions' in the schema cache",
+    "code": "PGRST205"
+  },
+  "globals": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.globals' in the schema cache",
+    "code": "PGRST205"
+  },
+  "gps": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.gps' in the schema cache",
+    "code": "PGRST205"
+  },
+  "information_schema": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.information_schema' in the schema cache",
+    "code": "PGRST205"
+  },
+  "insert": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.insert' in the schema cache",
+    "code": "PGRST205"
+  },
+  "is_shift_operation_allowed": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.is_shift_operation_allowed' in the schema cache",
+    "code": "PGRST205"
+  },
+  "its": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.its' in the schema cache",
+    "code": "PGRST205"
+  },
+  "jsonb_array_elements": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.jsonb_array_elements' in the schema cache",
+    "code": "PGRST205"
+  },
+  "lateral": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.lateral' in the schema cache",
+    "code": "PGRST205"
+  },
+  "linking": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.linking' in the schema cache",
+    "code": "PGRST205"
+  },
+  "live": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.live' in the schema cache",
+    "code": "PGRST205"
+  },
+  "localstorage": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.localstorage' in the schema cache",
+    "code": "PGRST205"
+  },
+  "lucide": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.lucide' in the schema cache",
+    "code": "PGRST205"
+  },
+  "manipulation": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.manipulation' in the schema cache",
+    "code": "PGRST205"
+  },
+  "menu": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.menu' in the schema cache",
+    "code": "PGRST205"
+  },
+  "menu_availability": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "menu_item_option_groups": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 2,
+    "sampleColumns": [
+      "id",
+      "menu_item_id",
+      "name",
+      "selection_type",
+      "required",
+      "min_selections",
+      "max_selections",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "menu_item_options": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 6,
+    "sampleColumns": [
+      "id",
+      "group_id",
+      "name",
+      "price_delta",
+      "is_available",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "menu_item_variants": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 84,
+    "sampleColumns": [
+      "id",
+      "menu_item_id",
+      "name",
+      "price",
+      "is_available",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "menu_items": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 174,
+    "sampleColumns": [
+      "id",
+      "category_id",
+      "name",
+      "description",
+      "price",
+      "image_url",
+      "unit_type",
+      "base_qty",
+      "status",
+      "is_popular",
+      "display_order",
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "minutes": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.minutes' in the schema cache",
+    "code": "PGRST205"
+  },
+  "mutation_log": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.mutation_log' in the schema cache",
+    "code": "PGRST205"
+  },
+  "new": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.new' in the schema cache",
+    "code": "PGRST205"
+  },
+  "notifications": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "old": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.old' in the schema cache",
+    "code": "PGRST205"
+  },
+  "order_assignments": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "order_events": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "order_items": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 15,
+    "sampleColumns": [
+      "id",
+      "order_id",
+      "product_name",
+      "quantity",
+      "unit_price",
+      "total_price",
+      "created_at",
+      "item_id"
+    ]
+  },
+  "order_status_history": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "orders": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "payload": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.payload' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pg_publication": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pg_publication' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pg_publication_tables": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pg_publication_tables' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pg_tables": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pg_tables' in the schema cache",
+    "code": "PGRST205"
+  },
+  "phone_otps": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.phone_otps' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pilot_calc": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pilot_calc' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pilot_logs": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pilot_logs' in the schema cache",
+    "code": "PGRST205"
+  },
+  "pilot_orders": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.pilot_orders' in the schema cache",
+    "code": "PGRST205"
+  },
+  "position": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.position' in the schema cache",
+    "code": "PGRST205"
+  },
+  "preview": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.preview' in the schema cache",
+    "code": "PGRST205"
+  },
+  "profiles": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "prop": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.prop' in the schema cache",
+    "code": "PGRST205"
+  },
+  "qrcode": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.qrcode' in the schema cache",
+    "code": "PGRST205"
+  },
+  "rate_limits": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.rate_limits' in the schema cache",
+    "code": "PGRST205"
+  },
+  "react": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.react' in the schema cache",
+    "code": "PGRST205"
+  },
+  "received": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.received' in the schema cache",
+    "code": "PGRST205"
+  },
+  "referencing": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.referencing' in the schema cache",
+    "code": "PGRST205"
+  },
+  "reservations": {
+    "exists": true,
+    "rlsBlocked": true,
+    "rowCount": "Protected by RLS (42501)",
+    "sampleColumns": []
+  },
+  "restaurant_settings": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 30,
+    "sampleColumns": [
+      "id",
+      "key",
+      "value",
+      "updated_at",
+      "description"
+    ]
+  },
+  "return": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.return' in the schema cache",
+    "code": "PGRST205"
+  },
+  "setitems": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.setitems' in the schema cache",
+    "code": "PGRST205"
+  },
+  "setmenuitems": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.setmenuitems' in the schema cache",
+    "code": "PGRST205"
+  },
+  "setreservations": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.setreservations' in the schema cache",
+    "code": "PGRST205"
+  },
+  "shift": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.shift' in the schema cache",
+    "code": "PGRST205"
+  },
+  "shift_expenses": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.shift_expenses' in the schema cache",
+    "code": "PGRST205"
+  },
+  "shift_reports": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.shift_reports' in the schema cache",
+    "code": "PGRST205"
+  },
+  "shifts": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 11,
+    "sampleColumns": [
+      "id",
+      "date",
+      "start_time",
+      "end_time",
+      "status",
+      "total_orders",
+      "stats",
+      "created_at"
+    ]
+  },
+  "shifts_summary": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.shifts_summary' in the schema cache",
+    "code": "PGRST205"
+  },
+  "singleton": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.singleton' in the schema cache",
+    "code": "PGRST205"
+  },
+  "staff_roles": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "status": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.status' in the schema cache",
+    "code": "PGRST205"
+  },
+  "storage": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.storage' in the schema cache",
+    "code": "PGRST205"
+  },
+  "structure": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.structure' in the schema cache",
+    "code": "PGRST205"
+  },
+  "style": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.style' in the schema cache",
+    "code": "PGRST205"
+  },
+  "supabase": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.supabase' in the schema cache",
+    "code": "PGRST205"
+  },
+  "sync_queue": {
+    "exists": true,
+    "rlsBlocked": false,
+    "rowCount": 0,
+    "sampleColumns": []
+  },
+  "system_logs": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.system_logs' in the schema cache",
+    "code": "PGRST205"
+  },
+  "telegram_chat_id": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.telegram_chat_id' in the schema cache",
+    "code": "PGRST205"
+  },
+  "telegram_logs": {
+    "exists": true,
+    "rlsBlocked": true,
+    "rowCount": "Protected by RLS (42501)",
+    "sampleColumns": []
+  },
+  "telegram_subscribers": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.telegram_subscribers' in the schema cache",
+    "code": "PGRST205"
+  },
+  "telegram_token": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.telegram_token' in the schema cache",
+    "code": "PGRST205"
+  },
+  "the": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.the' in the schema cache",
+    "code": "PGRST205"
+  },
+  "their": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.their' in the schema cache",
+    "code": "PGRST205"
+  },
+  "then": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.then' in the schema cache",
+    "code": "PGRST205"
+  },
+  "timestamptz": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.timestamptz' in the schema cache",
+    "code": "PGRST205"
+  },
+  "triggered": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.triggered' in the schema cache",
+    "code": "PGRST205"
+  },
+  "turnstile_logs": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.turnstile_logs' in the schema cache",
+    "code": "PGRST205"
+  },
+  "user_orders": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.user_orders' in the schema cache",
+    "code": "PGRST205"
+  },
+  "using": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.using' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_active_shift": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_active_shift' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_active_shift_id": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_active_shift_id' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_bounds": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_bounds' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_check": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_check' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_close_txt": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_close_txt' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_enabled": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_enabled' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_existing": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_existing' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_item": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_item' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_items": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_items' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_items_count": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_items_count' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_load": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_load' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_log": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_log' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_menu_item": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_menu_item' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_new_id": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_new_id' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_new_order_id": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_new_order_id' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_now_cairo": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_now_cairo' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_open_txt": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_open_txt' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_order": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_order' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_other": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_other' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_other_active": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_other_active' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_pilot": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_pilot' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_pilot_stats": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_pilot_stats' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_recent_count": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_recent_count' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_recent_res_count": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_recent_res_count' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_res_deposits": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_res_deposits' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_role": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_role' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_row": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_row' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_secret": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_secret' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_setting_val": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_setting_val' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_shift": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_shift' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_shift_id": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_shift_id' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_total_orders": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_total_orders' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_val": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_val' in the schema cache",
+    "code": "PGRST205"
+  },
+  "v_zone_record": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.v_zone_record' in the schema cache",
+    "code": "PGRST205"
+  },
+  "variant": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.variant' in the schema cache",
+    "code": "PGRST205"
+  },
+  "vite": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.vite' in the schema cache",
+    "code": "PGRST205"
+  },
+  "when": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.when' in the schema cache",
+    "code": "PGRST205"
+  },
+  "with": {
+    "exists": "unknown",
+    "error": "Could not find the table 'public.with' in the schema cache",
+    "code": "PGRST205"
+  }
+}

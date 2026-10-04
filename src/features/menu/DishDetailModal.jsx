@@ -12,6 +12,7 @@ import {
     FileText
 } from 'lucide-react';
 import { formatCurrency } from '../../core/utils/formatters';
+import { getVariantSectionLabel } from '../../core/utils/pricingEngine';
 
 const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpdateQuantity }) => {
     const [isZoomed, setIsZoomed] = useState(false);
@@ -208,7 +209,8 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
             selected_variant: selectedVariant ? {
                 id: selectedVariant.id,
                 name: selectedVariant.name,
-                price: parseFloat(selectedVariant.price)
+                price: parseFloat(selectedVariant.price),
+                weight_kg: selectedVariant.weight_kg || null
             } : null,
             selected_options: flatSelectedOptions,
             notes: userNotes.trim() || null,
@@ -316,12 +318,12 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpd
                         </div>
                     )}
 
-                    {/* 1. Dynamic Variants Selection (الحجم / نوع الخبز) */}
+                    {/* 1. Dynamic Variants Selection */}
                     {hasVariants && (
                         <div className="space-y-2.5 pt-1">
                             <div className="flex items-center justify-between">
                                 <label className="text-xs sm:text-sm font-black text-white flex items-center gap-1.5">
-                                    <span>اختر الحجم ونوع الخبز</span>
+                                    <span>{getVariantSectionLabel(item.commercial_type)}</span>
                                     <span className="text-red-400 text-xs">*</span>
                                 </label>
                                 <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">مطلوب</span>

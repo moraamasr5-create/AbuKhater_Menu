@@ -1,4 +1,5 @@
 import { supabase } from '../supabase/supabaseClient';
+import { formatCommercialItemName } from '../../core/utils/pricingEngine';
 
 /**
  * Converts a base64 string to a Blob object
@@ -64,25 +65,21 @@ export const orderService = {
                 screenshotStoragePath = rawScreenshot;
             }
 
-            // 2. Prepare items with genuine menu item UUIDs and formatted names
+            // 2. Prepare items with genuine menu item UUIDs and formatted commercial names
             const itemsForRpc = (payload.items || []).map(item => {
-                let formattedName = item.name || '';
-                if (item.selected_variant?.name) {
-                    formattedName += ` (${item.selected_variant.name})`;
-                }
-                if (Array.isArray(item.selected_options) && item.selected_options.length > 0) {
-                    const optNames = item.selected_options.map(o => o.option_name || o.name).filter(Boolean);
-                    if (optNames.length > 0) {
-                        formattedName += ` + [${optNames.join(', ')}]`;
-                    }
-                }
-
                 const canonicalItemId = item.product_id || item.itemId || item.menuItemId || item.id;
+                const formattedName = formatCommercialItemName(item, item.selected_variant, item.selected_options);
+                const unitPrice = parseFloat(item.unit_price || item.price) || 0;
+                const qty = parseInt(item.quantity || item.count || 1, 10);
 
                 return {
                     item_id: canonicalItemId,
                     name: formattedName,
-                    quantity: parseInt(item.quantity || item.count || 1, 10),
+                    quantity: qty,
+                    unit_price: unitPrice,
+                    line_total: unitPrice * qty,
+                    selected_variant: item.selected_variant || null,
+                    selected_options: item.selected_options || [],
                     notes: item.notes || null
                 };
             });

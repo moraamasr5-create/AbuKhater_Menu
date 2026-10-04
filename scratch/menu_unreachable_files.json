@@ -1,0 +1,185 @@
+[
+  {
+    "relPath": "capacitor.config.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "eslint.config.js",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "package-lock.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "package.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "postcss.config.js",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/all_confirmed_existing_tables.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/all_items_db.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/all_menu_items_detailed.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/classification_result.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/classification_result_detailed.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/deep_sql_migration_report.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/delivery_repo_inventory.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/full_classification_report.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/full_inventory_result.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/menu_repo_inventory.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/real_orders_verification_result.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/supabase_openapi_schema.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/table_code_references.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/table_report_live.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/table_schema_deep_analysis.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/table_stats_raw.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "scratch/table_verification_results.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "src/App.css",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "src/core/utils/deviceTracker.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/api/index.js"
+    ]
+  },
+  {
+    "relPath": "src/core/utils/googleDrive.js",
+    "importedBy": [
+      "src/services/api/menuService.js"
+    ],
+    "imports": []
+  },
+  {
+    "relPath": "src/index.css",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "src/services/api/feedbackService.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/supabase/supabaseClient.js"
+    ]
+  },
+  {
+    "relPath": "src/services/api/menuService.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/supabase/supabaseClient.js",
+      "src/core/utils/menuItem.js",
+      "src/core/utils/googleDrive.js",
+      "src/core/utils/pricingEngine.js"
+    ]
+  },
+  {
+    "relPath": "src/services/api/orderService.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/supabase/supabaseClient.js",
+      "src/core/utils/pricingEngine.js"
+    ]
+  },
+  {
+    "relPath": "src/services/api/reservationService.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/supabase/supabaseClient.js"
+    ]
+  },
+  {
+    "relPath": "src/services/api/settingsService.js",
+    "importedBy": [],
+    "imports": [
+      "src/services/supabase/supabaseClient.js"
+    ]
+  },
+  {
+    "relPath": "tailwind.config.js",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "vercel.json",
+    "importedBy": [],
+    "imports": []
+  }
+]

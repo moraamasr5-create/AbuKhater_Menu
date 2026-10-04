@@ -1,0 +1,44 @@
+[
+  {
+    "relPath": "eslint.config.js",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "package-lock.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "package.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "src/components/common/ReceiptThumbnail.jsx",
+    "importedBy": [],
+    "imports": [
+      "src/services/storageService.js"
+    ]
+  },
+  {
+    "relPath": "src/index.css",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "supabase/.temp/linked-project.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "supabase/functions/telegram-order-alert/deno.json",
+    "importedBy": [],
+    "imports": []
+  },
+  {
+    "relPath": "supabase/functions/telegram-order-alert/index.ts",
+    "importedBy": [],
+    "imports": []
+  }
+]

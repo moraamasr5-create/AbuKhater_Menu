@@ -1,0 +1,1637 @@
+[
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": ".env",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\.env",
+    "size": 583,
+    "ext": "",
+    "mtime": "2026-05-16T23:37:03.703Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": ".gitignore",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\.gitignore",
+    "size": 325,
+    "ext": "",
+    "mtime": "2026-10-01T10:14:27.960Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\DEEP_SYSTEM_ARCHITECTURE_AUDIT.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\DEEP_SYSTEM_ARCHITECTURE_AUDIT.md",
+    "size": 17419,
+    "ext": ".md",
+    "mtime": "2026-10-01T12:15:16.248Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 12771
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\final-production-audit.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\final-production-audit.md",
+    "size": 15497,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.960Z",
+    "matchedKeywords": [
+      "n8n",
+      "app_config",
+      "menu_availability"
+    ],
+    "imports": [],
+    "contentLength": 15362
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-0-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-0-report.md",
+    "size": 7624,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.961Z",
+    "matchedKeywords": [
+      "n8n",
+      "app_config",
+      "menu_availability"
+    ],
+    "imports": [],
+    "contentLength": 7600
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-1A-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-1A-report.md",
+    "size": 7947,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.961Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 5783
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-1B-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-1B-report.md",
+    "size": 8672,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.962Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 6184
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-2-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-2-report.md",
+    "size": 5378,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.962Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 5290
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-2b-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-2b-report.md",
+    "size": 7454,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.963Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 5390
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-3-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-3-report.md",
+    "size": 8983,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.964Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 6453
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-4-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-4-report.md",
+    "size": 10812,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.965Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 7873
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-5-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-5-report.md",
+    "size": 9096,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.965Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 6726
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-6-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-6-report.md",
+    "size": 7677,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.965Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 7667
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-7-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-7-report.md",
+    "size": 8930,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.966Z",
+    "matchedKeywords": [
+      "app_config",
+      "menu_availability"
+    ],
+    "imports": [],
+    "contentLength": 8791
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-8-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-8-report.md",
+    "size": 6849,
+    "ext": ".md",
+    "mtime": "2026-10-01T10:14:27.967Z",
+    "matchedKeywords": [
+      "n8n",
+      "webhook-test",
+      "menu_availability"
+    ],
+    "imports": [],
+    "contentLength": 6801
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\phase-auth-report.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\phase-auth-report.md",
+    "size": 9705,
+    "ext": ".md",
+    "mtime": "2026-10-01T11:01:55.899Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 7407
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\PROJECT_INSTRUCTIONS.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\PROJECT_INSTRUCTIONS.md",
+    "size": 8132,
+    "ext": ".md",
+    "mtime": "2026-06-23T19:26:25.744Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 8132
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\SUPABASE_ARCHITECTURE_AUDIT.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\SUPABASE_ARCHITECTURE_AUDIT.md",
+    "size": 29943,
+    "ext": ".md",
+    "mtime": "2026-06-23T19:26:25.745Z",
+    "matchedKeywords": [
+      "app_config",
+      "menu_availability",
+      "sync_queue",
+      "order_events",
+      "driver_transactions"
+    ],
+    "imports": [],
+    "contentLength": 29656
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "docs\\SYSTEM_DESIGN_MVP.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\docs\\SYSTEM_DESIGN_MVP.md",
+    "size": 57972,
+    "ext": ".md",
+    "mtime": "2026-06-24T18:54:12.101Z",
+    "matchedKeywords": [
+      "app_config",
+      "menu_availability",
+      "sync_queue",
+      "driver_transactions"
+    ],
+    "imports": [],
+    "contentLength": 39476
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "eslint.config.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\eslint.config.js",
+    "size": 787,
+    "ext": ".js",
+    "mtime": "2026-05-16T23:11:12.433Z",
+    "matchedKeywords": [],
+    "imports": [
+      "@eslint/js",
+      "globals",
+      "eslint-plugin-react-hooks",
+      "eslint-plugin-react-refresh",
+      "eslint/config"
+    ],
+    "contentLength": 787
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "index.html",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\index.html",
+    "size": 766,
+    "ext": ".html",
+    "mtime": "2026-10-01T20:52:54.323Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 750
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "package-lock.json",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\package-lock.json",
+    "size": 109165,
+    "ext": ".json",
+    "mtime": "2026-06-22T19:37:47.453Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 109165
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "package.json",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\package.json",
+    "size": 774,
+    "ext": ".json",
+    "mtime": "2026-05-17T00:59:51.434Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 774
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "public\\logo.png",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\public\\logo.png",
+    "size": 777084,
+    "ext": ".png",
+    "mtime": "2026-10-01T20:43:10.179Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "public\\logo22.PNG",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\public\\logo22.PNG",
+    "size": 106386,
+    "ext": ".png",
+    "mtime": "2026-10-01T12:51:45.917Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "README.md",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\README.md",
+    "size": 1751,
+    "ext": ".md",
+    "mtime": "2026-06-23T17:01:01.412Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 1751
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\audit_phase11.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\audit_phase11.mjs",
+    "size": 6264,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T19:13:36.297Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\audit_rpc_grants.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\audit_rpc_grants.mjs",
+    "size": 862,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.968Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\auth_forensic_verification.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\auth_forensic_verification.mjs",
+    "size": 2290,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:44:04.198Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_all_auth_cols.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_all_auth_cols.mjs",
+    "size": 710,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:40:44.299Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_all_data.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_all_data.mjs",
+    "size": 832,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:39:54.234Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_config.ps1",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_config.ps1",
+    "size": 2377,
+    "ext": ".ps1",
+    "mtime": "2026-10-01T11:34:46.081Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_hooks.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_hooks.mjs",
+    "size": 1201,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:36:10.827Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_indexes.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_indexes.mjs",
+    "size": 1775,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:38:04.372Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_schema.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_schema.mjs",
+    "size": 2273,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:35:30.346Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_auth_tables.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_auth_tables.mjs",
+    "size": 1577,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:36:35.953Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_eager_tables.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_eager_tables.mjs",
+    "size": 922,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:49:41.474Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\check_identities_triggers.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\check_identities_triggers.mjs",
+    "size": 1224,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:44:32.070Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\debug_reload_hang.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\debug_reload_hang.mjs",
+    "size": 1932,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:42:43.524Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\diagnose_auth_issue.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\diagnose_auth_issue.mjs",
+    "size": 4487,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:34:46.805Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\enable_email_provider.ps1",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\enable_email_provider.ps1",
+    "size": 2318,
+    "ext": ".ps1",
+    "mtime": "2026-10-01T11:35:20.891Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\enable_phone_auth.ps1",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\enable_phone_auth.ps1",
+    "size": 2806,
+    "ext": ".ps1",
+    "mtime": "2026-10-01T19:04:35.766Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\inspect_email_cfg.ps1",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\inspect_email_cfg.ps1",
+    "size": 2292,
+    "ext": ".ps1",
+    "mtime": "2026-10-01T11:35:12.782Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\phase3_lifecycle_tests.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\phase3_lifecycle_tests.mjs",
+    "size": 8542,
+    "ext": ".mjs",
+    "mtime": "2026-10-03T21:10:43.635Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\phase4_e2e_real_order_test.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\phase4_e2e_real_order_test.mjs",
+    "size": 8196,
+    "ext": ".mjs",
+    "mtime": "2026-10-03T21:14:22.135Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\reset_and_verify_accounts.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\reset_and_verify_accounts.mjs",
+    "size": 8073,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:30:38.277Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\run_full_system_audit.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\run_full_system_audit.mjs",
+    "size": 3655,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.968Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_admin_auth_lifecycle.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_admin_auth_lifecycle.mjs",
+    "size": 9007,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:01:07.598Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_admin_passwords.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_admin_passwords.mjs",
+    "size": 1004,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:37:44.791Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_anon_rls_access.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_anon_rls_access.mjs",
+    "size": 2908,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.969Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_auth_reload_lifecycle.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_auth_reload_lifecycle.mjs",
+    "size": 11662,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:43:01.322Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_casher_aud.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_casher_aud.mjs",
+    "size": 1717,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:49:29.848Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_complete_audit_flows.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_complete_audit_flows.mjs",
+    "size": 11363,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.969Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_email_provider.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_email_provider.mjs",
+    "size": 1293,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:33:25.405Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_fix_null_strings.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_fix_null_strings.mjs",
+    "size": 2108,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T11:00:44.936Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_gotrue_http.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_gotrue_http.mjs",
+    "size": 831,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:59:10.377Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_identity_hypothesis.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_identity_hypothesis.mjs",
+    "size": 2341,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:48:49.003Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_live_order_contract.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_live_order_contract.mjs",
+    "size": 2674,
+    "ext": ".mjs",
+    "mtime": "2026-10-03T21:09:25.906Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase11_full_flow.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase11_full_flow.mjs",
+    "size": 4123,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T19:06:47.497Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase14_1_telegram.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase14_1_telegram.mjs",
+    "size": 14354,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T20:10:16.471Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase14_1_unified.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase14_1_unified.sql",
+    "size": 9694,
+    "ext": ".sql",
+    "mtime": "2026-10-01T20:13:06.013Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 9336
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase2_contract_alignment.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase2_contract_alignment.mjs",
+    "size": 2891,
+    "ext": ".mjs",
+    "mtime": "2026-10-03T21:09:01.092Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase5_storage.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase5_storage.mjs",
+    "size": 9494,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.970Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase6_financials.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase6_financials.mjs",
+    "size": 14511,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.971Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase7_menu_and_telegram.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase7_menu_and_telegram.mjs",
+    "size": 9979,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.971Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_phase_auth_complete.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_phase_auth_complete.mjs",
+    "size": 8721,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:55:02.404Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_search_path_hypothesis.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_search_path_hypothesis.mjs",
+    "size": 1922,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:39:14.942Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_signin_gotrue.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_signin_gotrue.mjs",
+    "size": 1094,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:35:55.833Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\test_signup_probe.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\test_signup_probe.mjs",
+    "size": 689,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:38:35.728Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\trace_admin_queries.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\trace_admin_queries.mjs",
+    "size": 2642,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:50:10.752Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\trace_gotrue_queries.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\trace_gotrue_queries.mjs",
+    "size": 2859,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:40:26.674Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "scratch\\verify_phase5_complete.mjs",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\scratch\\verify_phase5_complete.mjs",
+    "size": 7695,
+    "ext": ".mjs",
+    "mtime": "2026-10-01T10:14:27.972Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\App.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\App.jsx",
+    "size": 110481,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T21:47:58.640Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "./components/layout/Sidebar",
+      "./components/orders/OrderInbox",
+      "./components/reports/ReportsView",
+      "./components/feedback/FeedbackView",
+      "./components/settings/SettingsView",
+      "./components/auth/Login",
+      "./components/common/ConnectionBanner",
+      "./components/common/ui",
+      "./context/AppContext",
+      "lucide-react",
+      "./services/supabase/supabaseClient",
+      "./services/storageService",
+      "./services/printerService",
+      "./utils/pilotState"
+    ],
+    "contentLength": 106551
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\auth\\Login.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\auth\\Login.jsx",
+    "size": 20694,
+    "ext": ".jsx",
+    "mtime": "2026-10-01T11:41:45.876Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "lucide-react",
+      "../../context/AppContext"
+    ],
+    "contentLength": 20255
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\common\\ConnectionBanner.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\common\\ConnectionBanner.jsx",
+    "size": 10511,
+    "ext": ".jsx",
+    "mtime": "2026-10-01T10:14:27.975Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "../../context/AppContext",
+      "lucide-react"
+    ],
+    "contentLength": 9927
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\common\\ReceiptThumbnail.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\common\\ReceiptThumbnail.jsx",
+    "size": 1537,
+    "ext": ".jsx",
+    "mtime": "2026-10-01T10:14:27.976Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "../../services/storageService"
+    ],
+    "contentLength": 1511
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\common\\ui.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\common\\ui.jsx",
+    "size": 4292,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T08:38:52.065Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "lucide-react"
+    ],
+    "contentLength": 4282
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\feedback\\FeedbackView.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\feedback\\FeedbackView.jsx",
+    "size": 13817,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T11:43:44.212Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "../../services/supabaseService",
+      "lucide-react",
+      "../common/ui"
+    ],
+    "contentLength": 13276
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\layout\\Sidebar.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\layout\\Sidebar.jsx",
+    "size": 13863,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T17:19:30.454Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "react-dom",
+      "lucide-react",
+      "../../context/AppContext"
+    ],
+    "contentLength": 13122
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\orders\\OrderInbox.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\orders\\OrderInbox.jsx",
+    "size": 97691,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T21:47:38.272Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "../../context/AppContext",
+      "lucide-react",
+      "../../services/printerService",
+      "../../services/storageService",
+      "framer-motion",
+      "../../utils/pilotState",
+      "../common/ui",
+      "../../utils/commercialItemParser"
+    ],
+    "contentLength": 94544
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\reports\\ReportsView.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\reports\\ReportsView.jsx",
+    "size": 56826,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T11:54:20.385Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "../../context/AppContext",
+      "lucide-react",
+      "../../utils/pilotCalculations",
+      "../../services/storageService"
+    ],
+    "contentLength": 55210
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\settings\\MenuManagementView.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\settings\\MenuManagementView.jsx",
+    "size": 99230,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T12:40:43.024Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "lucide-react",
+      "../../services/supabaseService",
+      "../../context/AppContext"
+    ],
+    "contentLength": 92722
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\components\\settings\\SettingsView.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\components\\settings\\SettingsView.jsx",
+    "size": 60797,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T11:43:50.881Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "lucide-react",
+      "../../services/supabaseService",
+      "./MenuManagementView"
+    ],
+    "contentLength": 59006
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\config\\apiConfig.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\config\\apiConfig.js",
+    "size": 755,
+    "ext": ".js",
+    "mtime": "2026-10-01T10:14:27.982Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 586
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\context\\AppContext.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\context\\AppContext.jsx",
+    "size": 60958,
+    "ext": ".jsx",
+    "mtime": "2026-10-03T15:46:15.956Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [
+      "react",
+      "../config/apiConfig",
+      "../services/supabase/supabaseClient",
+      "../services/supabaseService",
+      "../services/storageService",
+      "../services/printerService",
+      "../utils/safeStorage",
+      "../utils/shiftLogic",
+      "../utils/pilotCalculations",
+      "../utils/shiftGovernance",
+      "../utils/safeOrderParser"
+    ],
+    "contentLength": 56828
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\index.css",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\index.css",
+    "size": 29742,
+    "ext": ".css",
+    "mtime": "2026-10-03T13:41:20.710Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 29694
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\main.jsx",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\main.jsx",
+    "size": 338,
+    "ext": ".jsx",
+    "mtime": "2026-05-16T23:11:12.448Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "react-dom/client",
+      "./App.jsx",
+      "./context/AppContext"
+    ],
+    "contentLength": 338
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\services\\printerService.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\services\\printerService.js",
+    "size": 29041,
+    "ext": ".js",
+    "mtime": "2026-10-03T21:48:38.464Z",
+    "matchedKeywords": [],
+    "imports": [
+      "../utils/safeStorage.js",
+      "../utils/commercialItemParser.js"
+    ],
+    "contentLength": 27945
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\services\\storageService.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\services\\storageService.js",
+    "size": 8358,
+    "ext": ".js",
+    "mtime": "2026-10-01T10:14:27.985Z",
+    "matchedKeywords": [],
+    "imports": [
+      "react",
+      "./supabase/supabaseClient",
+      "./supabaseService"
+    ],
+    "contentLength": 8332
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\services\\supabase\\supabaseClient.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\services\\supabase\\supabaseClient.js",
+    "size": 322,
+    "ext": ".js",
+    "mtime": "2026-05-16T23:35:04.207Z",
+    "matchedKeywords": [],
+    "imports": [
+      "@supabase/supabase-js"
+    ],
+    "contentLength": 322
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\services\\supabaseService.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\services\\supabaseService.js",
+    "size": 66700,
+    "ext": ".js",
+    "mtime": "2026-10-03T21:33:45.281Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [
+      "./supabase/supabaseClient",
+      "../utils/safeStorage",
+      "../utils/shiftLogic"
+    ],
+    "contentLength": 59057
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\commercialItemParser.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\commercialItemParser.js",
+    "size": 2262,
+    "ext": ".js",
+    "mtime": "2026-10-03T21:33:40.507Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 2059
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\pilotCalculations.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\pilotCalculations.js",
+    "size": 5466,
+    "ext": ".js",
+    "mtime": "2026-10-01T10:14:27.996Z",
+    "matchedKeywords": [],
+    "imports": [
+      "./shiftLogic.js"
+    ],
+    "contentLength": 4802
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\pilotState.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\pilotState.js",
+    "size": 198,
+    "ext": ".js",
+    "mtime": "2026-06-23T18:28:33.870Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 198
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\safeOrderParser.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\safeOrderParser.js",
+    "size": 4318,
+    "ext": ".js",
+    "mtime": "2026-10-03T21:33:53.616Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 3950
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\safeStorage.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\safeStorage.js",
+    "size": 3012,
+    "ext": ".js",
+    "mtime": "2026-06-06T04:37:39.860Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 3012
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\shiftGovernance.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\shiftGovernance.js",
+    "size": 7707,
+    "ext": ".js",
+    "mtime": "2026-06-22T19:37:47.486Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 6283
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "src\\utils\\shiftLogic.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\src\\utils\\shiftLogic.js",
+    "size": 3376,
+    "ext": ".js",
+    "mtime": "2026-10-01T10:14:27.998Z",
+    "matchedKeywords": [],
+    "imports": [
+      "./shiftGovernance.js"
+    ],
+    "contentLength": 3327
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\cli-latest",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\cli-latest",
+    "size": 8,
+    "ext": "",
+    "mtime": "2026-10-01T20:31:58.065Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\gotrue-version",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\gotrue-version",
+    "size": 8,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:19.208Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\linked-project.json",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\linked-project.json",
+    "size": 137,
+    "ext": ".json",
+    "mtime": "2026-10-01T06:33:20.951Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 137
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\pooler-url",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\pooler-url",
+    "size": 92,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:19.026Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\postgres-version",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\postgres-version",
+    "size": 10,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:17.661Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\project-ref",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\project-ref",
+    "size": 20,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:20.950Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\rest-version",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\rest-version",
+    "size": 5,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:19.764Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\storage-migration",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\storage-migration",
+    "size": 27,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:18.885Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\.temp\\storage-version",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\.temp\\storage-version",
+    "size": 7,
+    "ext": "",
+    "mtime": "2026-10-01T06:33:19.167Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\alter_order_items.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\alter_order_items.sql",
+    "size": 357,
+    "ext": ".sql",
+    "mtime": "2026-06-13T18:55:05.574Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 357
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\canonical_order_state_machine.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\canonical_order_state_machine.sql",
+    "size": 27926,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:27.998Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 27007
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\cleanup_legacy_orders_policies.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\cleanup_legacy_orders_policies.sql",
+    "size": 1188,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:27.999Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 1188
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\close_shift_rpc.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\close_shift_rpc.sql",
+    "size": 2999,
+    "ext": ".sql",
+    "mtime": "2026-06-22T19:37:47.504Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 2956
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\config.toml",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\config.toml",
+    "size": 521,
+    "ext": ".toml",
+    "mtime": "2026-05-28T22:01:02.250Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\fix_close_shift_orphan_orders.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\fix_close_shift_orphan_orders.sql",
+    "size": 5706,
+    "ext": ".sql",
+    "mtime": "2026-06-23T17:01:01.462Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 5667
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\functions\\telegram-order-alert\\.npmrc",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\functions\\telegram-order-alert\\.npmrc",
+    "size": 221,
+    "ext": "",
+    "mtime": "2026-05-28T22:01:02.251Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 0
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\functions\\telegram-order-alert\\deno.json",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\functions\\telegram-order-alert\\deno.json",
+    "size": 136,
+    "ext": ".json",
+    "mtime": "2026-05-28T22:01:02.251Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 136
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\functions\\telegram-order-alert\\index.ts",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\functions\\telegram-order-alert\\index.ts",
+    "size": 1534,
+    "ext": ".ts",
+    "mtime": "2026-05-28T22:01:02.250Z",
+    "matchedKeywords": [],
+    "imports": [
+      "@supabase/server"
+    ],
+    "contentLength": 1532
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase10_feedback_schema_fix.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase10_feedback_schema_fix.sql",
+    "size": 4246,
+    "ext": ".sql",
+    "mtime": "2026-10-01T17:46:08.375Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 3960
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase11_auth_phone_otp_and_user_orders.sql",
+    "size": 26565,
+    "ext": ".sql",
+    "mtime": "2026-10-01T19:07:35.473Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 25539
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase14_1_telegram_foundation_and_recovery.sql",
+    "size": 25367,
+    "ext": ".sql",
+    "mtime": "2026-10-01T20:09:06.199Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 24095
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase5_private_storage.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase5_private_storage.sql",
+    "size": 8929,
+    "ext": ".sql",
+    "mtime": "2026-10-01T14:45:08.659Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 8469
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase6_authoritative_financials.sql",
+    "size": 17822,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.000Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 17706
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase7_menu_availability_and_telegram_security.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase7_menu_availability_and_telegram_security.sql",
+    "size": 9483,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.001Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 9453
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase8_customer_recent_orders.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase8_customer_recent_orders.sql",
+    "size": 11094,
+    "ext": ".sql",
+    "mtime": "2026-10-01T15:35:51.836Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 10397
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\migrations\\20261001_phase9_turnstile_security.sql",
+    "size": 32666,
+    "ext": ".sql",
+    "mtime": "2026-10-01T16:59:47.222Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 31123
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\per_order_trip_start.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\per_order_trip_start.sql",
+    "size": 5889,
+    "ext": ".sql",
+    "mtime": "2026-06-23T18:56:40.460Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 5845
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\pilot_sync_and_lifecycle.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\pilot_sync_and_lifecycle.sql",
+    "size": 23408,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.002Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 23236
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\public_inputs_protection.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\public_inputs_protection.sql",
+    "size": 17398,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.003Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 16631
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\restaurant_settings_rls.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\restaurant_settings_rls.sql",
+    "size": 1893,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.003Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 1893
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\server_authoritative_create_order.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\server_authoritative_create_order.sql",
+    "size": 24247,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.004Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 23136
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\server_authoritative_manual_order.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\server_authoritative_manual_order.sql",
+    "size": 9366,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.004Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 9329
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\server_enforced_authorization.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\server_enforced_authorization.sql",
+    "size": 30109,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.005Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 30011
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\shift_governance.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\shift_governance.sql",
+    "size": 14917,
+    "ext": ".sql",
+    "mtime": "2026-06-23T17:01:01.479Z",
+    "matchedKeywords": [
+      "app_config"
+    ],
+    "imports": [],
+    "contentLength": 14414
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "supabase\\staff_auth_and_roles.sql",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\supabase\\staff_auth_and_roles.sql",
+    "size": 4614,
+    "ext": ".sql",
+    "mtime": "2026-10-01T10:14:28.006Z",
+    "matchedKeywords": [],
+    "imports": [],
+    "contentLength": 4614
+  },
+  {
+    "project": "AbuKhater_delivery",
+    "relPath": "vite.config.js",
+    "fullPath": "c:\\Users\\mamdo\\Documents\\GitHub\\AbuKhater_delivery\\vite.config.js",
+    "size": 168,
+    "ext": ".js",
+    "mtime": "2026-05-16T23:11:12.449Z",
+    "matchedKeywords": [],
+    "imports": [
+      "vite",
+      "@vitejs/plugin-react"
+    ],
+    "contentLength": 168
+  }
+]
