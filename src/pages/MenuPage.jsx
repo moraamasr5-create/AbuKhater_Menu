@@ -109,13 +109,12 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
 
     return (
         <div
-            className={`group card-interactive-3d rounded-2xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
-            style={{ contentVisibility: 'auto', containIntrinsicSize: '120px 240px' }}
+            className={`group card-interactive-3d rounded-2xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col h-[132px] sm:h-[140px] md:h-[430px] lg:h-[440px] w-full transition-all ${!isAvailable ? 'opacity-60 grayscale-[35%]' : ''}`}
         >
-            {/* Image / Thumbnail Container */}
+            {/* Image / Thumbnail Container - Fixed Dimensions across all viewports */}
             <div
                 onClick={() => onOpenDetail(item)}
-                className="relative w-28 sm:w-32 md:w-full md:h-52 shrink-0 self-stretch overflow-hidden bg-dark-950 cursor-pointer"
+                className="relative w-28 sm:w-32 md:w-full h-full md:h-52 shrink-0 overflow-hidden bg-dark-950 cursor-pointer select-none"
             >
                 {hasRealImage ? (
                     <>
@@ -142,7 +141,7 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     </>
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-dark-900 via-dark-850 to-dark-800 p-2 text-center select-none border-b border-white/5">
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1 shadow-inner">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1 shadow-inner">
                             <Utensils size={18} />
                         </div>
                         <span className="text-[10px] md:text-[11px] text-slate-400 font-bold truncate max-w-full px-1">
@@ -151,94 +150,102 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                     </div>
                 )}
 
+                {/* Desktop Top Gradient */}
                 <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-950/90 via-dark-950/20 to-transparent pointer-events-none" />
 
+                {/* Unavailable Overlay */}
                 {!isAvailable && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/65 backdrop-blur-[2px]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/65 backdrop-blur-[2px] z-10">
                         <span className={`text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-wider ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'}`}>
                             {statusLabel}
                         </span>
                     </div>
                 )}
 
-                {/* Popular Badge on mobile image corner */}
+                {/* Popular Badge - Floating cleanly on image */}
                 {item.is_popular && isAvailable && (
-                    <div className="md:hidden absolute bottom-1.5 right-1.5 z-10 pointer-events-none">
-                        <span className="bg-amber-500/90 text-dark-950 text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-sm">
+                    <div className="absolute top-2 right-2 md:top-3 md:right-3 z-10 pointer-events-none">
+                        <span className="bg-amber-500/95 text-dark-950 text-[9px] md:text-[10px] font-black px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-md md:rounded-full shadow-sm flex items-center gap-1">
                             ⭐ مميز
                         </span>
                     </div>
                 )}
 
-                <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3 py-1 rounded-full border border-white/20 pointer-events-none">
+                {/* Desktop Price Badge on Image */}
+                <div className="hidden md:block absolute bottom-3 right-3 z-10 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3 py-1 rounded-full border border-white/20 pointer-events-none">
                     <span className="text-white font-black text-sm lg:text-base tabular-nums">
                         {priceDisplay.prefix}{priceDisplay.text} <small className="text-[10px] font-bold opacity-90">{priceDisplay.unit}</small>
                     </span>
                 </div>
             </div>
 
-            {/* Content Details */}
-            <div className="flex-1 p-3 sm:p-3.5 md:p-5 flex flex-col min-w-0 min-h-0">
-                <div className="mb-0 md:mb-2.5">
-                    <div className="flex items-center justify-between gap-1 mb-1">
+            {/* Content Details Container - Uniform Slot Layout */}
+            <div className="flex-1 p-2.5 sm:p-3 md:p-4 lg:p-5 flex flex-col justify-between h-full min-w-0">
+                {/* Title & Description Area */}
+                <div className="flex-1 flex flex-col min-w-0">
+                    {/* Title Row */}
+                    <div className="h-6 md:h-7 flex items-center mb-1 overflow-hidden">
                         <h3
                             onClick={() => onOpenDetail(item)}
-                            className="text-[15px] md:text-lg font-black text-white group-hover:text-amber-400 transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
+                            title={item.name}
+                            className="text-[14px] sm:text-[15px] md:text-base lg:text-lg font-black text-white group-hover:text-amber-400 transition-colors leading-tight line-clamp-1 truncate cursor-pointer w-full"
                         >
                             {item.name}
                         </h3>
-                        {item.is_popular && (
-                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
-                                ⭐ مميز
-                            </span>
-                        )}
                     </div>
-                    <p className="text-slate-400 text-[11px] sm:text-xs md:text-[13px] line-clamp-2 leading-relaxed md:min-h-[2.4rem]">
-                        {item.description || 'صنف طازج ومميز محضّر يومياً بأجود المكونات في مطعم أبو خاطر.'}
-                    </p>
+
+                    {/* Description Row */}
+                    <div className="h-8 sm:h-9 md:h-10 lg:h-11 overflow-hidden">
+                        <p className="text-slate-400 text-[11px] sm:text-xs md:text-[13px] line-clamp-2 leading-relaxed">
+                            {item.description || 'صنف طازج ومميز محضّر يومياً بأجود المكونات في مطعم أبو خاطر.'}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="mt-auto pt-2 md:pt-3 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
+                {/* Bottom Action / Price Row */}
+                <div className="pt-1.5 md:pt-3 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2 h-9 md:h-11 shrink-0 mt-auto">
+                    {/* Mobile Price */}
                     <span className="md:hidden text-amber-400 font-black text-sm sm:text-base tabular-nums shrink-0">
-                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[10px] font-bold opacity-85">{priceDisplay.unit}</small>
+                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[9px] font-bold opacity-85">{priceDisplay.unit}</small>
                     </span>
 
-                    <div className="shrink-0 md:w-full">
+                    {/* Action Button / Stepper */}
+                    <div className="shrink-0 md:w-full h-8 sm:h-8.5 md:h-10 flex items-center justify-end md:justify-center">
                         {isAvailable ? (
                             qty > 0 ? (
-                                <div className="stepper-container-3d p-1 rounded-xl md:rounded-2xl flex items-center gap-1 md:justify-between md:w-full">
+                                <div className="stepper-container-3d p-0.5 md:p-1 rounded-xl md:rounded-2xl flex items-center justify-between w-[92px] sm:w-[98px] md:w-full h-full">
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, -1)}
-                                        className="btn-soft-3d-dark w-8 h-8 md:min-w-[38px] md:min-h-[38px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
+                                        className="btn-soft-3d-dark w-7 h-7 sm:w-7.5 sm:h-7.5 md:w-8 md:h-8 flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`تقليل كمية ${item.name}`}
                                     >
-                                        <span className="text-base md:text-lg font-bold" aria-hidden>−</span>
+                                        <span className="text-sm md:text-base font-bold" aria-hidden>−</span>
                                     </button>
-                                    <span className="text-xs sm:text-sm md:text-base font-black text-white w-6 md:w-10 text-center tabular-nums" aria-live="polite">{qty}</span>
+                                    <span className="text-xs sm:text-sm md:text-base font-black text-white text-center tabular-nums flex-1" aria-live="polite">{qty}</span>
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, 1)}
-                                        className="btn-soft-3d-primary w-8 h-8 md:min-w-[38px] md:min-h-[38px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
+                                        className="btn-soft-3d-primary w-7 h-7 sm:w-7.5 sm:h-7.5 md:w-8 md:h-8 flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`زيادة كمية ${item.name}`}
                                     >
-                                        <span className="text-base md:text-lg font-bold" aria-hidden>+</span>
+                                        <span className="text-sm md:text-base font-bold" aria-hidden>+</span>
                                     </button>
                                 </div>
                             ) : (
                                 <button
                                     type="button"
                                     onClick={handleAdd}
-                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary min-h-[36px] px-3 py-1.5 md:w-full md:min-h-[42px] md:py-2.5 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 text-xs md:text-sm shadow-sm"
+                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary h-full px-2.5 sm:px-3 md:w-full text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-1.5 text-[11px] sm:text-xs md:text-sm shadow-sm"
                                     aria-label={`أضف ${item.name} إلى السلة`}
                                 >
-                                    <Flame size={14} className="text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
+                                    <Flame size={13} className="text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
                                     <span>{hasConfig ? 'تخصيص' : '+ إضافة'}</span>
                                 </button>
                             )
                         ) : (
-                            <button type="button" disabled className="min-h-[36px] px-2.5 py-1 md:w-full bg-dark-800/40 text-slate-500 md:py-2.5 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[42px] flex items-center justify-center">
-                                <span className="text-[10px] md:text-xs">{statusLabel}</span>
+                            <button type="button" disabled className="h-full px-2 md:w-full bg-dark-800/40 text-slate-500 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-60 flex items-center justify-center text-[10px] md:text-xs">
+                                <span>{statusLabel}</span>
                             </button>
                         )}
                     </div>
@@ -857,13 +864,15 @@ const MenuPage = () => {
                 {loading && menuItems.length === 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                         {[1, 2, 3, 4, 5, 6].map((n) => (
-                            <div key={n} className="glass-card rounded-xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col border border-white/5">
-                                <div className="w-[96px] md:w-full h-28 md:h-52 bg-dark-800 shimmer shrink-0" />
-                                <div className="p-3 md:p-6 flex-1 space-y-2.5">
-                                    <div className="h-4 bg-dark-800 rounded-md w-3/4 shimmer" />
-                                    <div className="h-3 bg-dark-800/60 rounded-md w-full shimmer" />
-                                    <div className="h-3 bg-dark-800/60 rounded-md w-1/2 shimmer" />
-                                    <div className="h-8 bg-dark-800/80 rounded-xl w-full shimmer mt-3" />
+                            <div key={n} className="glass-card rounded-2xl md:rounded-3xl overflow-hidden flex flex-row md:flex-col border border-white/5 h-[132px] sm:h-[140px] md:h-[430px] lg:h-[440px]">
+                                <div className="w-28 sm:w-32 md:w-full h-full md:h-52 bg-dark-800 shimmer shrink-0" />
+                                <div className="p-3 sm:p-3.5 md:p-5 flex-1 flex flex-col justify-between">
+                                    <div className="space-y-2">
+                                        <div className="h-4 sm:h-5 bg-dark-800 rounded-md w-3/4 shimmer" />
+                                        <div className="h-3 sm:h-3.5 bg-dark-800/60 rounded-md w-full shimmer" />
+                                        <div className="h-3 sm:h-3.5 bg-dark-800/60 rounded-md w-2/3 shimmer" />
+                                    </div>
+                                    <div className="h-8 md:h-10 bg-dark-800/80 rounded-xl w-full shimmer mt-2" />
                                 </div>
                             </div>
                         ))}
