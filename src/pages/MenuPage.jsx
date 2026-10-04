@@ -115,14 +115,14 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
             {/* Image / Thumbnail Container */}
             <div
                 onClick={() => onOpenDetail(item)}
-                className="relative w-[104px] shrink-0 self-stretch md:w-full md:h-52 overflow-hidden bg-dark-950 cursor-pointer"
+                className="relative w-28 sm:w-32 md:w-full md:h-52 shrink-0 self-stretch overflow-hidden bg-dark-950 cursor-pointer"
             >
                 {hasRealImage ? (
                     <>
                         <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-108"
+                            className="w-full h-full object-cover transition-transform duration-500 md:group-hover:scale-105"
                             loading="lazy"
                             decoding="async"
                             onError={(e) => { e.currentTarget.src = fallbackImage; }}
@@ -133,19 +133,19 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                                 e.stopPropagation();
                                 onOpenDetail(item);
                             }}
-                            className="absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-dark-950/80 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center border border-white/15 hover:bg-primary transition-all active:scale-90 shadow-md"
-                            title="تكبير الصورة"
-                            aria-label={`تكبير صورة ${item.name}`}
+                            className="absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-dark-950/80 backdrop-blur-md text-white/90 hover:text-white flex items-center justify-center border border-white/15 hover:bg-primary transition-all active:scale-90 shadow-sm"
+                            title="تكبير الصورة والتفاصيل"
+                            aria-label={`عرض تفاصيل ${item.name}`}
                         >
                             <ZoomIn size={13} />
                         </button>
                     </>
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-dark-900 via-dark-850 to-dark-800 p-2 text-center select-none border-b border-white/5">
-                        <div className="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1 shadow-inner">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-1 shadow-inner">
                             <Utensils size={18} />
                         </div>
-                        <span className="text-[9px] md:text-[11px] text-slate-400 font-bold truncate max-w-full px-1">
+                        <span className="text-[10px] md:text-[11px] text-slate-400 font-bold truncate max-w-full px-1">
                             {item.category || 'أبو خاطر'}
                         </span>
                     </div>
@@ -154,81 +154,90 @@ const MenuProductCard = memo(function MenuProductCard({ item, qty, fallbackImage
                 <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-dark-950/90 via-dark-950/20 to-transparent pointer-events-none" />
 
                 {!isAvailable && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px]">
-                        <span className={`text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'}`}>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/65 backdrop-blur-[2px]">
+                        <span className={`text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-wider ${isOutOfStock ? 'bg-red-600/90' : 'bg-amber-600/90'}`}>
                             {statusLabel}
                         </span>
                     </div>
                 )}
 
-                <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3.5 py-1 rounded-full border border-white/20 pointer-events-none">
-                    <span className="text-white font-black text-base lg:text-lg tabular-nums">
+                {/* Popular Badge on mobile image corner */}
+                {item.is_popular && isAvailable && (
+                    <div className="md:hidden absolute bottom-1.5 right-1.5 z-10 pointer-events-none">
+                        <span className="bg-amber-500/90 text-dark-950 text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-sm">
+                            ⭐ مميز
+                        </span>
+                    </div>
+                )}
+
+                <div className="hidden md:block absolute bottom-3.5 right-3.5 badge-soft-3d bg-gradient-to-r from-primary to-orange-600 px-3 py-1 rounded-full border border-white/20 pointer-events-none">
+                    <span className="text-white font-black text-sm lg:text-base tabular-nums">
                         {priceDisplay.prefix}{priceDisplay.text} <small className="text-[10px] font-bold opacity-90">{priceDisplay.unit}</small>
                     </span>
                 </div>
             </div>
 
             {/* Content Details */}
-            <div className="flex-1 p-3.5 md:p-5 flex flex-col min-w-0 min-h-0">
-                <div className="mb-0 md:mb-3">
+            <div className="flex-1 p-3 sm:p-3.5 md:p-5 flex flex-col min-w-0 min-h-0">
+                <div className="mb-0 md:mb-2.5">
                     <div className="flex items-center justify-between gap-1 mb-1">
                         <h3
                             onClick={() => onOpenDetail(item)}
-                            className="text-[14px] md:text-lg font-black text-white group-hover:text-primary transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
+                            className="text-[15px] md:text-lg font-black text-white group-hover:text-amber-400 transition-colors leading-snug line-clamp-1 md:line-clamp-none cursor-pointer"
                         >
                             {item.name}
                         </h3>
                         {item.is_popular && (
-                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2.5 py-0.5 rounded-full font-bold shadow-sm">
+                            <span className="hidden md:inline-flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
                                 ⭐ مميز
                             </span>
                         )}
                     </div>
-                    <p className="text-slate-400/90 text-xs md:text-[13px] line-clamp-1 md:line-clamp-2 leading-relaxed md:min-h-[2.4rem]">
+                    <p className="text-slate-400 text-[11px] sm:text-xs md:text-[13px] line-clamp-2 leading-relaxed md:min-h-[2.4rem]">
                         {item.description || 'صنف طازج ومميز محضّر يومياً بأجود المكونات في مطعم أبو خاطر.'}
                     </p>
                 </div>
 
-                <div className="mt-auto pt-2 md:pt-3.5 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
-                    <span className="md:hidden text-primary font-black text-sm tabular-nums shrink-0">
-                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[9px] font-bold opacity-85">{priceDisplay.unit}</small>
+                <div className="mt-auto pt-2 md:pt-3 md:border-t md:border-white/[0.06] flex items-center justify-between gap-2">
+                    <span className="md:hidden text-amber-400 font-black text-sm sm:text-base tabular-nums shrink-0">
+                        {priceDisplay.prefix}{priceDisplay.text} <small className="text-[10px] font-bold opacity-85">{priceDisplay.unit}</small>
                     </span>
 
                     <div className="shrink-0 md:w-full">
                         {isAvailable ? (
                             qty > 0 ? (
-                                <div className="stepper-container-3d p-1 md:p-1.5 rounded-xl md:rounded-2xl flex items-center gap-1 md:justify-between md:w-full">
+                                <div className="stepper-container-3d p-1 rounded-xl md:rounded-2xl flex items-center gap-1 md:justify-between md:w-full">
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, -1)}
-                                        className="btn-soft-3d-dark w-8 h-8 md:min-w-[40px] md:min-h-[40px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
+                                        className="btn-soft-3d-dark w-8 h-8 md:min-w-[38px] md:min-h-[38px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`تقليل كمية ${item.name}`}
                                     >
-                                        <span className="text-lg md:text-xl font-bold" aria-hidden>−</span>
+                                        <span className="text-base md:text-lg font-bold" aria-hidden>−</span>
                                     </button>
-                                    <span className="text-sm md:text-base font-black text-white w-7 md:w-10 text-center tabular-nums" aria-live="polite">{qty}</span>
+                                    <span className="text-xs sm:text-sm md:text-base font-black text-white w-6 md:w-10 text-center tabular-nums" aria-live="polite">{qty}</span>
                                     <button
                                         type="button"
                                         onClick={(e) => handleUpdateQty(e, 1)}
-                                        className="btn-soft-3d-primary w-8 h-8 md:min-w-[40px] md:min-h-[40px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
+                                        className="btn-soft-3d-primary w-8 h-8 md:min-w-[38px] md:min-h-[38px] flex items-center justify-center text-white rounded-lg md:rounded-xl transition-all"
                                         aria-label={`زيادة كمية ${item.name}`}
                                     >
-                                        <span className="text-lg md:text-xl font-bold" aria-hidden>+</span>
+                                        <span className="text-base md:text-lg font-bold" aria-hidden>+</span>
                                     </button>
                                 </div>
                             ) : (
                                 <button
                                     type="button"
                                     onClick={handleAdd}
-                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary min-h-[36px] px-2.5 py-1 md:w-full md:min-h-[44px] md:py-3 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 text-[11px] md:text-sm shadow-sm"
+                                    className="btn-soft-3d-dark hover:btn-soft-3d-primary min-h-[36px] px-3 py-1.5 md:w-full md:min-h-[42px] md:py-2.5 text-slate-100 hover:text-white rounded-xl md:rounded-2xl font-black transition-all flex items-center justify-center gap-1.5 md:gap-2 text-xs md:text-sm shadow-sm"
                                     aria-label={`أضف ${item.name} إلى السلة`}
                                 >
-                                    <Flame size={15} className="text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
-                                    <span>{hasConfig ? 'اختر التخصيص' : '+ إضافة للطلب'}</span>
+                                    <Flame size={14} className="text-primary group-hover:text-white shrink-0 transition-colors" aria-hidden />
+                                    <span>{hasConfig ? 'تخصيص' : '+ إضافة'}</span>
                                 </button>
                             )
                         ) : (
-                            <button type="button" disabled className="min-h-[36px] px-2 py-1 md:w-full bg-dark-800/40 text-slate-500 md:py-3 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[44px] flex items-center justify-center">
+                            <button type="button" disabled className="min-h-[36px] px-2.5 py-1 md:w-full bg-dark-800/40 text-slate-500 md:py-2.5 rounded-xl md:rounded-2xl font-bold cursor-not-allowed border border-white/[0.04] opacity-50 md:min-h-[42px] flex items-center justify-center">
                                 <span className="text-[10px] md:text-xs">{statusLabel}</span>
                             </button>
                         )}
@@ -627,8 +636,8 @@ const MenuPage = () => {
             <ProgressSteps />
 
             {/* Banner Section */}
-            <div className="relative min-h-[200px] h-[38vh] sm:h-[42vh] md:min-h-[280px] md:h-[min(46vh,400px)] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-dark-950 z-10"></div>
+            <div className="relative min-h-[160px] h-[22vh] sm:h-[25vh] md:min-h-[220px] md:h-[28vh] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/60 to-dark-950 z-10" />
                 <img
                     src={restaurantBanner}
                     className="w-full h-full object-cover object-center"
@@ -636,46 +645,42 @@ const MenuPage = () => {
                     fetchPriority="high"
                     decoding="async"
                 />
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-8 sm:p-6 sm:mt-8 md:mt-10">
-                    <div className="mb-4 sm:mb-6 animate-float relative flex items-center justify-center">
-                        <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full scale-110 opacity-75"></div>
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4 py-4 sm:py-6">
+                    <div className="mb-2 sm:mb-3 relative flex items-center justify-center">
                         <button
                             type="button"
                             onClick={() => setShowLogoModal(true)}
-                            className="group relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
+                            className="group relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border border-white/20 shadow-xl overflow-hidden bg-dark-950/80 backdrop-blur-md flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none"
                             aria-label="تكبير شعار المطعم"
                         >
                             <img
                                 src={restaurantLogo}
-                                className="w-full h-full object-cover rounded-full drop-shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110 pointer-events-none"
+                                className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-105 pointer-events-none"
                                 alt="مطعم أبو خاطر"
                                 decoding="async"
                             />
                             {/* Zoom hint overlay */}
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                <ZoomIn className="text-white drop-shadow-md" size={24} />
+                                <ZoomIn className="text-white drop-shadow-md" size={18} />
                             </div>
                         </button>
                     </div>
-                    <div className="relative group cursor-default mb-1">
-                        {/* Ambient Glow behind title */}
-                        <div className="absolute -inset-x-8 -inset-y-3 bg-gradient-to-r from-primary/0 via-primary/35 to-amber-500/0 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                        <h1 className="relative text-3xl sm:text-5xl md:text-6xl font-black tracking-tight drop-shadow-[0_4px_30px_rgba(234,88,12,0.5)] transition-all duration-300 group-hover:scale-[1.02] active:scale-95 touch-manipulation">
-                            <span className="bg-gradient-to-r from-amber-200 via-[#fa7814] to-orange-500 bg-clip-text text-transparent inline-block font-black select-none">
+                    <div className="relative group cursor-default">
+                        <h1 className="relative text-2xl sm:text-3xl md:text-4xl font-black tracking-tight drop-shadow-md">
+                            <span className="bg-gradient-to-r from-amber-100 via-orange-400 to-amber-200 bg-clip-text text-transparent inline-block font-black select-none">
                                 مطاعـم أبـو خـاطـر
                             </span>
                         </h1>
                     </div>
 
                     {/* Slogan Badge */}
-                    <div className="mt-1.5 sm:mt-2">
-                        <div className="inline-flex items-center gap-2 px-3.5 sm:px-5 py-1.5 rounded-full bg-dark-950/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/40 hover:border-primary/40 transition-colors">
-                            <span className="text-slate-200 font-bold text-[11px] sm:text-xs md:text-sm tracking-wide">
+                    <div className="mt-1 sm:mt-1.5">
+                        <div className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1 rounded-full bg-dark-950/70 backdrop-blur-md border border-white/10 shadow-md">
+                            <span className="text-slate-200 font-bold text-[10px] sm:text-xs tracking-wide">
                                 ولا علـ البــال ولا علـ الخـاطـر
                             </span>
-                            <span className="w-1 h-1 rounded-full bg-primary/80 shrink-0" />
-                            <span className="text-amber-400 font-black text-[11px] sm:text-xs md:text-sm tracking-wide">
+                            <span className="w-1 h-1 rounded-full bg-primary shrink-0" />
+                            <span className="text-amber-400 font-black text-[10px] sm:text-xs tracking-wide">
                                 كـله عنـد أبـو خــاطـر
                             </span>
                         </div>
@@ -683,36 +688,36 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            {/* Action Buttons Container */}
-            <div className="max-w-3xl mx-auto px-3 sm:px-4 mt-4 sm:mt-5 mb-2 z-30 relative grid grid-cols-3 gap-2 sm:gap-3">
+            {/* Quick Utility Action Buttons Container */}
+            <div className="max-w-xl mx-auto px-3 sm:px-4 mt-2.5 sm:mt-3.5 mb-1 z-30 relative grid grid-cols-3 gap-2 sm:gap-2.5">
                 <button
                     type="button"
                     onClick={() => setShowReservation(true)}
-                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
+                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2 sm:py-2.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 touch-manipulation"
                     aria-label="فتح نموذج حجز طاولة في المطعم أو الكافيه"
                 >
-                    <Calendar size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
-                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">حجز طاولة</span>
+                    <Calendar size={15} className="shrink-0 relative z-10 group-hover:scale-105 transition-transform" />
+                    <span className="leading-tight truncate relative z-10">حجز طاولة</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => setShowTracking(true)}
-                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
+                    className="btn-soft-3d-primary group relative overflow-hidden text-white py-2 sm:py-2.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 touch-manipulation"
                     aria-label="تتبع حالة طلبك"
                 >
-                    <Bike size={17} className="shrink-0 relative z-10 group-hover:scale-110 transition-transform" />
-                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">تتبع طلبك</span>
+                    <Bike size={15} className="shrink-0 relative z-10 group-hover:scale-105 transition-transform" />
+                    <span className="leading-tight truncate relative z-10">تتبع طلبك</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={() => setShowFeedback(true)}
-                    className="btn-soft-3d-dark group relative overflow-hidden text-slate-100 hover:text-white py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-[11px] sm:text-xs flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation"
+                    className="btn-soft-3d-dark group relative overflow-hidden text-slate-200 hover:text-white py-2 sm:py-2.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 touch-manipulation"
                     aria-label="إرسال شكوى أو مقترح للمطعم"
                 >
-                    <MessageSquare size={17} className="shrink-0 relative z-10 text-primary group-hover:text-white group-hover:scale-110 transition-all" />
-                    <span className="leading-tight truncate relative z-10 drop-shadow-sm">الشكاوى</span>
+                    <MessageSquare size={15} className="shrink-0 relative z-10 text-primary group-hover:text-white transition-all" />
+                    <span className="leading-tight truncate relative z-10">الشكاوى</span>
                 </button>
             </div>
 
@@ -945,6 +950,7 @@ const MenuPage = () => {
 
                 {selectedDish && (
                     <DishDetailModal
+                        key={selectedDish.id}
                         item={selectedDish}
                         isOpen={Boolean(selectedDish)}
                         onClose={() => setSelectedDish(null)}

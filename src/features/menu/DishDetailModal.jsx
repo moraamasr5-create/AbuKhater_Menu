@@ -16,37 +16,23 @@ import { getVariantSectionLabel } from '../../core/utils/pricingEngine';
 
 const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart }) => {
     const [isZoomed, setIsZoomed] = useState(false);
-    const [localQty, setLocalQty] = useState(currentQty > 0 ? currentQty : 1);
+    const [localQty, setLocalQty] = useState(() => (currentQty > 0 ? currentQty : 1));
     const [imgLoaded, setImgLoaded] = useState(false);
     const [imgError, setImgError] = useState(false);
 
-    // Dynamic selection state
-    const [selectedVariantId, setSelectedVariantId] = useState(null);
-    const [selectedOptionsMap, setSelectedOptionsMap] = useState({}); // { [groupId]: optionId or [optionId1, ...] }
-    const [userNotes, setUserNotes] = useState('');
-
-    // Reset and initialize selections on item or open change
-    useEffect(() => {
-        if (!item || !isOpen) return;
-
-        setLocalQty(currentQty > 0 ? currentQty : 1);
-        setIsZoomed(false);
-        setImgLoaded(false);
-        setImgError(false);
-        setUserNotes('');
-
-        // 1. Initialize Variant (default to first available variant if present)
-        const variants = Array.isArray(item.variants) ? item.variants : [];
+    // Dynamic selection state initialized cleanly from item props
+    const [selectedVariantId, setSelectedVariantId] = useState(() => {
+        const variants = Array.isArray(item?.variants) ? item.variants : [];
         if (variants.length > 0) {
             const firstAvailable = variants.find(v => v.is_available !== false) || variants[0];
-            setSelectedVariantId(firstAvailable?.id || null);
-        } else {
-            setSelectedVariantId(null);
+            return firstAvailable?.id || null;
         }
+        return null;
+    });
 
-        // 2. Initialize Option Groups (default single required to first option)
+    const [selectedOptionsMap, setSelectedOptionsMap] = useState(() => {
         const initialOptions = {};
-        const optionGroups = Array.isArray(item.option_groups) ? item.option_groups : [];
+        const optionGroups = Array.isArray(item?.option_groups) ? item.option_groups : [];
         optionGroups.forEach(group => {
             const opts = Array.isArray(group.options) ? group.options : [];
             if (group.selection_type === 'single') {
@@ -57,12 +43,13 @@ const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart }) => 
                     initialOptions[group.id] = null;
                 }
             } else {
-                // multiple
                 initialOptions[group.id] = [];
             }
         });
-        setSelectedOptionsMap(initialOptions);
-    }, [item, isOpen, currentQty]);
+        return initialOptions;
+    });
+
+    const [userNotes, setUserNotes] = useState('');
 
     useEffect(() => {
         if (!isOpen) return;
