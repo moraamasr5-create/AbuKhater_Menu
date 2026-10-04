@@ -146,19 +146,21 @@ const ReservationModal = ({ isOpen, onClose }) => {
         let fieldError = '';
 
         switch (name) {
-            case 'fullName':
+            case 'fullName': {
                 // Arabic and English characters, min 3 chars, no numbers
                 const nameRegex = /^[a-zA-Z\s\u0600-\u06FF]{3,50}$/;
                 if (!value.trim()) fieldError = 'الاسم الكامل مطلوب';
                 else if (value.trim().length < 3) fieldError = 'يجب أن يكون الاسم 3 أحرف على الأقل';
                 else if (!nameRegex.test(value)) fieldError = 'يمنع استخدام الأرقام أو الرموز في الاسم';
                 break;
-            case 'phone':
+            }
+            case 'phone': {
                 // Egyptian phone format
                 const phoneRegex = /^01[0125][0-9]{8}$/;
                 if (!value) fieldError = 'رقم الهاتف مطلوب';
                 else if (!phoneRegex.test(value)) fieldError = 'يرجى إدخال رقم هاتف مصري صحيح (11 رقم)';
                 break;
+            }
             case 'date': {
                 const today = getTodayDateString();
                 const tomorrow = getTomorrowDateString();

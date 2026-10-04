@@ -42,13 +42,14 @@ const CustomerPage = () => {
     const [isLocating, setIsLocating] = useState(false);
     const [gpsError, setGpsError] = useState(null);
 
-    const [savedCustomers, setSavedCustomers] = useState([]);
+    const [savedCustomers, setSavedCustomers] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('saved_customers') || '[]');
+        } catch {
+            return [];
+        }
+    });
     const [showSuggestions, setShowSuggestions] = useState(false);
-
-    useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('saved_customers') || '[]');
-        setSavedCustomers(saved);
-    }, []);
 
     const handleSelectCustomer = (entry) => {
         setCustomerData(prev => ({
@@ -364,8 +365,8 @@ const CustomerPage = () => {
         }
     }, [locationMethod]);
 
-    // زر "أين انا!" داخل الخريطة
-    const handleLocateMeOnMap = () => {
+    // زر "أين انا!" داخل الخريطة (محفوظ للتطوير المستقبلي)
+    const _handleLocateMeOnMap = () => {
         if (!navigator.geolocation) {
             alert("المتصفح لا يدعم تحديد الموقع");
             return;
@@ -397,8 +398,8 @@ const CustomerPage = () => {
         );
     };
 
-    // زر "أين انا!" في قسم GPS — يحدد الموقع ثم ينتقل للخريطة ويضع الدبوس
-    const handleLocateAndSwitchToMap = () => {
+    // زر "أين انا!" في قسم GPS (محفوظ للتطوير المستقبلي)
+    const _handleLocateAndSwitchToMap = () => {
         if (!navigator.geolocation) {
             setGpsError("المتصفح لا يدعم تحديد الموقع");
             return;

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useMemo, useCallback } from 'react';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { calculateDistance, getDeliveryFee, calculateServiceFee } from '../utils/calculations';
+import { calculateDistance, getDeliveryFee } from '../utils/calculations';
 import { generateCartItemKey, calculateItemUnitPrice } from '../utils/cartUtils';
 import { RESTAURANT_LOCATION, MAX_DELIVERY_DISTANCE } from '../constants';
 import { settingsService } from '../../services/api';

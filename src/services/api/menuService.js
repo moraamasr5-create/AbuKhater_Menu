@@ -180,7 +180,7 @@ export const menuService = {
             has_variants: hasVariants,
             option_groups: optionGroups,
             has_options: hasOptions,
-            has_configuration: hasVariants || hasOptions,
+            has_configuration: hasConfiguration,
             originalItem: item
         };
     }

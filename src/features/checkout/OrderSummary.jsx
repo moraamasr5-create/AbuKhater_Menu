@@ -3,7 +3,7 @@ import { Minus, Plus } from 'lucide-react';
 import { formatCurrency } from '../../core/utils/formatters';
 import useCart from '../../hooks/useCart';
 
-const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderType, paidNow, remaining }) => {
+const OrderSummary = ({ cart, subtotal, deliveryFee, serviceFee, total, orderType }) => {
     const { updateQuantity } = useCart();
 
     return (

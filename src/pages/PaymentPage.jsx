@@ -296,14 +296,6 @@ const PaymentPage = () => {
         navigate('/track');
     }, [clearCart, navigate]);
 
-    const handleViewOrderDetails = useCallback(() => {
-        if (successData) {
-            console.log('Viewing details for:', successData.orderId);
-            clearCart();
-            navigate('/track');
-        }
-    }, [successData, clearCart, navigate]);
-
     return (
         <div className="min-h-[100dvh] bg-dark-950 pb-[max(9rem,env(safe-area-inset-bottom,0px))] sm:pb-36 relative scroll-smooth overflow-x-hidden">
             <ProgressSteps />
@@ -319,7 +311,6 @@ const PaymentPage = () => {
                     <OrderConfirmation
                         orderData={successData}
                         onClose={handleCloseOrder}
-                        onViewDetails={handleViewOrderDetails}
                     />
                 )}
 

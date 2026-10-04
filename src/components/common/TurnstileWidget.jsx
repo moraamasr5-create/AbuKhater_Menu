@@ -20,7 +20,7 @@ export const TurnstileWidget = ({
 }) => {
     const containerRef = useRef(null);
     const widgetIdRef = useRef(null);
-    const [widgetState, setWidgetState] = useState('loading'); // 'loading' | 'rendered' | 'verified' | 'error'
+    const [widgetState, setWidgetState] = useState(() => TURNSTILE_SITE_KEY ? 'loading' : 'idle'); // 'loading' | 'rendered' | 'verified' | 'error'
 
     // Store callbacks in refs to prevent useEffect dependency triggers & infinite loops
     const onVerifyRef = useRef(onVerify);
@@ -35,7 +35,6 @@ export const TurnstileWidget = ({
 
     useEffect(() => {
         if (!TURNSTILE_SITE_KEY) {
-            setWidgetState('idle');
             return;
         }
 

@@ -54,11 +54,12 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                 if (!value.trim()) fieldError = 'الاسم مطلوب';
                 else if (value.trim().length < 3) fieldError = 'الاسم قصير جداً';
                 break;
-            case 'phone':
+            case 'phone': {
                 const phoneRegex = /^01[0125][0-9]{8}$/;
                 if (!value) fieldError = 'رقم الهاتف مطلوب';
                 else if (!phoneRegex.test(value)) fieldError = 'رقم هاتف غير صحيح';
                 break;
+            }
             case 'message':
                 if (!value.trim()) fieldError = 'محتوى الرسالة مطلوب';
                 else if (value.trim().length < 10) fieldError = 'يرجى كتابة 10 أحرف على الأقل';

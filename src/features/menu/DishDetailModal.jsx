@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
     X,
@@ -14,7 +14,7 @@ import {
 import { formatCurrency } from '../../core/utils/formatters';
 import { getVariantSectionLabel } from '../../core/utils/pricingEngine';
 
-const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart, onUpdateQuantity }) => {
+const DishDetailModal = ({ item, isOpen, onClose, currentQty, onAddToCart }) => {
     const [isZoomed, setIsZoomed] = useState(false);
     const [localQty, setLocalQty] = useState(currentQty > 0 ? currentQty : 1);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -513,8 +513,7 @@ DishDetailModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     currentQty: PropTypes.number,
-    onAddToCart: PropTypes.func.isRequired,
-    onUpdateQuantity: PropTypes.func.isRequired
+    onAddToCart: PropTypes.func.isRequired
 };
 
 DishDetailModal.defaultProps = {

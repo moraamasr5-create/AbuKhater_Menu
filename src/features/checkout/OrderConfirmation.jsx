@@ -21,7 +21,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { formatCurrency } from '../../core/utils/formatters';
 
-const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
+const OrderConfirmation = ({ orderData, onClose }) => {
     const navigate = useNavigate();
     const [countdown, setCountdown] = useState(15);
     const [isClosing, setIsClosing] = useState(false);
@@ -35,17 +35,16 @@ const OrderConfirmation = ({ orderData, onClose, onViewDetails }) => {
 
     useEffect(() => {
         // لو العميل فتح "تفاصيل الطلب"، بنوقف العد التنازلي عشان نخليه يراجع براحته
-        if (showFullDetails) return;
-
-        if (countdown <= 0) {
-            if (!isClosing) {
-                stopCountdown();
-            }
-            return;
-        }
+        if (showFullDetails || isClosing) return;
 
         const timer = setTimeout(() => {
-            setCountdown(prev => prev - 1);
+            setCountdown(prev => {
+                if (prev <= 1) {
+                    stopCountdown();
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         return () => clearTimeout(timer);
@@ -340,8 +339,7 @@ OrderConfirmation.propTypes = {
         paymentNumber: PropTypes.string,
         deliveryAddress: PropTypes.string
     }).isRequired,
-    onClose: PropTypes.func.isRequired,
-    onViewDetails: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired
 };
 
 OrderConfirmation.defaultProps = {
