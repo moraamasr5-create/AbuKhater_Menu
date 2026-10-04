@@ -255,7 +255,6 @@ const MenuPage = () => {
     const [logoTouchStartY, setLogoTouchStartY] = useState(null);
     const [logoTouchMoveY, setLogoTouchMoveY] = useState(0);
     const menuProductsRef = useRef(null);
-    const skipCategoryScrollRef = useRef(true);
 
     useEffect(() => {
         if (!showLogoModal) return;
@@ -305,6 +304,24 @@ const MenuPage = () => {
         return ['all', ...sorted];
     }, [menuItems]);
 
+    // Metadata map for category labels and icons
+    const categoryMeta = useMemo(() => {
+        const meta = new Map();
+        if (!menuItems) return meta;
+        for (let i = 0; i < menuItems.length; i++) {
+            const item = menuItems[i];
+            const catKey = normalizeCategoryKey(item.category_slug || item.category);
+            if (catKey && !meta.has(catKey)) {
+                const mapped = CATEGORY_MAP[catKey] || CATEGORY_MAP[normalizeCategoryKey(catKey)];
+                const rawName = item.originalItem?.categories?.name || item.category;
+                const label = mapped?.label || rawName || catKey;
+                const IconComp = typeof mapped?.icon === 'function' || typeof mapped?.icon === 'object' ? mapped.icon : Utensils;
+                meta.set(catKey, { label, IconComp });
+            }
+        }
+        return meta;
+    }, [menuItems]);
+
     // Pre-calculate category counts once to replace O(C * N) filtering on every render
     const categoryCounts = useMemo(() => {
         const counts = { all: menuItems.length };
@@ -319,6 +336,9 @@ const MenuPage = () => {
     }, [menuItems]);
 
     const hasScrolledCategoriesRef = useRef(false);
+    const sectionRefs = useRef({});
+    const isManualScrollingRef = useRef(false);
+    const manualScrollTimerRef = useRef(null);
 
     useEffect(() => {
         if (categories.length > 2 && !hasScrolledCategoriesRef.current) {
@@ -343,16 +363,31 @@ const MenuPage = () => {
         }
     }, [categories]);
 
-    useEffect(() => {
-        if (skipCategoryScrollRef.current) {
-            skipCategoryScrollRef.current = false;
-            return;
-        }
-        const t = requestAnimationFrame(() => {
+    // Smooth scroll navigation to category or top
+    const scrollToCategory = useCallback((catId) => {
+        if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+        
+        setActiveCategory(catId);
+        isManualScrollingRef.current = true;
+        if (manualScrollTimerRef.current) clearTimeout(manualScrollTimerRef.current);
+
+        if (catId === 'all') {
             menuProductsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-        return () => cancelAnimationFrame(t);
-    }, [activeCategory]);
+        } else {
+            const el = sectionRefs.current[catId] || document.getElementById(`section-${catId}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Center active tab pill in horizontal category bar
+        const activeTab = document.getElementById(`tab-cat-${catId}`);
+        activeTab?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+        manualScrollTimerRef.current = setTimeout(() => {
+            isManualScrollingRef.current = false;
+        }, 850);
+    }, []);
 
     // Throttled scroll listener: only trigger state update when crossing 100px boundary
     useEffect(() => {
@@ -426,32 +461,157 @@ const MenuPage = () => {
 
     const searchLower = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
 
-    const filteredItems = useMemo(() => {
-        if (!menuItems.length) return [];
-        const isAll = activeCategory === 'all';
-        const normActiveCategory = isAll ? null : normalizeCategoryKey(activeCategory);
+    // Group items into category sections, filtering by search query if present
+    const groupedSections = useMemo(() => {
+        if (!menuItems || menuItems.length === 0) return [];
         const hasSearch = searchLower.length > 0;
 
-        return menuItems.filter((item) => {
+        const validItems = menuItems.filter((item) => {
             const nameOk = item?.name != null && String(item.name).trim() !== '';
             const idRaw = item?.id;
             const idOk = idRaw != null && String(idRaw).trim() !== '';
             if (!nameOk || !idOk) return false;
-
-            if (!isAll) {
-                const itemCatKey = normalizeCategoryKey(item.category_slug || item.category);
-                if (itemCatKey !== normActiveCategory) return false;
-            }
 
             if (hasSearch) {
                 const nameMatches = item.name.toLowerCase().includes(searchLower);
                 if (nameMatches) return true;
                 return item.description ? item.description.toLowerCase().includes(searchLower) : false;
             }
-
             return true;
         });
-    }, [menuItems, activeCategory, searchLower]);
+
+        const sections = [];
+        const nonAllCategories = categories.filter(c => c !== 'all');
+
+        for (const catId of nonAllCategories) {
+            const itemsInCat = validItems.filter(item => {
+                const itemCatKey = normalizeCategoryKey(item.category_slug || item.category);
+                return itemCatKey === catId;
+            });
+
+            if (itemsInCat.length > 0) {
+                const meta = categoryMeta.get(catId) || { label: catId, IconComp: Utensils };
+                sections.push({
+                    catId,
+                    label: meta.label,
+                    IconComp: meta.IconComp,
+                    items: itemsInCat
+                });
+            }
+        }
+
+        // Safety fallback for items without matching categorized section
+        const accountedIds = new Set(sections.flatMap(s => s.items.map(i => i.id)));
+        const orphanItems = validItems.filter(i => !accountedIds.has(i.id));
+        if (orphanItems.length > 0) {
+            sections.push({
+                catId: 'other',
+                label: 'أصناف أخرى',
+                IconComp: Utensils,
+                items: orphanItems
+            });
+        }
+
+        return sections;
+    }, [menuItems, categories, categoryMeta, searchLower]);
+
+    // Dynamic ScrollSpy: track scroll position and update active category tab
+    useEffect(() => {
+        let ticking = false;
+
+        const handleScrollSpy = () => {
+            if (isManualScrollingRef.current) return;
+            if (groupedSections.length === 0) return;
+
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const productsEl = menuProductsRef.current;
+                    const productsTop = productsEl ? productsEl.getBoundingClientRect().top + scrollY : 0;
+                    
+                    // Floating bar height offset (~180px)
+                    const headerOffset = 180;
+
+                    // If scroll is above the products section (e.g. at the hero banner or buttons)
+                    if (scrollY < productsTop - 120) {
+                        setActiveCategory(prev => {
+                            if (prev !== 'all') {
+                                const activeTab = document.getElementById('tab-cat-all');
+                                activeTab?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                                return 'all';
+                            }
+                            return prev;
+                        });
+                        ticking = false;
+                        return;
+                    }
+
+                    // Bottom of page check
+                    const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60);
+                    if (isAtBottom && groupedSections.length > 0) {
+                        const lastSec = groupedSections[groupedSections.length - 1];
+                        setActiveCategory(prev => {
+                            if (prev !== lastSec.catId) {
+                                const activeTab = document.getElementById(`tab-cat-${lastSec.catId}`);
+                                activeTab?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                                return lastSec.catId;
+                            }
+                            return prev;
+                        });
+                        ticking = false;
+                        return;
+                    }
+
+                    // Find which section is currently active
+                    let currentActive = null;
+                    for (let i = 0; i < groupedSections.length; i++) {
+                        const sec = groupedSections[i];
+                        const el = sectionRefs.current[sec.catId] || document.getElementById(`section-${sec.catId}`);
+                        if (el) {
+                            const rect = el.getBoundingClientRect();
+                            if (rect.top <= headerOffset && rect.bottom > headerOffset) {
+                                currentActive = sec.catId;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!currentActive && groupedSections.length > 0) {
+                        let minDistance = Infinity;
+                        for (let i = 0; i < groupedSections.length; i++) {
+                            const sec = groupedSections[i];
+                            const el = sectionRefs.current[sec.catId] || document.getElementById(`section-${sec.catId}`);
+                            if (el) {
+                                const rect = el.getBoundingClientRect();
+                                const dist = Math.abs(rect.top - headerOffset);
+                                if (dist < minDistance) {
+                                    minDistance = dist;
+                                    currentActive = sec.catId;
+                                }
+                            }
+                        }
+                    }
+
+                    if (currentActive) {
+                        setActiveCategory(prev => {
+                            if (prev !== currentActive) {
+                                const activeTab = document.getElementById(`tab-cat-${currentActive}`);
+                                activeTab?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                                return currentActive;
+                            }
+                            return prev;
+                        });
+                    }
+
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
+        window.addEventListener('scroll', handleScrollSpy, { passive: true });
+        return () => window.removeEventListener('scroll', handleScrollSpy);
+    }, [groupedSections]);
 
     const qtyByItemId = useMemo(() => {
         const m = new Map();
@@ -631,10 +791,7 @@ const MenuPage = () => {
                                         role="tab"
                                         aria-selected={isActive}
                                         id={`tab-cat-${catId}`}
-                                        onClick={() => {
-                                            if (navigator.vibrate) navigator.vibrate(10);
-                                            setActiveCategory(catId);
-                                        }}
+                                        onClick={() => scrollToCategory(catId)}
                                         className={`category-pill shrink-0 snap-start min-h-[40px] ${isActive ? 'active' : ''}`}
                                     >
                                         <IconComp size={15} className={`shrink-0 ${isActive ? 'text-white' : 'text-primary'}`} />
@@ -706,35 +863,69 @@ const MenuPage = () => {
                             </div>
                         ))}
                     </div>
-                ) : filteredItems.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-                        {filteredItems.map((item) => (
-                            <MenuProductCard
-                                key={item.id}
-                                item={item}
-                                qty={qtyByItemId.get(item.id) || 0}
-                                fallbackImage="/logo.jpg"
-                                addToCart={addToCart}
-                                updateQuantity={updateQuantity}
-                                onOpenDetail={setSelectedDish}
-                            />
+                ) : groupedSections.length > 0 ? (
+                    <div className="space-y-10 sm:space-y-14">
+                        {groupedSections.map((section) => (
+                            <section
+                                key={section.catId}
+                                id={`section-${section.catId}`}
+                                ref={(el) => { sectionRefs.current[section.catId] = el; }}
+                                data-category-id={section.catId}
+                                className="category-section scroll-mt-36 sm:scroll-mt-44 md:scroll-mt-48"
+                            >
+                                {/* Section Header with subtle elegant separator */}
+                                <div className="relative mb-4 sm:mb-6">
+                                    <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
+                                        <div className="flex items-center gap-2.5 sm:gap-3.5">
+                                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center text-primary shadow-inner">
+                                                <section.IconComp size={18} className="sm:w-5 sm:h-5 text-primary" />
+                                            </div>
+                                            <h2 className="text-lg sm:text-2xl font-black text-white tracking-wide">
+                                                {section.label}
+                                            </h2>
+                                        </div>
+                                        
+                                        <span className="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg bg-dark-850/80 text-slate-400 border border-white/[0.06] tabular-nums">
+                                            {section.items.length} {section.items.length === 1 ? 'صنف' : 'أصناف'}
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Accent line on divider */}
+                                    <div className="absolute -bottom-[1px] right-0 w-20 sm:w-28 h-[2px] bg-gradient-to-l from-transparent via-primary/60 to-primary rounded-full pointer-events-none" />
+                                </div>
+
+                                {/* Items Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                                    {section.items.map((item) => (
+                                        <MenuProductCard
+                                            key={item.id}
+                                            item={item}
+                                            qty={qtyByItemId.get(item.id) || 0}
+                                            fallbackImage="/logo.jpg"
+                                            addToCart={addToCart}
+                                            updateQuantity={updateQuantity}
+                                            onOpenDetail={setSelectedDish}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-16 sm:py-20 px-4 bg-dark-900/30 rounded-3xl border border-white/[0.04] mt-4 space-y-3">
                         <Inbox size={48} className="mx-auto text-slate-600 mb-1" />
                         <h3 className="text-base sm:text-lg font-bold text-slate-300">لا توجد نتائج مطابقة</h3>
-                        <p className="text-xs text-slate-500 max-w-xs mx-auto">لم نتمكن من العثور على أي أصناف مطابقة لبحثك أو التصنيف المختار.</p>
-                        {(searchQuery || activeCategory !== 'all') && (
+                        <p className="text-xs text-slate-500 max-w-xs mx-auto">لم نتمكن من العثور على أي أصناف مطابقة لبحثك.</p>
+                        {searchQuery && (
                             <button
                                 type="button"
                                 onClick={() => {
                                     setSearchQuery('');
-                                    setActiveCategory('all');
+                                    scrollToCategory('all');
                                 }}
                                 className="mt-2 px-4 py-2 bg-dark-800 hover:bg-primary text-white rounded-xl text-xs font-bold transition-all shadow-md active:scale-95"
                             >
-                                مسح الفلاتر وعرض القائمة كاملة
+                                مسح نص البحث وعرض القائمة كاملة
                             </button>
                         )}
                     </div>
